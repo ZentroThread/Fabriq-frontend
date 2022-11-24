@@ -1,15 +1,12 @@
-import Layout from "./components/organisms/layout/Layout";
-import { Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import Layout from "./components/organisms/layout/layout";
+import Routes from "./routes/routes";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Layout>
-        <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
+        <Routes />
       </Layout>
     </ThemeProvider>
   );

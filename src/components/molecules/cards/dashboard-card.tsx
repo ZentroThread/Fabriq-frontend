@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 interface DashboardCardProps {
   lable: string;
   lable1: string;
-  lable2: string;
+  lable2?: string;
   icon: LucideIcon;
   iconbg?: string;
 }
