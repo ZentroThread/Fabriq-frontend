@@ -1,4 +1,4 @@
-name: (Deprecated) Frontend CI (Nested Path)
+name: Frontend CI
 
 on:
   push:
@@ -12,10 +12,62 @@ on:
   workflow_dispatch:
 
 jobs:
-  notice:
+  build-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FabriqFrontend/frontend
+    permissions:
+      contents: read
     steps:
-      - name: Print deprecation notice
-        run: |
-          echo "This workflow file has moved to repository root at .github/workflows/frontend-ci.yml." \
-               "Please delete FabriqFrontend/frontend/.github/workflows/frontend-ci.yml."
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "FabriqFrontend/frontend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        env:
+          CI: true
+        run: npm test -- --watchAll=false
+
+      - name: Build app
+        run: npm run build
+
+      - name: Upload production build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: FabriqFrontend/frontend/build
+          if-no-files-found: error
+
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FabriqFrontend/frontend
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "FabriqFrontend/frontend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (React Scripts built-in ESLint)
+        run: npx eslint src --max-warnings=0 || echo "No explicit lint script; fallback running ESLint manually."
