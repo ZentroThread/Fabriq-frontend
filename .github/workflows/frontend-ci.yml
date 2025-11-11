@@ -31,6 +31,9 @@ jobs:
           CI: true
         run: npm test -- --watchAll=false
 
+      - name: Type check
+        run: npm run typecheck
+
       - name: Build app
         run: npm run build
 
