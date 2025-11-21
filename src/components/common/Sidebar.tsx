@@ -4,7 +4,7 @@ import SidebarButton from "./SidebarButton";
 import { sidebarItems } from "../../config/SidebarItems";
 import type { UserRole } from "../../config/SidebarItems";
 
-function Sidebar({ open }: { open: boolean }) {
+function Sidebar({ open: _open }: { open: boolean }) {
   const [activeRoute, setActiveRoute] = useState<string>("/dashboard");
 
   //get the user role dynamically from JWT auth
