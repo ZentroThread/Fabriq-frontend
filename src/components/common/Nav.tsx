@@ -1,22 +1,26 @@
 import { Menu } from "lucide-react";
 import logo from "../../assets/images/logo.jpg";
-import { Bell , X } from "lucide-react";
+import { Bell, X } from "lucide-react";
 
-function Nav({ username, position, sidebarOpen, setSidebarOpen }: { username: string; position: string;
-   sidebarOpen:boolean; 
-  setSidebarOpen: (v: boolean) => void;  }) {
+function Nav({
+  username,
+  position,
+  sidebarOpen,
+  setSidebarOpen,
+}: {
+  username: string;
+  position: string;
+  sidebarOpen: boolean;
+  setSidebarOpen: (v: boolean) => void;
+}) {
   return (
-    <div className="w-full h-20 m-0 shadow-lg flex items-center bg-white px-5 relative">
+    <div className="w-full h-20 m-0 shadow-lg flex items-center bg-white px-5 relative z-40">
       <div className="flex gap-6 items-center">
         <button
           className="block md:hidden"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
-          {sidebarOpen ? (
-            <X className="p-0.5" />
-          ) : (
-            <Menu className="p-0.5" />
-          )}
+          {sidebarOpen ? <X className="p-0.5" /> : <Menu className="p-0.5" />}
         </button>
         <img src={logo} alt="logo" className="w-30" />
       </div>
