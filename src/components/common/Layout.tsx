@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import Nav from "./Nav";
 import Sidebar from "./Sidebar";
+import AddButton from "./AddButton";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,7 +38,6 @@ export default function Layout({ children }: { children: ReactNode }) {
           ></div>
         )}
 
-        {/* Main content */}
         <main className="flex-1 overflow-auto p-4">{children}</main>
       </div>
     </div>
