@@ -1,5 +1,3 @@
-import React from "react";
-
 function Support() {
   return (
     <div className="w-60 h-40 p-5 bg-[#FBDDE3] ml-5 rounded-2xl mt-auto mb-5  ">
