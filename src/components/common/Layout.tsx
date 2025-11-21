@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from "react";
 import Nav from "./Nav";
 import Sidebar from "./Sidebar";
-import AddButton from "./AddButton";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
