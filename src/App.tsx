@@ -1,13 +1,16 @@
-import './App.css'
+import Layout from "./components/common/Layout";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-  
-
   return (
-    <>
-      
-    </>
-  )
+    <Layout>
+      <Routes>
+        {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Layout>
+  );
 }
 
-export default App
+export default App;
