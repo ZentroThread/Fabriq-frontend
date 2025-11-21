@@ -1,15 +1,14 @@
-import {  type LucideIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import { type LucideIcon } from "lucide-react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface SidebarButtonProps {
   icon: LucideIcon;
   label: string;
-  to: string;  
-  active: boolean;               // NEW
-  onClick: () => void;  
+  to: string;
+  active: boolean; // NEW
+  onClick: () => void;
 }
-
 
 const SidebarButton: React.FC<SidebarButtonProps> = ({
   icon: Icon,
@@ -20,13 +19,13 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
 }) => {
   const navigate = useNavigate();
 
-const handleClick = () => {
-    onClick();       // set active button in parent
-    navigate(to);    // navigate to route
+  const handleClick = () => {
+    onClick(); // set active button in parent
+    navigate(to); // navigate to route
   };
   return (
     <div
-     onClick={handleClick}
+      onClick={handleClick}
       className={`
         w-60 h-14 ml-5 mt-3 p-3 pl-6 rounded-2xl flex items-center cursor-pointer transition-all
         ${
@@ -45,7 +44,7 @@ const handleClick = () => {
         {label}
       </span>
     </div>
-  )
-}
+  );
+};
 
-export default SidebarButton
+export default SidebarButton;
