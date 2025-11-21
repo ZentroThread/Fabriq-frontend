@@ -13,7 +13,7 @@ function Sidebar({ open: _open }: { open: boolean }) {
   const items = sidebarItems[role];
 
   return (
-    <div className="w-[300px] h-full m-0 shadow-lg flex flex-col bg-white ">
+    <div className="w-[300px] h-full m-0 shadow-lg flex flex-col bg-sidebar-bg">
       {items.map((item) => (
         <SidebarButton
           key={item.to}

@@ -30,15 +30,15 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
         w-60 h-14 ml-5 mt-3 p-3 pl-6 rounded-2xl flex items-center cursor-pointer transition-all
         ${
           active
-            ? "bg-gradient-to-r from-[#FDF9F7] to-[#FCE4EC] shadow-md"
-            : "bg-white hover:shadow-sm"
+            ? "bg-gradient-to-r from-sidebar-button-active-from to-sidebar-button-active-to shadow-md"
+            : "bg-sidebar-button-inactive hover:shadow-sm hover:bg-sidebar-button-hover"
         }
       `}
     >
-      <Icon className={`${active ? "text-[#AB7057]" : "text-black"}`} />
+      <Icon className={active ? "text-text-active" : "text-text-inactive"} />
       <span
         className={`pl-6 font-medium ${
-          active ? "text-[#AB7057]" : "text-black"
+          active ? "text-text-active" : "text-text-inactive"
         }`}
       >
         {label}
