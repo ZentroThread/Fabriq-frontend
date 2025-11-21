@@ -1,8 +1,83 @@
 @import "tailwindcss";
 
 @theme {
-  --font-family-sans: "Poppins", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-sans:
+    "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Dark mode support */
+  --color-*: initial;
+
+  /* Light mode colors (default) */
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090b;
+  --color-primary: #18181b;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #18181b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #18181b;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #18181b;
+
+  /* Custom app colors - Light mode */
+  --color-sidebar-bg: #ffffff;
+  --color-sidebar-button-active-from: #fdf9f7;
+  --color-sidebar-button-active-to: #fce4ec;
+  --color-sidebar-button-inactive: #ffffff;
+  --color-sidebar-button-hover: #f4f4f5;
+  --color-text-active: #ab7057;
+  --color-text-inactive: #000000;
+  --color-nav-bg: #ffffff;
+  --color-nav-text: #09090b;
+  --color-support-bg: #fbdde3;
+  --color-support-title: #615758;
+  --color-support-text: #aa9d9d;
+  --color-support-button: #b77e66;
+  --color-support-button-hover: #ab7057;
+  --color-support-button-text: #ffffff;
+  --color-avatar-bg: #f0ddd5;
+  --color-avatar-border: #ab7057;
+  --color-position-text: #6b7280;
+  --color-main-bg: #fafaf9;
+  --color-layout-bg: #ffffff;
+  --color-overlay-bg: #09090b;
+  --color-hover-bg: #e4e4e7;
+  --color-icon-default: #18181b;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Custom app colors - Dark mode */
+  --color-sidebar-bg: #3f3f46;
+  --color-sidebar-button-active-from: #52525b;
+  --color-sidebar-button-active-to: #71717a;
+  --color-sidebar-button-inactive: #3f3f46;
+  --color-sidebar-button-hover: #52525b;
+  --color-text-active: #fbbf24;
+  --color-text-inactive: #e5e5e5;
+  --color-nav-bg: #3f3f46;
+  --color-nav-text: #fbbf24;
+  --color-support-bg: #71717a;
+  --color-support-title: #fbbf24;
+  --color-support-text: #ffffff;
+  --color-support-button: #fbbf24;
+  --color-support-button-hover: #fcd34d;
+  --color-support-button-text: #000000;
+  --color-avatar-bg: #71717a;
+  --color-avatar-border: #fbbf24;
+  --color-position-text: #ffffff;
+  --color-main-bg: #71717a;
+  --color-layout-bg: #18181b;
+  --color-overlay-bg: #000000;
+  --color-hover-bg: #3f3f46;
+  --color-icon-default: #fafafa;
+  --color-shadow: rgba(0, 0, 0, 0.8);
 }
 
 * {
@@ -11,4 +86,6 @@
 
 body {
   font-family: "Poppins", sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
