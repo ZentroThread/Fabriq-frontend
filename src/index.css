@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme {
   --font-family-sans:
     "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -50,6 +51,9 @@
   --color-hover-bg: #e4e4e7;
   --color-icon-default: #18181b;
   --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-text: #000000;
+  --color-heading-text:#09090b;
+  --color-card:#ffffff;
 }
 
 .dark {
@@ -78,6 +82,10 @@
   --color-hover-bg: #3f3f46;
   --color-icon-default: #fafafa;
   --color-shadow: rgba(0, 0, 0, 0.8);
+  --color-text: #ffffff;
+  --color-heading-text: #fbbf24;
+  --color-card:#18181b;
+  --color-card-foreground:#ffffff;
 }
 
 * {
