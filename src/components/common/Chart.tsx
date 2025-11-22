@@ -18,7 +18,6 @@ function Chart({ label, description, children }: ChartProps) {
         ) : (
           <div className="text-muted-foreground p-30 pl-50 text-[14px] flex gap-4 items-center">
             <Frown />
-           
           </div>
         )}
       </div>
