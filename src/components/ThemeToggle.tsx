@@ -32,12 +32,12 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full transition-all hover:bg-hover-bg"
+      className="p-2 rounded-full transition-all hover:bg-button-hover"
     >
       {dark ? (
-        <Sun className="w-5 h-5 text-yellow-400" />
+        <Sun className="w-5 h-5 text-yellow-400 hover:text-icon-hover" />
       ) : (
-        <Moon className="w-5 h-5 text-icon-default" />
+        <Moon className="w-5 h-5 text-icon-dark hover:text-icon-hover" />
       )}
     </button>
   );

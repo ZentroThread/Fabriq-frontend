@@ -2,8 +2,8 @@ function Support() {
   return (
     <div className="w-60 h-40 p-5 bg-support-bg ml-5 rounded-2xl mt-auto mb-5">
       <span
-        style={{ fontFamily: "Times New Roman, serif" }}
-        className="text-[18px] text-support-title mb-2"
+        
+        className="text-[18px]  text-style font-semibold mb-2"
       >
         Need Help?
       </span>

@@ -1,5 +1,73 @@
+import { ChartLineDots } from "@/components/charts/ChartLineDots";
+import Chart from "@/components/common/Chart";
+import DashboardCard from "@/components/common/DashboardCard";
+import { DollarSign } from "lucide-react";
+
 function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+    <div className="p-5 flex flex-col ">
+      <div className="text-style text-[30px] font-semibold">
+        Dashboard Overview
+      </div>
+      <div className="text-position-text ">
+        Welcome back! Here's what's happening today.
+      </div>
+      <div className="flex flex-4 gap-6 mt-5 mb-5">
+        <DashboardCard
+          lable={"Total Revenue"}
+          lable1={"LKR 3.28M"}
+          lable2={"+15%"}
+          icon={DollarSign}
+        />
+        <DashboardCard
+          lable={"Total Revenue"}
+          lable1={"LKR 3.28M"}
+          lable2={"+15%"}
+          icon={DollarSign}
+        />
+        <DashboardCard
+          lable={"Total Revenue"}
+          lable1={"LKR 3.28M"}
+          lable2={"+15%"}
+          icon={DollarSign}
+        />
+        <DashboardCard
+          lable={"Total Revenue"}
+          lable1={"LKR 3.28M"}
+          lable2={"+15%"}
+          icon={DollarSign}
+        />
+      </div>
+      <div className="flex flex-2 gap-6 mt-5 mb-5">
+        <Chart
+          label={"Revenue & Rentals"}
+          description={"Monthly revenue and rental trends."}
+          
+        >
+          <ChartLineDots/>
+        </Chart>
+        <Chart
+          label={"Rentals by Category"}
+          description={"Product category distribution"}
+        >
+          {/* <ChartPie/> */}
+          </Chart>
+      </div>
+      {/* <div className="flex flex-3 gap-6 mt-5 mb-5">
+        <div className="flex flex-3/5">
+          <Chart
+            label={"Revenue & Rentals"}
+            description={"Monthly revenue and rental trends."}
+          />
+        </div>
+
+        <Chart
+          label={"Rentals by Category"}
+          description={"Product category distribution"}
+        />
+      </div> */}
+    </div>
+  );
 }
 
 export default Dashboard;
