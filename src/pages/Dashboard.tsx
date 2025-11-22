@@ -1,7 +1,9 @@
+import { ChartDonut } from "@/components/charts/ChartDonut";
 import { ChartLineDots } from "@/components/charts/ChartLineDots";
+import { ChartPie } from "@/components/charts/ChartPie";
 import Chart from "@/components/common/Chart";
 import DashboardCard from "@/components/common/DashboardCard";
-import { DollarSign } from "lucide-react";
+import { Clock4, DollarSign, Package, Users } from "lucide-react";
 
 function Dashboard() {
   return (
@@ -20,22 +22,25 @@ function Dashboard() {
           icon={DollarSign}
         />
         <DashboardCard
-          lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
-          lable2={"+15%"}
-          icon={DollarSign}
+          lable={"Active Rentals"}
+          lable1={"28"}
+          lable2={"+8 this week"}
+          icon={Package}
+          iconbg="var(--color-light-pie-1)"
         />
         <DashboardCard
-          lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
-          lable2={"+15%"}
-          icon={DollarSign}
+          lable={"Attendance Rate"}
+          lable1={"93%"}
+          lable2={"14/15 present"}
+          icon={Users}
+          iconbg="var(--color-dbcard)"
         />
         <DashboardCard
-          lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
-          lable2={"+15%"}
-          icon={DollarSign}
+          lable={"Due Returns"}
+          lable1={"12"}
+          lable2={"2 overdue"}
+          icon={Clock4}
+          iconbg="var(--color-pie-3)"
         />
       </div>
       <div className="flex flex-2 gap-6 mt-5 mb-5">
@@ -50,22 +55,24 @@ function Dashboard() {
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
-          {/* <ChartPie/> */}
+          <ChartPie/>
           </Chart>
       </div>
-      {/* <div className="flex flex-3 gap-6 mt-5 mb-5">
+      <div className="flex flex-3 gap-6 mt-5 mb-5">
         <div className="flex flex-3/5">
           <Chart
-            label={"Revenue & Rentals"}
-            description={"Monthly revenue and rental trends."}
-          />
+            label={"Today's Attendance"}
+            description={"Employee attendance overview"}
+          >
+            <ChartDonut/>
+            </Chart>
         </div>
 
         <Chart
-          label={"Rentals by Category"}
-          description={"Product category distribution"}
+          label={"Upcoming & Overdue Returns"}
+          description={"Items that need to be returned soon"}
         />
-      </div> */}
+      </div>
     </div>
   );
 }
