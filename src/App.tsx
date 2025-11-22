@@ -1,8 +1,8 @@
 import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import EmployeeOverview from "./pages/EmployeeOverview";
-import EmployeeProfile from "./pages/employee/EmployeeProfile";
+/* import EmployeeOverview from "./pages/EmployeeOverview";
+import EmployeeProfile from "./pages/employee/EmployeeProfile"; */
 import { SalaryHistory } from "./pages/employee/SalaryHistory";
 
 
