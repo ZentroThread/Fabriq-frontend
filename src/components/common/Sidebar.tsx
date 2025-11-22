@@ -5,11 +5,11 @@ import { sidebarItems } from "../../config/SidebarItems";
 import type { UserRole } from "../../config/SidebarItems";
 
 function Sidebar({ open: _open }: { open: boolean }) {
-  const [activeRoute, setActiveRoute] = useState<string>("/dashboard");
+  const [activeRoute, setActiveRoute] = useState<string>("/");
 
   //get the user role dynamically from JWT auth
   const role = (localStorage.getItem("role") as UserRole) || "owner";
-
+  
   const items = sidebarItems[role];
 
   return (
