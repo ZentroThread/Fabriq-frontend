@@ -25,10 +25,13 @@
   --color-border: #e4e4e7;
   --color-input: #e4e4e7;
   --color-ring: #18181b;
-
+  --color-dbcard:#C09E8E;
   /* Custom app colors - Light mode */
 
   /* Unique light color variables */
+  --color-light-pie-1: #F8A5BA;
+  --color-light-pie-2:#B87E64;
+  --color-light-pie-3:#FAD4D8;
   --color-light-white: #ffffff;
   --color-light-rose-lightest: #fdf9f7;
   --color-light-rose: #fce4ec;
@@ -46,6 +49,9 @@
   --color-light-icon: #18181b;
 
   /* Map descriptive variables to the light-* variables */
+  --color-pie-1:var(--color-light-pie-1);
+  --color-pie-2:var(--color-light-pie-2);
+  --color-pie-3:var(--color-light-pie-3);
   --color-card: var(--color-light-white);
   --color-sidebar-bg: var(--color-light-white);
   --color-sidebar-button-active-from: var(--color-light-rose-lightest);
@@ -81,6 +87,7 @@
 .dark {
   /* Custom app colors - Dark mode */
   /* Unique dark color variables */
+  
   --color-dark-gray-dark: #3f3f46;
   --color-dark-gray-medium: #52525b;
   --color-dark-gray-light: #71717a;
@@ -93,6 +100,9 @@
   --color-dark-white-light: #fafafa;
 
   /* Map descriptive variables to dark-* variables */
+  --color-pie-1:var(--color-dark-yellow);
+  --color-pie-2:var(--color-dark-gray-lightest);
+  --color-pie-3:var( --color-dark-black-light);
    --color-chart-text: var(--color-dark-yellow);
   --color-card: var(--color-dark-gray-dark);
   --color-icon-hover: var(--color-dark-black);

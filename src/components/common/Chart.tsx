@@ -1,3 +1,4 @@
+import { Frown } from 'lucide-react'
 import React from 'react'
 
 interface ChartProps{
@@ -12,7 +13,7 @@ function Chart({label, description,children} : ChartProps) {
       <div className='text-style text-[20px] font-semibold'>{label}</div>
       <div className='text-position-text'>{description}</div>
       <div className="mt-4 w-full h-56">
-        {children ? children : <div className="text-muted-foreground">No chart data</div>}
+        {children ? children : <div className="text-muted-foreground p-30 pl-60 text-[14px] flex gap-4 items-center"><Frown/>No chart data</div>}
       </div>
     </div>
   )
