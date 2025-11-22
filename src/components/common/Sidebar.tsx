@@ -9,7 +9,7 @@ function Sidebar({ open: _open }: { open: boolean }) {
 
   //get the user role dynamically from JWT auth
   const role = (localStorage.getItem("role") as UserRole) || "owner";
-  
+
   const items = sidebarItems[role];
 
   return (
