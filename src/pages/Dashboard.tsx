@@ -14,7 +14,7 @@ function Dashboard() {
       <div className="text-position-text ">
         Welcome back! Here's what's happening today.
       </div>
-      <div className="flex flex-4 gap-6 mt-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Revenue"}
           lable1={"LKR 3.28M"}
@@ -43,29 +43,28 @@ function Dashboard() {
           iconbg="var(--color-pie-3)"
         />
       </div>
-      <div className="flex flex-2 gap-6 mt-5 mb-5">
+      <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mt-5 mb-5">
         <Chart
           label={"Revenue & Rentals"}
           description={"Monthly revenue and rental trends."}
-          
         >
-          <ChartLineDots/>
+          <ChartLineDots />
         </Chart>
         <Chart
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
-          <ChartPie/>
-          </Chart>
+          <ChartPie />
+        </Chart>
       </div>
-      <div className="flex flex-3 gap-6 mt-5 mb-5">
+      <div className="lg:flex lg:flex-3 sm:grid-cols-1 gap-6 mt-5 mb-5">
         <div className="flex flex-3/5">
           <Chart
             label={"Today's Attendance"}
             description={"Employee attendance overview"}
           >
-            <ChartDonut/>
-            </Chart>
+            <ChartDonut />
+          </Chart>
         </div>
 
         <Chart
