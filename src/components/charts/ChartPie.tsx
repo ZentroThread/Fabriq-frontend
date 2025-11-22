@@ -2,13 +2,7 @@
 
 import { Pie, PieChart } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   type ChartConfig,
   ChartContainer,
