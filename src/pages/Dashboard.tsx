@@ -40,7 +40,7 @@ function Dashboard() {
           lable1={"12"}
           lable2={"2 overdue"}
           icon={Clock4}
-          iconbg="var(--color-pie-3)"
+          
         />
       </div>
       <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mt-5 mb-5">
