@@ -2,13 +2,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Search, XCircle } from "lucide-react";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function EmployeeOverview() {
+
+  const navigate = useNavigate();
+
   const employees = [
-    { initials: "NP", name: "Nimal Perera", role: "Sales Assistant", phone: "077-2345678", salary: "38,000", status: "Present", joinDate: "2024-02-20" },
-    { initials: "KF", name: "Kumari Fernando", role: "Sales Assistant", phone: "077-3456789", salary: "38,000", status: "Leave", joinDate: "2024-03-10" },
-    { initials: "RD", name: "Roshan Dias", role: "Stock Manager", phone: "077-4567890", salary: "50,000", status: "Present", joinDate: "2023-11-05" },
-    { initials: "SW", name: "Sanduni Wijesinghe", role: "Designer", phone: "077-5678901", salary: "55,000", status: "Absent", joinDate: "2024-04-01" },
+    { initials: "NP",id:"1", name: "Nimal Perera", role: "Sales Assistant", phone: "077-2345678", salary: "38,000", status: "Present", joinDate: "2024-02-20" },
+    { initials: "KF",id:"2", name: "Kumari Fernando", role: "Sales Assistant", phone: "077-3456789", salary: "38,000", status: "Leave", joinDate: "2024-03-10" },
+    { initials: "RD",id:"3", name: "Roshan Dias", role: "Stock Manager", phone: "077-4567890", salary: "50,000", status: "Present", joinDate: "2023-11-05" },
+    { initials: "SW",id:"4", name: "Sanduni Wijesinghe", role: "Designer", phone: "077-5678901", salary: "55,000", status: "Absent", joinDate: "2024-04-01" },
   ];
   
 
@@ -26,6 +30,10 @@ export default function EmployeeOverview() {
     }
   };
 
+  const handleRowClick = (id: String) => {
+   console.log("Clicked employee ID:", id);
+   navigate(`/emp/${id}`);
+  } 
   const getIcon = (status: string) => {
 
     switch (status) {
@@ -121,7 +129,8 @@ export default function EmployeeOverview() {
             {employees.map((emp, index) => (
               <tr
                 key={index}
-                className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition"
+                className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition cursor-pointer"
+                onClick={()=>handleRowClick(emp.id)}
               >
                 <td className="py-4 flex items-center gap-3 text-(--color-text)">
                   <div className="w-10 h-10 rounded-full bg-avatar-bg border border-(--color-avatar-border) flex items-center justify-center font-semibold">

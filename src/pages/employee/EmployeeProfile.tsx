@@ -1,4 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 export default function EmployeeProfile() {
+
+const navigate = useNavigate();
+
+  const showSalaryHistory = (id: String) => {
+    navigate(`/salary-history/${id}`);
+  };
+
   return (
     <div className="min-h-screen bg-main-bg flex justify-center py-10">
       <div className="w-full max-w-lg bg-(--color-card) shadow-lg rounded-2xl p-8">
@@ -47,7 +56,10 @@ export default function EmployeeProfile() {
 
         {/* Buttons */}
         <div className="flex justify-between mt-8">
-          <button className="px-4 py-2 bg-(--color-secondary) hover:bg-(--color-hover-bg) rounded-lg shadow">
+          <button 
+            onClick={() => showSalaryHistory("1")} 
+            className="px-4 py-2 bg-(--color-secondary) hover:bg-(--color-hover-bg) rounded-lg shadow"
+            >
             Salary History
           </button>
           <button className="px-4 py-2 bg-(--color-secondary) hover:bg-(--color-hover-bg) rounded-lg shadow">
