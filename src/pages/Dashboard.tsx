@@ -1,8 +1,8 @@
-import { ChartDonut } from "@/components/charts/ChartDonut";
-import { ChartLineDots } from "@/components/charts/ChartLineDots";
-import { ChartPie } from "@/components/charts/ChartPie";
-import Chart from "@/components/common/Chart";
-import DashboardCard from "@/components/common/DashboardCard";
+import { ChartDonut } from "@/components/organisms/charts/ChartDonut";
+import { ChartLineDots } from "@/components/organisms/charts/ChartLineDots";
+import { ChartPie } from "@/components/organisms/charts/ChartPie";
+import Chart from "@/components/organisms/charts/Chart";
+import DashboardCard from "@/components/molecules/cards/DashboardCard";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
 
 function Dashboard() {
@@ -40,7 +40,6 @@ function Dashboard() {
           lable1={"12"}
           lable2={"2 overdue"}
           icon={Clock4}
-          
         />
       </div>
       <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mt-5 mb-5">
