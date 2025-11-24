@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 import logo from "../../../assets/images/logo.jpg";
 import { Bell, X } from "lucide-react";
-import ThemeToggle from "../../atoms/toggle/ThemeToggle";
+import ThemeToggle from "../../atoms/toggle/theme-toggle";
 
 function Nav({
   username,

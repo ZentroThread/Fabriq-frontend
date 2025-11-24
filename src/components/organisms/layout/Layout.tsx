@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
-import Nav from "../../molecules/navigation/Nav";
-import Sidebar from "../../molecules/sidebar/Sidebar";
+import Nav from "../../molecules/navigationbar/nav";
+import Sidebar from "../../molecules/sidebar/sidebar";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
