@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
-import logo from "../../assets/images/logo.jpg";
+import logo from "../../../assets/images/logo.jpg";
 import { Bell, X } from "lucide-react";
-import ThemeToggle from "../ThemeToggle";
+import ThemeToggle from "../../atoms/toggle/ThemeToggle";
 
 function Nav({
   username,
@@ -27,7 +27,7 @@ function Nav({
       </div>
 
       <div className="ml-auto flex gap-6 items-center">
-        <ThemeToggle/>
+        <ThemeToggle />
         <Bell className="mr-3 p-0.5" />
         <div className="w-12 h-12 bg-avatar-bg rounded-full border border-avatar-border" />
         <div className="flex flex-col mr-5 text-left">

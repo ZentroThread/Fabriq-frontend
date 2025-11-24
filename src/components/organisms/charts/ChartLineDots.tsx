@@ -47,14 +47,16 @@ export function ChartLineDots() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <div className="w-full h-[300px] sm:h-[350px]">
+          <div className="w-full h-[250px] sm:h-[300px] [&_.recharts-cartesian-axis-tick_text]:fill-(--color-position-text)!">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  left: 0,
-                  right: 5,
+                  left: 5,
+                  right: 10,
+                  top: 10,
+                  bottom: 5,
                 }}
               >
                 <CartesianGrid vertical={false} />
