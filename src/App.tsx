@@ -1,15 +1,17 @@
-import Layout from "./components/Layout";
+import Layout from "./components/organisms/layout/Layout";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </Layout>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Layout>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Layout>
+    </ThemeProvider>
   );
 }
 
