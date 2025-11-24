@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Support from "./Support";
-import SidebarButton from "./SidebarButton";
-import { sidebarItems } from "../../config/SidebarItems";
-import type { UserRole } from "../../config/SidebarItems";
+import Support from "../support/Support";
+import SidebarButton from "../../atoms/iconbutton/SidebarButton";
+import { sidebarItems } from "../../../config/SidebarItems";
+import type { UserRole } from "../../../config/SidebarItems";
 
 function Sidebar({ open: _open }: { open: boolean }) {
-  const [activeRoute, setActiveRoute] = useState<string>("/dashboard");
+  const [activeRoute, setActiveRoute] = useState<string>("/");
 
   //get the user role dynamically from JWT auth
   const role = (localStorage.getItem("role") as UserRole) || "owner";

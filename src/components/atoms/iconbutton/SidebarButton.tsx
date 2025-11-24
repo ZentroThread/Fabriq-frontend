@@ -30,7 +30,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
         w-60 h-14 ml-5 mt-3 p-3 pl-6 rounded-2xl flex items-center cursor-pointer transition-all
         ${
           active
-            ? "bg-gradient-to-r from-sidebar-button-active-from to-sidebar-button-active-to shadow-md"
+            ? "bg-linear-to-r from-sidebar-button-active-from to-sidebar-button-active-to shadow-md"
             : "bg-sidebar-button-inactive hover:shadow-sm hover:bg-sidebar-button-hover"
         }
       `}
