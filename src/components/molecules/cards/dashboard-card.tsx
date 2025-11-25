@@ -6,6 +6,7 @@ interface DashboardCardProps {
   lable2?: string;
   icon: LucideIcon;
   iconbg?: string;
+  width?: string;
 }
 
 function DashboardCard({
@@ -13,10 +14,13 @@ function DashboardCard({
   lable1,
   lable2,
   iconbg,
+  width = "w-auto",
   icon: Icon,
 }: DashboardCardProps) {
   return (
-    <div className="lg:flex-4 sm:w-auto h-auto bg-card text-position-text rounded-2xl p-6 pt-5 gap-6 shadow-md flex  ">
+    <div
+      className={`${width} h-auto bg-card text-position-text rounded-2xl p-6 pt-5 gap-6 shadow-md flex  `}
+    >
       <div className="flex flex-col w-full">
         <span className="text-[16px] pb-3">{lable}</span>
         <span className=" pb-3 text-[26px] text-style">{lable1}</span>
