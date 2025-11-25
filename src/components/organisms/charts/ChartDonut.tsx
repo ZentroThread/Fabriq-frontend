@@ -2,6 +2,7 @@
 
 import { TrendingUp } from "lucide-react";
 import { Pie, PieChart } from "recharts";
+import { chartDataDonut } from "@/constants/data";
 
 import {
   Card,
@@ -17,12 +18,6 @@ import {
 } from "@/components/ui/chart";
 
 export const description = "A donut chart";
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-pie-1)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-pie-2)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-pie-3)" },
-];
 
 const chartConfig = {
   visitors: {
@@ -65,7 +60,7 @@ export function ChartDonut() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
+              data={chartDataDonut}
               dataKey="visitors"
               nameKey="browser"
               innerRadius={60}

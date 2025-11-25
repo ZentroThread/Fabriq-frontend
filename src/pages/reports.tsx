@@ -19,7 +19,7 @@ function Reports() {
       </div>
       <div className=" flex gap-2 lg:mr-5 lg:ml-auto mt-5 sm:ml-0 sm:mr-auto">
         <NativeSelectDemo />
-        <AddButton text="Export" icon={Download} />
+        <AddButton text="Export" icon={<Download />} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
