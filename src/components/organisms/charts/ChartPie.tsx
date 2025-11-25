@@ -13,8 +13,6 @@ import { chartDataDonut } from "@/constants/data";
 
 export const description = "A pie chart with a legend";
 
-
-
 const chartConfig = {
   visitors: {
     label: "Visitors",
