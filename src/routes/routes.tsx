@@ -6,6 +6,7 @@ function Routes() {
   return (
     <div>
       <RouterRoutes>
+        <Route path="/" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/reports" element={<Reports />} />
       </RouterRoutes>

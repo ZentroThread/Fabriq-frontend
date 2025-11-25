@@ -9,14 +9,11 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart";
+import { chartDataDonut } from "@/constants/data";
 
 export const description = "A pie chart with a legend";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-pie-1)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-pie-2)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-pie-3)" },
-];
+
 
 const chartConfig = {
   visitors: {
@@ -54,7 +51,7 @@ export function ChartPie() {
           className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
-            <Pie data={chartData} dataKey="visitors" />
+            <Pie data={chartDataDonut} dataKey="visitors" />
             <ChartLegend
               content={<ChartLegendContent nameKey="browser" />}
               className="-translate-y-2 text-position-text flex-wrap gap-2 *:basis-1/4 *:justify-center"
