@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import Nav from "../../molecules/navigation/Nav";
+import Nav from "../../molecules/navigationbar/nav";
 import Sidebar from "../../molecules/sidebar/Sidebar";
 
 export default function Layout({ children }: { children: ReactNode }) {
