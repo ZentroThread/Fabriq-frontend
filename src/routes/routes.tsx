@@ -1,6 +1,6 @@
 import { Routes as RouterRoutes, Route } from "react-router-dom";
 import Dashboard from "../pages/dashboard";
-import Reports from "@/pages/reports";
+import Reports from "../pages/reports";
 
 function Routes() {
   return (
