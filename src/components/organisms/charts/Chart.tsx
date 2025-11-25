@@ -2,8 +2,8 @@ import { Frown } from "lucide-react";
 import React from "react";
 
 interface ChartProps {
-  label: string;
-  description: string;
+  label?: string;
+  description?: string;
   children?: React.ReactNode;
   height?: string;
 }
