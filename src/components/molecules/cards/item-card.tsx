@@ -19,8 +19,14 @@ export function ItemCard({
 }: ItemCardProps) {
   return (
     <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl ">
-      <img src={image} alt="attire" className="w-full h-70 object-cover" />
+      <div className="relative">
+        <img src={image} alt="attire" className="w-full h-70 object-cover" />
 
+        {/* Corner Button */}
+        <button className="absolute top-2 right-2 bg-support-button text-support-button-text border  px-3 py-1 rounded-xl text-xs shadow hover:opacity-90">
+          Available
+        </button>
+      </div>
       <CardHeader>
         <CardTitle className="text-lg pl-2 text-text-inactive ">
           {title}
