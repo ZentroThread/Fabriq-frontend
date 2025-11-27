@@ -1,4 +1,3 @@
-
 import { ChartDonut } from "@/components/organisms/charts/ChartDonut";
 import { ChartLineDots } from "@/components/organisms/charts/ChartLineDots";
 import { ChartPie } from "@/components/organisms/charts/ChartPie";
@@ -77,4 +76,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-

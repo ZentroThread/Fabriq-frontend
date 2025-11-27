@@ -4,6 +4,9 @@ import Reports from "../pages/reports";
 import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
 import { RentsAndBill } from "@/pages/RentsAndBill";
+import EmployeeOverview from "@/pages/EmployeeOverview";
+import EmployeeProfile from "@/pages/employee/EmployeeProfile";
+import { SalaryHistory } from "@/pages/employee/SalaryHistory";
 
 function Routes() {
   return (
@@ -15,6 +18,9 @@ function Routes() {
         <Route path="/reports" element={<Reports />} />
         <Route path="/attire" element={<Items />} />
         <Route path="/rent" element={<RentsAndBill />} />
+        <Route path="/emp" element={<EmployeeOverview />} />
+        <Route path="/emp/:id" element={<EmployeeProfile />} />
+        <Route path="/salary-history/:id" element={<SalaryHistory />} />
       </RouterRoutes>
     </div>
   );
