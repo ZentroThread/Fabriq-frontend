@@ -93,6 +93,9 @@
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-chart-text: var(--color-light-gray-medium);
   /* Add button-hover variable for theme toggle */
+  --color-text: #000000;
+  --color-heading-text:#09090b;
+  --color-card:#ffffff;
 }
 
 .dark {
@@ -145,6 +148,10 @@
   --color-shadow: rgba(0, 0, 0, 0.8);
 
   /* Override button-hover for dark mode */
+  --color-text: #ffffff;
+  --color-heading-text: #fbbf24;
+  --color-card:#18181b;
+  --color-card-foreground:#ffffff;
 }
 
 * {
