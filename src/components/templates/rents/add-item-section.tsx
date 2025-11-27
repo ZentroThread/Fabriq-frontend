@@ -5,12 +5,7 @@ import Button from "@/components/atoms/button/add-button";
 import { Plus } from "lucide-react";
 
 export default function AddItemsSection() {
-  const [item, setItem] = useState("");
   const [days, setDays] = useState(1);
-
-  const handleAdd = () => {
-    console.log("Added:", { item, days });
-  };
 
   return (
     <div>
