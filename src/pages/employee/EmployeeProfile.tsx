@@ -4,7 +4,7 @@ export default function EmployeeProfile() {
 
 const navigate = useNavigate();
 
-  const showSalaryHistory = (id: String) => {
+  const showSalaryHistory = (id: string) => {
     navigate(`/salary-history/${id}`);
   };
 

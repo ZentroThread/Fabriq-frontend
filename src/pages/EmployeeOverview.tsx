@@ -30,7 +30,7 @@ export default function EmployeeOverview() {
     }
   };
 
-  const handleRowClick = (id: String) => {
+  const handleRowClick = (id: string) => {
    console.log("Clicked employee ID:", id);
    navigate(`/emp/${id}`);
   } 
