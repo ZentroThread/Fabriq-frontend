@@ -1,10 +1,10 @@
+
 import { ChartDonut } from "@/components/organisms/charts/ChartDonut";
 import { ChartLineDots } from "@/components/organisms/charts/ChartLineDots";
 import { ChartPie } from "@/components/organisms/charts/ChartPie";
 import Chart from "@/components/organisms/charts/Chart";
-import DashboardCard from "@/components/molecules/cards/DashboardCard";
+import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
-
 
 function Dashboard() {
   return (
@@ -57,8 +57,8 @@ function Dashboard() {
           <ChartPie />
         </Chart>
       </div>
-      <div className="lg:flex lg:flex-3 sm:grid-cols-1 gap-6 mt-5 mb-5">
-        <div className="flex flex-3/5">
+      <div className="lg:flex lg:flex-3   gap-6 mt-5 mb-5">
+        <div className="flex flex-3/5 sm:mb-6 mb-6">
           <Chart
             label={"Today's Attendance"}
             description={"Employee attendance overview"}
@@ -77,3 +77,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
