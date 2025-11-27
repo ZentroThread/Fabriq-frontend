@@ -18,9 +18,7 @@ export const RentsAndBill = () => {
         duration={<RentalDuration/>}
         items={<AddItemsSection/>}
         summary={<RentalSummary />}
-        rentList={<RentalItemsSection items={[]} onDelete={function (index: number): void {
-          throw new Error("Function not implemented.")
-        } }/>}
+        rentList={<RentalItemsSection />}
       />
     </div>
      
