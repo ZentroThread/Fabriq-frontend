@@ -5,6 +5,7 @@ import Chart from "@/components/organisms/charts/Chart";
 import DashboardCard from "@/components/molecules/cards/DashboardCard";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
 
+
 function Dashboard() {
   return (
     <div className="p-5 flex flex-col ">
