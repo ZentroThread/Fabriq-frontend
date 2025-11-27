@@ -1,10 +1,10 @@
 import { Trash2, Ruler } from "lucide-react";
 
-type RentalItem = {
+/* type RentalItem = {
   name: string;
   price: number;
   days: number;
-};
+}; */
 
 export default function RentalItemsSection() {
   const items = [

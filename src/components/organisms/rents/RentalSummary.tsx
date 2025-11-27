@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Wallet, CreditCard } from "lucide-react";
-import Button from "@/components/atoms/button/Button";
+
 
 export default function RentalSummary({
   subtotal = 18000,
