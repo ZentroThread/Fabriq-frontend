@@ -23,7 +23,7 @@ export default defineConfig([
     },
     rules: {
       // Catch unused variables, including error variables in catch blocks
-      "@typescript-eslint/no-unused-vars": "off"
+      "@typescript-eslint/no-unused-vars": "warn"
       
     },
   },

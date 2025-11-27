@@ -1,22 +1,14 @@
-import Layout from "./components/Layout";
-import { Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import EmployeeOverview from "./pages/EmployeeOverview";
-import EmployeeProfile from "./pages/employee/EmployeeProfile";
-import { SalaryHistory } from "./pages/employee/SalaryHistory";
-
+import Layout from "./components/organisms/layout/layout";
+import Routes from "./routes/routes";
+import { ThemeProvider } from "./providers/theme-provider";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/salary-history/:id" element={<SalaryHistory />} />
-        <Route path="/emp/:id" element={<EmployeeProfile />} />
-        <Route path="/emp" element={<EmployeeOverview />} />  
-      </Routes>
-    </Layout>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Layout>
+        <Routes />
+      </Layout>
+    </ThemeProvider>
   );
 }
 
