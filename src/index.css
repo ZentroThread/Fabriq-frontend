@@ -1,6 +1,171 @@
 @import "tailwindcss";
 
 /* Tailwind CSS v4 @theme directive - ignore CSS validator warning */
+/* stylelint-disable-next-line at-rule-no-unknown */
+@theme {
+  --font-family-sans:
+    "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Dark mode support */
+  --color-*: initial;
+
+  /* Light mode colors (default) */
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090b;
+  --color-primary: #18181b;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #18181b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #18181b;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #18181b;
+  --color-dbcard: #c09e8e;
+  /* Custom app colors - Light mode */
+
+  /* Unique light color variables */
+  --color-light-pie-1: #f8a5ba;
+  --color-light-pie-2: #b87e64;
+  --color-light-pie-3: #fad4d8;
+  --color-light-white: #ffffff;
+  --color-light-rose-lightest: #fdf9f7;
+  --color-light-rose: #fce4ec;
+  --color-light-gray: #f4f4f5;
+  --color-light-brown: #ab7057;
+  --color-light-black: #000000;
+  --color-light-black-dark: #09090b;
+  --color-light-pink: #fbdde3;
+  --color-light-gray-medium: #615758;
+  --color-light-gray-muted: #aa9d9d;
+  --color-light-brown-medium: #b77e66;
+  --color-light-beige: #f0ddd5;
+  --color-light-gray-bg: #fdfbf9;
+  --color-light-gray-hover: #e4e4e7;
+  --color-light-icon: #18181b;
+  --color-bg-card1: #faf5f3;
+  --color-border-card1: #eee0da;
+  --color-icon-card1: #a96e55;
+
+  --color-bg-card2: #fff1de;
+  --color-border-card2: #ffd7a8;
+  --color-icon-card2: #ff6900;
+
+  --color-bg-card3: #fee5e5;
+  --color-border-card3: #ffcaca;
+  --color-icon-card3: #fc525a;
+
+  /* Map descriptive variables to the light-* variables */
+  --color-pie-1: var(--color-light-pie-1);
+  --color-pie-2: var(--color-light-pie-2);
+  --color-pie-3: var(--color-light-pie-3);
+  --color-card: var(--color-light-white);
+  --color-sidebar-bg: var(--color-light-white);
+  --color-sidebar-button-active-from: var(--color-light-rose-lightest);
+  --color-sidebar-button-active-to: var(--color-light-rose);
+  --color-sidebar-button-inactive: var(--color-light-white);
+  --color-sidebar-button-hover: var(--color-light-gray);
+  --color-text-active: var(--color-light-brown);
+  --color-text-inactive: var(--color-light-black);
+  --color-nav-bg: var(--color-light-white);
+  --color-nav-text: var(--color-light-black-dark);
+  --color-support-bg: var(--color-light-pink);
+  --color-support-title: var(--color-light-gray-medium);
+  --color-support-text: var(--color-light-gray-muted);
+  --color-support-button: var(--color-light-brown-medium);
+  --color-support-button-hover: var(--color-light-brown);
+  --color-support-button-text: var(--color-light-white);
+  --color-avatar-bg: var(--color-light-beige);
+  --color-avatar-border: var(--color-light-brown);
+  --color-position-text: var(--color-light-gray-medium);
+  --color-main-bg: var(--color-light-gray-bg);
+  --color-layout-bg: var(--color-light-white);
+  --color-overlay-bg: var(--color-light-black-dark);
+  --color-hover-bg: var(--color-light-gray-hover);
+  --color-icon-default: var(--color-light-icon);
+  --color-button-hover: var(--color-light-gray-medium);
+  --color-icon-hover: var(--color-light-white);
+  --color-text-color: var(--color-light-black-dark);
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-chart-text: var(--color-light-gray-medium);
+  /* Add button-hover variable for theme toggle */
+}
+
+.dark {
+  /* Custom app colors - Dark mode */
+  /* Unique dark color variables */
+
+  --color-dark-gray-dark: #3f3f46;
+  --color-dark-gray-medium: #52525b;
+  --color-dark-gray-light: #71717a;
+  --color-dark-yellow: #fbbf24;
+  --color-dark-yellow-light: #fcd34d;
+  --color-dark-gray-lightest: #e5e5e5;
+  --color-dark-black: #000000;
+  --color-dark-black-light: #18181b;
+  --color-dark-white: #ffffff;
+  --color-dark-white-light: #fafafa;
+
+  /* Map descriptive variables to dark-* variables */
+  --color-pie-1: var(--color-dark-yellow);
+  --color-pie-2: var(--color-dark-gray-lightest);
+  --color-pie-3: var(--color-dark-black-light);
+  --color-chart-text: var(--color-dark-yellow);
+  --color-card: var(--color-dark-gray-dark);
+  --color-icon-hover: var(--color-dark-black);
+  --color-sidebar-bg: var(--color-dark-gray-dark);
+  --color-sidebar-button-active-from: var(--color-dark-gray-medium);
+  --color-sidebar-button-active-to: var(--color-dark-gray-light);
+  --color-sidebar-button-inactive: var(--color-dark-gray-dark);
+  --color-sidebar-button-hover: var(--color-dark-gray-medium);
+  --color-text-active: var(--color-dark-yellow);
+  --color-text-inactive: var(--color-dark-gray-lightest);
+  --color-nav-bg: var(--color-dark-gray-dark);
+  --color-nav-text: var(--color-dark-yellow);
+  --color-support-bg: var(--color-dark-gray-light);
+  --color-support-title: var(--color-dark-yellow);
+  --color-support-text: var(--color-dark-white);
+  --color-support-button: var(--color-dark-yellow);
+  --color-support-button-hover: var(--color-dark-yellow-light);
+  --color-support-button-text: var(--color-dark-black);
+  --color-avatar-bg: var(--color-dark-gray-light);
+  --color-avatar-border: var(--color-dark-yellow);
+  --color-position-text: var(--color-dark-white);
+  --color-main-bg: var(--color-dark-gray-light);
+  --color-layout-bg: var(--color-dark-black-light);
+  --color-overlay-bg: var(--color-dark-black);
+  --color-hover-bg: var(--color-dark-gray-dark);
+  --color-icon-default: var(--color-dark-white-light);
+  --color-button-hover: var(--color-dark-white);
+  --color-text-color: var(--color-dark-yellow);
+  --color-shadow: rgba(0, 0, 0, 0.8);
+
+  /* Override button-hover for dark mode */
+}
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.text-style {
+  font-family: "Bodoni Moda", serif;
+  color: var(--color-text-color);
+  font-weight: 500;
+}
+@import "tailwindcss";
+
+/* Tailwind CSS v4 @theme directive - ignore CSS validator warning */
 
 /* stylelint-disable-next-line at-rule-no-unknown */
 
@@ -160,7 +325,6 @@
   --color-security-deposit-bg: var(--color-dark-pink);
   --color-security-deposit-title: var(--color-dark-yellow);
   --color-security-deposit-text: var(--color-dark-white);
-
 
   /* Override button-hover for dark mode */
 }

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useLocation, Outlet } from "react-router-dom"; 
 import Nav from "../../molecules/navigationbar/nav";
@@ -55,4 +54,3 @@ function Layout() {
   );
 }
 export default Layout;
-

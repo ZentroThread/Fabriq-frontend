@@ -17,7 +17,7 @@ import Login from "../pages/login";
 
 import Layout from "../components/organisms/layout/layout";
 
-export default function AppRoutes() {
+function AppRoutes() {
   return (
     <Routes>
       {/* Login pages (NO layout) */}
@@ -40,3 +40,4 @@ export default function AppRoutes() {
     </Routes>
   );
 }
+export default AppRoutes;
