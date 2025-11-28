@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 /* Tailwind CSS v4 @theme directive - ignore CSS validator warning */
+<<<<<<< HEAD
 /* stylelint-disable-next-line at-rule-no-unknown */
+=======
+>>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
 @theme {
   --font-family-sans:
     "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -27,6 +30,11 @@
   --color-input: #e4e4e7;
   --color-ring: #18181b;
   --color-dbcard: #c09e8e;
+<<<<<<< HEAD
+=======
+  --color-input-border: #E9D8D0;
+  --color-input-active-border: #B87E64;
+>>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
   /* Custom app colors - Light mode */
 
   /* Unique light color variables */
@@ -93,6 +101,15 @@
   --color-text-color: var(--color-light-black-dark);
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-chart-text: var(--color-light-gray-medium);
+<<<<<<< HEAD
+=======
+  --color-button: var(--color-light-brown-medium);
+  --color-button-hover: var(--color-light-brown);
+  --color-button-text: var(--color-light-white);
+  --color-security-deposit-bg: var(--color-light-pink);
+  --color-security-deposit-title: var(--color-light-gray-medium);
+  --color-security-deposit-text: var(--color-light-gray-muted);
+>>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
   /* Add button-hover variable for theme toggle */
 }
 
@@ -144,6 +161,18 @@
   --color-button-hover: var(--color-dark-white);
   --color-text-color: var(--color-dark-yellow);
   --color-shadow: rgba(0, 0, 0, 0.8);
+<<<<<<< HEAD
+=======
+  --color-button: var(--color-dark-yellow);
+  --color-button-hover: var(--color-dark-yellow-light);
+  --color-button-text: var(--color-dark-black);
+  --color-support-bg: var(--color-dark-gray-light);
+  --color-support-title: var(--color-dark-yellow);
+  --color-support-text: var(--color-dark-white);
+  --color-security-deposit-bg: var(--color-dark-pink);
+  --color-security-deposit-title: var(--color-dark-yellow);
+  --color-security-deposit-text: var(--color-dark-white);
+>>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
 
   /* Override button-hover for dark mode */
 }
