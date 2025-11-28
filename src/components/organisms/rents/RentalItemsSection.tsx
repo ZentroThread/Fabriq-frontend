@@ -22,7 +22,7 @@ export default function RentalItemsSection() {
   }
 
   return (
-    <div className="p-6 rounded-3xl shadow bg-white border w-full border-(--color-border)">
+    <div className="p-6 rounded-3xl shadow bg-card  w-full ">
       {/* Title */}
       <div className="text-[28px] text-style mb-4">Rental Items</div>
 

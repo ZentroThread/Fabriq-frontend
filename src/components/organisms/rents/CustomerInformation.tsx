@@ -9,11 +9,12 @@ export default function CustomerInformation() {
        <Chart
           label={"Customer Information"}
           description={"Enter customer details for the rental"}
-          height="h-100"
+          height="h-full"
         >
           
-<InputField label="Full Name" icon={<User />} placeholder="Enter customer name" />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mt-4">
+
+      <div className="grid grid-cols-1 mb-5 ">
+        <InputField label="Full Name" icon={<User />} placeholder="Enter customer name" />
         <InputField label="Phone Number" icon={<Phone />} placeholder="077-1234567" />
         <InputField label="Email (Optional)" icon={<Mail />} placeholder="customer@email.com" />
       </div>

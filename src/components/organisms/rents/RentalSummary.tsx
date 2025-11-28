@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Wallet, CreditCard } from "lucide-react";
+import Chart from "../charts/Chart";
+import AttendanceCard from "@/components/molecules/cards/attendance-card";
 
 
 export default function RentalSummary({
@@ -13,58 +15,60 @@ export default function RentalSummary({
   const total = subtotal + taxAmount;
 
   return (
-    <div className="p-6 bg-white rounded-3xl shadow border border-(--color-border)">
-
-      {/* Title */}
-      <h2 className="text-2xl text-style mb-4">Rental Summary</h2>
-
-      {/* Subtotal */}
+    
+      
+      <div>
+        <Chart
+          label={"Rental Summary"}
+          description={"Select items to add to the rental"}
+          height="min-h-[550px] max-h-screen"
+        >
+          {/* Subtotal */}
       <div className="flex justify-between text-sm mb-2">
-        <span className="text-muted-foreground">Subtotal</span>
-        <span className="font-semibold">LKR {subtotal.toLocaleString()}</span>
+        <span className="text-position-text font-light">Subtotal</span>
+        <span className="text-style-white">LKR {subtotal.toLocaleString()}</span>
+      </div>
+          {/* Tax */}
+      <div className="flex justify-between text-sm mb-2">
+        <span className="text-position-text font-light">Tax ({taxPercentage}%)</span>
+        <span className="text-style-white">LKR {taxAmount.toLocaleString()}</span>
       </div>
 
-      {/* Tax */}
-      <div className="flex justify-between text-sm mb-2">
-        <span className="text-muted-foreground">Tax ({taxPercentage}%)</span>
-        <span className="font-semibold">LKR {taxAmount.toLocaleString()}</span>
-      </div>
-
-      <div className="border-t my-3" />
+      <div className="border-t my-3 border-position-text" />
 
       {/* Total */}
       <div className="flex justify-between font-semibold mb-4">
-        <span className="text-xl">Total</span>
-        <span className="text-xl text-[#c18966] font-bold ">
+        <span className="text-xl text-position-text">Total</span>
+        <span className="text-xl text-style font-bold ">
           LKR {total.toLocaleString()}
         </span>
       </div>
 
       {/* Security Deposit Box */}
       <div className="rounded-2xl p-4 mb-6  bg-(--color-security-deposit-bg) border border-(--color-border)">
-        <div className="flex justify-between font-medium mb-1">
-          <span className="text-(--color-security-deposit-title)">Security Deposit</span>
-          <span className="text-gray-900 font-bold">
+        <div className="flex font-medium justify-between mb-1">
+          <span className="text-text-active">Security Deposit</span>
+          <span className="text-style-white font-bold">
             LKR {securityDeposit.toLocaleString()}
           </span>
         </div>
-        <p className="text-xs text-(--color-security-deposit-text)">
+        <p className="text-xs text-(--color-security-deposit-text) font-light">
           Refundable upon return of items in good condition
         </p>
       </div>
 
       {/* Payment Method */}
-      <p className="text-sm font-medium mb-2">Payment Method</p>
+      <p className="text-sm font-medium mb-2 text-position-text">Payment Method</p>
 
       <div className="space-y-3 mb-6">
 
         {/* Cash Option */}
         <label
-          className={`flex items-center gap-3 p-4 border rounded-2xl cursor-pointer transition 
+          className={`flex items-center gap-3 p-4 border  rounded-xl text-position-text cursor-pointer transition 
           ${
             paymentMethod === "cash"
-              ? "border-[#c18966] bg-[#fff7f3]"
-              : "border-input-border"
+              ? "border-[#c18966] "
+              : "border-input-border "
           }`}
         >
           <input
@@ -72,18 +76,19 @@ export default function RentalSummary({
             name="payment"
             checked={paymentMethod === "cash"}
             onChange={() => setPaymentMethod("cash")}
-            className="border-input-border"
+            className="border-input-border "
           />
           <Wallet size={20} className="text-[#c18966]" />
           <span className="font-medium">Cash</span>
         </label>
 
+          
         {/* Card Option */}
         <label
-          className={`flex items-center gap-3 p-4 border rounded-2xl cursor-pointer transition 
+          className={`flex items-center gap-3 p-4 border text-position-text rounded-2xl cursor-pointer transition 
           ${
             paymentMethod === "card"
-              ? "border-[#c18966] bg-[#fff7f3]"
+              ? "border-[#c18966] "
               : "border-input-border"
           }`}
         >
@@ -98,13 +103,9 @@ export default function RentalSummary({
           <span className="font-medium">Card</span>
         </label>
       </div>
-
-      {/* Button */}
-      <button className="w-full bg-(--color-button) text-(--color-button-text) py-3 rounded-2xl font-semibold cursor-pointer transition hover:bg-(--color-button-hover)">
-        Generate Rental Agreement
-      </button>
-      
-    </div>
+        </Chart>
+      </div>
+    
     
   );
 }

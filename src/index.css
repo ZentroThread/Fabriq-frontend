@@ -179,3 +179,9 @@ body {
   color: var(--color-text-color);
   font-weight: 500;
 }
+
+.text-style-white {
+  font-family: "Bodoni Moda", serif;
+  color: var(--color-position-text);
+  font-weight: 500;
+}

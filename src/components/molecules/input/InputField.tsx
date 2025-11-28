@@ -7,7 +7,7 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 const InputField = ({label,icon,...props}:InputFieldProps) => {
   return (
-    <div className="text-position-text font-light mb-4">
+    <div className="text-position-text  font-light mb-4">
         <Label>{label}</Label>
         <TextInput icon={icon} {...props} />
     </div>
