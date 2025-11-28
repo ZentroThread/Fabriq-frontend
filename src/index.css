@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 /* Tailwind CSS v4 @theme directive - ignore CSS validator warning */
-<<<<<<< HEAD
+
 /* stylelint-disable-next-line at-rule-no-unknown */
-=======
->>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
+
 @theme {
   --font-family-sans:
     "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -29,15 +28,10 @@
   --color-border: #e4e4e7;
   --color-input: #e4e4e7;
   --color-ring: #18181b;
-  --color-dbcard: #c09e8e;
-<<<<<<< HEAD
-=======
-  --color-input-border: #E9D8D0;
-  --color-input-active-border: #B87E64;
->>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
-  /* Custom app colors - Light mode */
 
-  /* Unique light color variables */
+  --color-dbcard: #c09e8e;
+
+  /* Custom light colors */
   --color-light-pie-1: #f8a5ba;
   --color-light-pie-2: #b87e64;
   --color-light-pie-3: #fad4d8;
@@ -56,6 +50,7 @@
   --color-light-gray-bg: #fdfbf9;
   --color-light-gray-hover: #e4e4e7;
   --color-light-icon: #18181b;
+
   --color-bg-card1: #faf5f3;
   --color-border-card1: #eee0da;
   --color-icon-card1: #a96e55;
@@ -101,15 +96,13 @@
   --color-text-color: var(--color-light-black-dark);
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-chart-text: var(--color-light-gray-medium);
-<<<<<<< HEAD
-=======
   --color-button: var(--color-light-brown-medium);
   --color-button-hover: var(--color-light-brown);
   --color-button-text: var(--color-light-white);
   --color-security-deposit-bg: var(--color-light-pink);
   --color-security-deposit-title: var(--color-light-gray-medium);
   --color-security-deposit-text: var(--color-light-gray-muted);
->>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
+
   /* Add button-hover variable for theme toggle */
 }
 
@@ -144,25 +137,20 @@
   --color-text-inactive: var(--color-dark-gray-lightest);
   --color-nav-bg: var(--color-dark-gray-dark);
   --color-nav-text: var(--color-dark-yellow);
-  --color-support-bg: var(--color-dark-gray-light);
-  --color-support-title: var(--color-dark-yellow);
-  --color-support-text: var(--color-dark-white);
-  --color-support-button: var(--color-dark-yellow);
-  --color-support-button-hover: var(--color-dark-yellow-light);
-  --color-support-button-text: var(--color-dark-black);
-  --color-avatar-bg: var(--color-dark-gray-light);
-  --color-avatar-border: var(--color-dark-yellow);
-  --color-position-text: var(--color-dark-white);
+
   --color-main-bg: var(--color-dark-gray-light);
   --color-layout-bg: var(--color-dark-black-light);
+  --color-sidebar-bg: var(--color-dark-gray-dark);
+
+  --color-position-text: var(--color-dark-white);
   --color-overlay-bg: var(--color-dark-black);
   --color-hover-bg: var(--color-dark-gray-dark);
   --color-icon-default: var(--color-dark-white-light);
   --color-button-hover: var(--color-dark-white);
   --color-text-color: var(--color-dark-yellow);
   --color-shadow: rgba(0, 0, 0, 0.8);
-<<<<<<< HEAD
-=======
+
+
   --color-button: var(--color-dark-yellow);
   --color-button-hover: var(--color-dark-yellow-light);
   --color-button-text: var(--color-dark-black);
@@ -172,7 +160,7 @@
   --color-security-deposit-bg: var(--color-dark-pink);
   --color-security-deposit-title: var(--color-dark-yellow);
   --color-security-deposit-text: var(--color-dark-white);
->>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
+
 
   /* Override button-hover for dark mode */
 }

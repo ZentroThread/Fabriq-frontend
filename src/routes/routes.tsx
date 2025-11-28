@@ -1,22 +1,19 @@
-<<<<<<< HEAD
-import { Routes, Route } from "react-router-dom";
-=======
-import { Routes as RouterRoutes, Route } from "react-router-dom";
+
+
+
+import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/dashboard";
 import Reports from "../pages/reports";
 import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
-import { RentsAndBill } from "@/pages/RentsAndBill";
+import { RentsAndBill } from "@/pages/RentsAndBill";  
 import EmployeeOverview from "@/pages/EmployeeOverview";
 import EmployeeProfile from "@/pages/employee/EmployeeProfile";
 import { SalaryHistory } from "@/pages/employee/SalaryHistory";
->>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
+
 
 import Login from "../pages/login";
-import Dashboard from "../pages/dashboard";
-import Attendance from "../pages/attendance";
-import Items from "../pages/items";
-import Reports from "../pages/reports";
+
 
 import Layout from "../components/organisms/layout/layout";
 
@@ -28,22 +25,18 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login />} />
 
       {/* Dashboard + other pages WITH layout */}
-      <Route element={<Layout children={undefined} />}>
+      <Route element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/items" element={<Items />} />
         <Route path="/reports" element={<Reports />} />
-<<<<<<< HEAD
-      </Route>
-    </Routes>
-=======
+        
         <Route path="/attire" element={<Items />} />
         <Route path="/rent" element={<RentsAndBill />} />
         <Route path="/emp" element={<EmployeeOverview />} />
         <Route path="/emp/:id" element={<EmployeeProfile />} />
         <Route path="/salary-history/:id" element={<SalaryHistory />} />
-      </RouterRoutes>
-    </div>
->>>>>>> 03a124d306d90a69d93e5c3cb44b64e15c2682ac
+      </Route>
+    </Routes>
   );
 }
