@@ -7,6 +7,7 @@ interface ChartProps {
   children?: React.ReactNode;
   height?: string;
   padding?: string;
+  className?: string;
 }
 
 function Chart({
@@ -15,18 +16,19 @@ function Chart({
   children,
   height = "h-100",
   padding = "p-5",
+  className,
 }: ChartProps) {
   return (
     <div
-      className={`mt-5 w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md`}
+      className={`mt-5 w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md${className ? ` ${className}` : ""}`}
     >
-      <div className="text-style text-[20px] font-semibold">{label}</div>
-      <div className="text-position-text">{description}</div>
+      <div className={`text-style text-[20px] font-semibold ${className ? ` ${className}` : ""}`}>{label}</div>
+      <div className={`text-position-text ${className ? ` ${className}` : ""}`}>{description}</div>
       <div className="mt-4 w-full h-56">
         {children ? (
           children
         ) : (
-          <div className="text-muted-foreground p-30 pl-50 text-[14px] flex gap-4 items-center">
+          <div className="text-muted-foreground text-[14px] flex justify-center items-center h-full w-full">
             <Frown />
           </div>
         )}

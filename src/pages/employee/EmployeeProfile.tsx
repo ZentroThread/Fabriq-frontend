@@ -1,3 +1,4 @@
+import Chart from "@/components/organisms/charts/Chart";
 import { useNavigate } from "react-router-dom";
 
 export default function EmployeeProfile() {
@@ -9,7 +10,7 @@ const navigate = useNavigate();
   };
 
   return (
-    <div className="min-h-screen bg-main-bg flex justify-center py-10">
+    <div className="min-h-screen bg-main-bg flex flex-col justify-center py-10">
       <div className="w-full max-w-lg bg-(--color-card) shadow-lg rounded-2xl p-8">
 
         {/* Avatar */}
@@ -72,6 +73,8 @@ const navigate = useNavigate();
           Update
         </button>
       </div>
+
+      
     </div>
   );
 }
