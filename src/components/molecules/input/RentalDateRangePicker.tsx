@@ -13,7 +13,7 @@ interface RentalDateRangePickerProps {
 
 const RentalDateRangePicker = ({ startDate, endDate }: RentalDateRangePickerProps) => {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2  ">
       <DatePickerInput 
         label="Start Date"
         value={startDate.value}

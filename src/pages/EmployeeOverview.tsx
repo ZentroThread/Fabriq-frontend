@@ -1,19 +1,17 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Calendar, Search, XCircle } from "lucide-react";
+
+import  Button  from "@/components/atoms/button/add-button";
+import { Calendar, Plus, Search, XCircle } from "lucide-react";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { employees } from "@/constants/data";
+
+import EmployeeCard from "@/components/molecules/cards/employee-card";
 
 export default function EmployeeOverview() {
 
   const navigate = useNavigate();
 
-  const employees = [
-    { initials: "NP",id:"1", name: "Nimal Perera", role: "Sales Assistant", phone: "077-2345678", salary: "38,000", status: "Present", joinDate: "2024-02-20" },
-    { initials: "KF",id:"2", name: "Kumari Fernando", role: "Sales Assistant", phone: "077-3456789", salary: "38,000", status: "Leave", joinDate: "2024-03-10" },
-    { initials: "RD",id:"3", name: "Roshan Dias", role: "Stock Manager", phone: "077-4567890", salary: "50,000", status: "Present", joinDate: "2023-11-05" },
-    { initials: "SW",id:"4", name: "Sanduni Wijesinghe", role: "Designer", phone: "077-5678901", salary: "55,000", status: "Absent", joinDate: "2024-04-01" },
-  ];
+  
   
 
   const getStatusStyle = (status: string) => {
@@ -49,43 +47,45 @@ export default function EmployeeOverview() {
   };
 
   return (
-    <div className="p-6 space-y-10 bg-(--main-bg) min-h-screen">
+    <div className="p-5 flex flex-col">
 
       {/* Header */}
       <div className="flex justify-between items-center md:flex-row flex-col gap-4">
-        <h1 className="text-3xl font-semibold text-(--color-heading-text)">
-          Employee Management
-        </h1>
+        <div className="text-style text-[30px] font-semibold">
+        Employee Management
+      </div>
+      <div className="text-position-text ">
+        Manage staff, attendance, and payroll
+      </div>
 
-        <Button className="rounded-xl px-5 py-2 bg-support-button text-support-button-text hover:bg-support-button-hover">
-          + Add Employee
-        </Button>
+        <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
+        <Button text={"Add New Item"} width="w-45" icon={<Plus />} />
+      </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <Card className="rounded-2xl shadow-md bg-(--color-card) text-(--color-card-foreground) border-(--color-border)">
-          <CardContent className="p-6">
-            <p className="text-muted-foreground ">Total Employees</p>
-            <p className="text-2xl font-semibold mt-2">{employees.length}</p>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-md bg-(--color-card) text-(--color-card-foreground) border-(--color-border)">
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Present Today</p>
-            <p className="text-2xl font-semibold mt-2">2 / 4</p>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-md bg-(--color-card) text-(--color-card-foreground) border-(--color-border)">
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Total Monthly Salary</p>
-            <p className="text-2xl font-semibold mt-2">LKR 181,000</p>
-          </CardContent>
-        </Card>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
+        <EmployeeCard
+          lable={"Total Revenue"}
+          lable1={"LKR 3.28M"}
+          
+          
+        />
+        <EmployeeCard
+          lable={"Active Rentals"}
+          lable1={"28"}
+          
+          
+         
+        />
+        <EmployeeCard
+          lable={"Attendance Rate"}
+          lable1={"93%"}
+          
+         
+          
+        />
+        
       </div>
 
       {/* Employee List */}
