@@ -7,6 +7,7 @@ import { RentsAndBill } from "@/pages/RentsAndBill";
 import EmployeeOverview from "@/pages/EmployeeOverview";
 import EmployeeProfile from "@/pages/employee/EmployeeProfile";
 import { SalaryHistory } from "@/pages/employee/SalaryHistory";
+import LeaveHistory from "@/pages/employee/LeaveHistory";
 
 function Routes() {
   return (
@@ -21,6 +22,7 @@ function Routes() {
         <Route path="/emp" element={<EmployeeOverview />} />
         <Route path="/emp/:id" element={<EmployeeProfile />} />
         <Route path="/salary-history/:id" element={<SalaryHistory />} />
+        <Route path="/leave-history/:id" element={<LeaveHistory />} />
       </RouterRoutes>
     </div>
   );
