@@ -6,12 +6,19 @@ interface ChartProps {
   description?: string;
   children?: React.ReactNode;
   height?: string;
+  padding?: string;
 }
 
-function Chart({ label, description, children, height = "h-100" }: ChartProps) {
+function Chart({
+  label,
+  description,
+  children,
+  height = "h-100",
+  padding = "p-5",
+}: ChartProps) {
   return (
     <div
-      className={`w-full ${height} bg-card flex flex-col rounded-2xl p-5 shadow-md`}
+      className={`w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md`}
     >
       <div className="text-style text-[20px] font-semibold">{label}</div>
       <div className="text-position-text">{description}</div>
