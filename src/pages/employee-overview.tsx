@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { employees } from "@/constants/data";
 
 import EmployeeCard from "@/components/molecules/cards/employee-card";
+import { Input } from "@/components/molecules/input/input";
 
 export default function EmployeeOverview() {
 
@@ -50,7 +51,7 @@ export default function EmployeeOverview() {
     <div className="p-5 flex flex-col">
 
       {/* Header */}
-      <div className="flex justify-between items-center md:flex-row flex-col gap-4">
+      
         <div className="text-style text-[30px] font-semibold">
         Employee Management
       </div>
@@ -61,10 +62,10 @@ export default function EmployeeOverview() {
         <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
         <Button text={"Add New Item"} width="w-45" icon={<Plus />} />
       </div>
-      </div>
+     
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5 mb-5">
         <EmployeeCard
           lable={"Total Revenue"}
           lable1={"LKR 3.28M"}
@@ -89,32 +90,28 @@ export default function EmployeeOverview() {
       </div>
 
       {/* Employee List */}
-      <div className="rounded-2xl shadow-md p-6 bg-(--color-layout-bg) overflow-auto">
+      <div className="rounded-2xl shadow-md p-6 bg-card overflow-auto">
 
         {/* List Header */}
-        <div className="flex justify-between items-center mb-6 md:flex-row flex-col gap-4">
+        <div className="flex mb-6 md:flex-row flex-col gap-4">
           <div className="md:flex-1">
-            <h2 className="text-xl font-semibold text-(--color-heading-text)">Employee List</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-xl font-semibold text-style">Employee List</h2>
+            <p className="text-sm text-position-text">
               View and manage all employees
             </p>
           </div>
 
           {/* Search */}
-          <div className="flex items-center border border-(--color-border) rounded-xl px-4 py-2 bg-(--color-sidebar-button-inactive)">
-            <Search className="w-5 h-5 text-(--muted-foreground)" />
-            <input
-              type="text"
-              placeholder="Search employees..."
-              className="bg-transparent focus:outline-none ml-2 text-(--color-foreground)"
-            />
-          </div>
+          <div className="gap-2 flex pr-5 items-center">
+                    <Input />
+                    
+                  </div>
         </div>
 
         {/* Table */}
         <table className="w-full text-left overflow-x-auto">
           <thead>
-            <tr className="border-b border-(--color-border) text-muted-foreground">
+            <tr className="border-b text-position-text font-extralight">
               <th className="py-3">Employee</th>
               <th>Role</th>
               <th>Phone</th>

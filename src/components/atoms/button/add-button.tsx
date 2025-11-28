@@ -25,13 +25,14 @@ function Button({
 }: AddButtonProps) {
   return (
     <div
-      className={`${width} ${height} ${bgcolor}
-  ${hoverbg}  ${textcolor} ${bordercolor} ${padding}
-      font-semibold rounded-xl border-1  flex items-center gap-2 text-[14px] `}
-    >
-      <span>{icon}</span>
-      <span>{text}</span>
-    </div>
+  className={`${width} ${height} ${bgcolor}
+  ${hoverbg} ${textcolor} ${bordercolor} ${padding}
+  font-semibold rounded-xl border-1 mt-4 mb-4 flex items-center justify-center gap-2 text-[14px]`}
+>
+  {icon && <span>{icon}</span>}
+  <span>{text}</span>
+</div>
+
   );
 }
 

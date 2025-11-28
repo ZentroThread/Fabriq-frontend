@@ -4,7 +4,7 @@ import Reports from "../pages/reports";
 import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
 import { RentsAndBill } from "@/pages/RentsAndBill";
-import EmployeeOverview from "@/pages/EmployeeOverview";
+import EmployeeOverview from "@/pages/employee-overview";
 import EmployeeProfile from "@/pages/employee/EmployeeProfile";
 import { SalaryHistory } from "@/pages/employee/SalaryHistory";
 

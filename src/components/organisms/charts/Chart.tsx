@@ -18,7 +18,7 @@ function Chart({
 }: ChartProps) {
   return (
     <div
-      className={`w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md`}
+      className={`mt-5 w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md`}
     >
       <div className="text-style text-[20px] font-semibold">{label}</div>
       <div className="text-position-text">{description}</div>
