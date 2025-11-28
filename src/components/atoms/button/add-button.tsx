@@ -5,6 +5,11 @@ interface AddButtonProps {
   icon?: ReactNode;
   width?: string;
   height?: string;
+  bgcolor?: string;
+  hoverbg?: string;
+  textcolor?: string;
+  bordercolor?: string;
+  padding?: string;
 }
 
 function Button({
@@ -12,12 +17,17 @@ function Button({
   icon,
   width = "w-auto",
   height = "h-8",
+  bgcolor = "bg-support-button",
+  hoverbg = "hover:bg-support-button-hover",
+  textcolor = "text-support-button-text ",
+  bordercolor,
+  padding = "p-5",
 }: AddButtonProps) {
   return (
     <div
-      className={`${width} ${height} bg-support-button 
-      hover:bg-support-button-hover text-support-button-text 
-      font-semibold rounded-xl p-5 flex items-center gap-2 text-[14px] `}
+      className={`${width} ${height} ${bgcolor}
+  ${hoverbg}  ${textcolor} ${bordercolor} ${padding}
+      font-semibold rounded-xl border-1  flex items-center gap-2 text-[14px] `}
     >
       <span>{icon}</span>
       <span>{text}</span>

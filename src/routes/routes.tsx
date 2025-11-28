@@ -5,6 +5,12 @@ import Dashboard from "../pages/dashboard";
 import Attendance from "../pages/attendance";
 import Items from "../pages/items";
 import Reports from "../pages/reports";
+import Attendance from "@/pages/attendance";
+import Items from "@/pages/items";
+import { RentsAndBill } from "@/pages/RentsAndBill";
+import EmployeeOverview from "@/pages/EmployeeOverview";
+import EmployeeProfile from "@/pages/employee/EmployeeProfile";
+import { SalaryHistory } from "@/pages/employee/SalaryHistory";
 
 import Layout from "../components/organisms/layout/layout";
 
@@ -21,7 +27,13 @@ export default function AppRoutes() {
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/items" element={<Items />} />
         <Route path="/reports" element={<Reports />} />
-      </Route>
-    </Routes>
+    
+        <Route path="/attire" element={<Items />} />
+        <Route path="/rent" element={<RentsAndBill />} />
+        <Route path="/emp" element={<EmployeeOverview />} />
+        <Route path="/emp/:id" element={<EmployeeProfile />} />
+        <Route path="/salary-history/:id" element={<SalaryHistory />} />
+       </Route>
+     </Routes>
   );
 }
