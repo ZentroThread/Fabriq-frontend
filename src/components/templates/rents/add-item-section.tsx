@@ -1,4 +1,4 @@
-import InputField from "@/components/molecules/input/InputField";
+import InputField from "@/components/molecules/input/input-feild";
 import { useState } from "react";
 import Chart from "../Chart";
 import Button from "@/components/atoms/button/add-button";

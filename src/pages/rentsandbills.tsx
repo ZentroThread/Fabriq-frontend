@@ -1,9 +1,9 @@
-import RentalSummary from "@/components/templates/rents/RentalSummary";
-import CustomerInformation from "@/components/templates/rents/CustomerInformation";
-import RentalBillingLayout from "@/components/organisms/layout/RentalBillingLayout";
-import RentalDuration from "@/components/templates/rents/RentalDuration";
-import AddItemsSection from "@/components/templates/rents/AddItemsSection";
-import RentalItemsSection from "@/components/templates/rents/RentalItemsSection";
+import RentalSummary from "@/components/templates/rents/rental-summary";
+import CustomerInformation from "@/components/templates/rents/customer-information";
+import RentalBillingLayout from "@/components/organisms/layout/rental-billing-layout";
+import RentalDuration from "@/components/templates/rents/rental-duration";
+import AddItemsSection from "@/components/templates/rents/add-item-section";
+import RentalItemsSection from "@/components/templates/rents/rental-item-section";
 export const RentsAndBill = () => {
   return (
     <div className="p-5">

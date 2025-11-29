@@ -1,4 +1,4 @@
-import InputField from "@/components/molecules/input/InputField";
+import InputField from "@/components/molecules/input/input-feild";
 import Chart from "../Chart";
 import { Mail, Phone, User } from "lucide-react";
 
