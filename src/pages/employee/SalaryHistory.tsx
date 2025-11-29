@@ -1,3 +1,4 @@
+import Chart from "@/components/organisms/charts/Chart";
 import { CheckCircle } from "lucide-react";
 export  function SalaryHistory() {
 
@@ -8,18 +9,21 @@ export  function SalaryHistory() {
     ];
 
     return (
-      <div className="w-full max-w-4xl mt-6 flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-(--color-heading-text)">Salary History</h1>
-          <p className="text-(--color-text) text-sm mt-1">
+     
+
+      
+        <Chart >
+<div>
+          <h1 className="text-2xl  text-style font-bold">Salary History</h1>
+          <p className="text-position-text text-sm mt-1">
             View and manage your salary records.
           </p>
         </div>
         <div>
-          <div className="flex flex-col items-center mb-6 md:flex-row md:items-start md:gap-4">
+          <div className="flex flex-col items-center mb-6 md:flex-row md:items-start md:gap-4 mt-5">
             <div className="w-20 h-20 rounded-full bg-avatar-bg border-2 border-(--color-avatar-border)" />
             <div>
-               <h2 className="mt-4 text-xl font-semibold text-(--color-heading-text)">
+               <h2 className="mt-4 text-xl font-semibold text-style-white">
                 employee name
               </h2>
               <p className="text-position-text text-sm">role</p>
@@ -28,16 +32,16 @@ export  function SalaryHistory() {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col items-start">
-            <select className="p-2 rounded-lg border border-(--color-border) bg-(--color-card) text-(--color-text)">
+            <select className="p-2  rounded-lg border border-(--color-border) bg-(--color-card) text-position-text">
               <option>2024</option>
               <option>2023</option>
               <option>2022</option>
             </select>
           </div>
-          <table className="w-full border-collapse rounded-xl overflow-hidden shadow-sm">
+          <table className="w-full bg-card  border-collapse overflow-hidden shadow-sm mb-5 mt-5">
           
             {/* Table Head */}
-            <thead className="bg-(--color-card) border-b border-(--color-border)">
+            <thead className="border-b border-(--color-border) text-position-text">
               <tr>
                 <th className="text-left py-3 px-4 text-(--color-heading-text) font-semibold">Month</th>
                 <th className="text-left py-3 px-4 text-(--color-heading-text) font-semibold">Total</th>
@@ -47,9 +51,9 @@ export  function SalaryHistory() {
 
             <tbody>
               {salaryData.map((salary) => (
-                <tr key={salary.month} className="bg-(--color-card) border-b border-(--color-border) hover:bg-(--color-hover-bg) transition">
-                  <td className="py-4 px-4 font-medium text-(--color-text)">{salary.month}</td>
-                  <td className={`py-4 px-4 ${salary.total ? 'font-semibold text-(--color-heading-text)' : 'text-muted-foreground'}`}>
+                <tr key={salary.month} className="bg- border-b border-(--color-border) text-position-text hover:bg-main-bg transition">
+                  <td className="py-4 px-4 font-extralight  text-(--color-text)">{salary.month}</td>
+                  <td className={`py-4 px-4 ${salary.total ? 'font-extralight  text-(--color-heading-text)' : 'text-muted-foreground'}`}>
                     {salary.total ? salary.total : '--'}
                   </td>
                   <td className="py-4 px-4">
@@ -69,6 +73,7 @@ export  function SalaryHistory() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Chart>
+     
   );
 }

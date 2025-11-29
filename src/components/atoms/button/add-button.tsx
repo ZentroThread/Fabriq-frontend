@@ -9,25 +9,29 @@ interface AddButtonProps {
   hoverbg?: string;
   textcolor?: string;
   bordercolor?: string;
+  hovertext?:string
   padding?: string;
+  onClick ?: () => void;
 }
 
 function Button({
   text,
   icon,
-  width = "w-auto",
+  width = "w-35",
   height = "h-8",
   bgcolor = "bg-support-button",
   hoverbg = "hover:bg-support-button-hover",
   textcolor = "text-support-button-text ",
+  hovertext,
   bordercolor,
   padding = "p-5",
+  onClick
 }: AddButtonProps) {
   return (
-    <div
+    <div onClick={onClick}
   className={`${width} ${height} ${bgcolor}
-  ${hoverbg} ${textcolor} ${bordercolor} ${padding}
-  font-semibold rounded-xl border-1 mt-4 mb-4 flex items-center justify-center gap-2 text-[14px]`}
+  ${hoverbg} ${textcolor} ${bordercolor} ${padding}  ${hovertext} 
+  font-semibold rounded-xl border-1 mt-4 mb-4 flex items-center justify-center gap-2 text-[14px]`} 
 >
   {icon && <span>{icon}</span>}
   <span>{text}</span>

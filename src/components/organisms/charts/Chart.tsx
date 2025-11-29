@@ -14,7 +14,7 @@ function Chart({
   label,
   description,
   children,
-  height = "h-100",
+  height = "h-auto",
   padding = "p-5",
   className,
 }: ChartProps) {
@@ -24,7 +24,7 @@ function Chart({
     >
       <div className={`text-style text-[20px] font-semibold ${className ? ` ${className}` : ""}`}>{label}</div>
       <div className={`text-position-text ${className ? ` ${className}` : ""}`}>{description}</div>
-      <div className="mt-4 w-full h-56">
+      <div className="mt-4 w-full ">
         {children ? (
           children
         ) : (

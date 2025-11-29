@@ -61,6 +61,11 @@
   --color-border-card3: #ffcaca;
   --color-icon-card3: #fc525a;
 
+  --color-border-add: #135E4B;
+  --color-bg-add: #A1D8B5;
+
+  --color-hover-red : #EC646C;
+  --color-hover-green : #135E4B;
   /* Map descriptive variables to the light-* variables */
   --color-pie-1: var(--color-light-pie-1);
   --color-pie-2: var(--color-light-pie-2);
