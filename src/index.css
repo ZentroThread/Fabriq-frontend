@@ -65,7 +65,7 @@
   --color-border-add: #135e4b;
   --color-bg-add: #a1d8b5;
 
-  --color-hover-red: #ec646c;
+  --color-hover-red: #0b735f;
   --color-hover-green: #135e4b;
   /* Map descriptive variables to the light-* variables */
   --color-pie-1: var(--color-light-pie-1);
@@ -100,6 +100,14 @@
   --color-text-color: var(--color-light-black-dark);
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-chart-text: var(--color-light-gray-medium);
+  --color-button: var(--color-light-brown-medium);
+  --color-button-hover: var(--color-light-brown);
+  --color-button-text: var(--color-light-white);
+  --color-security-deposit-bg: var(--color-light-pink);
+  --color-security-deposit-title: var(--color-light-gray-medium);
+  --color-security-deposit-text: var(--color-light-gray-muted);
+  --color-leave-history-bg: var(--color-light-pink);
+
   /* Add button-hover variable for theme toggle */
 }
 
@@ -331,7 +339,7 @@ body {
   --color-security-deposit-bg: var(--color-dark-pink);
   --color-security-deposit-title: var(--color-dark-yellow);
   --color-security-deposit-text: var(--color-dark-white);
-
+  --color-leave-history-bg: var(--color-dark-gray-light);
   /* Override button-hover for dark mode */
 }
 

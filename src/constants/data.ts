@@ -100,3 +100,9 @@ export const invoices = [
     paymentMethod: "Bank Transfer",
   },
 ];
+
+export const leaveRecords = [
+  { id: 1, remark: "Sick Leave", date: "2025-11-18" },
+  { id: 2, remark: "Personal Leave", date: "2025-11-15" },
+  { id: 3, remark: "Half Day", date: "2025-11-10" },
+];

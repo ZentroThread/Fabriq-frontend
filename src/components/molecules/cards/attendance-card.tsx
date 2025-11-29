@@ -18,7 +18,7 @@ function AttendanceCard({
   return (
     <div
       style={{ backgroundColor: bgcolor, borderColor: bordercolor }}
-      className={`w-auto h-auto flex p-3 rounded-2xl border-2  gap-10 items-center`}
+      className={`w-auto h-auto flex p-3 rounded-2xl border-2  gap-10 items-center hover:scale-105`}
     >
       <span style={{ color: iconcolor }}>{icon}</span>
       <span className="text-[#615758] text-[20px]">{label}</span>

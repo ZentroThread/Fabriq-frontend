@@ -11,6 +11,7 @@ import { SalaryHistory } from "@/pages/salary-history";
 import Login from "../pages/login";
 
 import Layout from "../components/organisms/layout/layout";
+import LeaveHistory from "@/pages/leave-history";
 
 function AppRoutes() {
   return (
@@ -31,6 +32,7 @@ function AppRoutes() {
         <Route path="/emp" element={<EmployeeOverview />} />
         <Route path="/emp/:id" element={<EmployeeProfile />} />
         <Route path="/salary-history/:id" element={<SalaryHistory />} />
+        <Route path="/leave-history/:id" element={<LeaveHistory />} />
       </Route>
     </Routes>
   );

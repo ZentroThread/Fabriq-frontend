@@ -19,7 +19,7 @@ function DashboardCard({
 }: DashboardCardProps) {
   return (
     <div
-      className={`${width} h-auto bg-card text-position-text rounded-2xl p-6 pt-5 gap-6 shadow-md flex  `}
+      className={`${width} h-auto bg-card text-position-text rounded-2xl p-6 pt-5 gap-6 shadow-md flex hover:scale-105  `}
     >
       <div className="flex flex-col w-full">
         <span className="text-[16px] pb-3">{lable}</span>
