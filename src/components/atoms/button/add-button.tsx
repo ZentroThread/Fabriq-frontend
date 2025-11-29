@@ -28,7 +28,7 @@ function Button({
   onClick,
 }: AddButtonProps) {
   return (
-    <div
+    <button
       onClick={onClick}
       className={`${width} ${height} ${bgcolor}
   ${hoverbg} ${textcolor} ${bordercolor} ${padding}  ${hovertext} 
@@ -36,7 +36,7 @@ function Button({
     >
       {icon && <span>{icon}</span>}
       <span>{text}</span>
-    </div>
+    </button>
   );
 }
 

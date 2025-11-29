@@ -18,7 +18,7 @@ export function ItemCard({
   image,
 }: ItemCardProps) {
   return (
-    <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl ">
+    <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-105 ">
       <div className="relative">
         <img src={image} alt="attire" className="w-full h-70 object-cover" />
 

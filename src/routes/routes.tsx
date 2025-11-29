@@ -11,7 +11,7 @@ import { SalaryHistory } from "@/pages/salary-history";
 import Login from "../pages/login";
 
 import Layout from "../components/organisms/layout/layout";
-import LeaveHistory from "@/pages/employee/leave-history";
+import LeaveHistory from "@/pages/leave-history";
 
 function AppRoutes() {
   return (
