@@ -17,11 +17,7 @@ export function Input({
     <div className="w-full mr-3 relative">
       {icon}
 
-      <InputUI
-        type="text"
-        placeholder={placeholder}
-        className="pl-10"
-      />
+      <InputUI type="text" placeholder={placeholder} className="pl-10" />
     </div>
   );
 }

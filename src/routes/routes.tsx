@@ -5,8 +5,8 @@ import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
 import { RentsAndBill } from "@/pages/rentsandbills";
 import EmployeeOverview from "@/pages/employee-overview";
-import EmployeeProfile from "@/pages/employee/EmployeeProfile";
-import { SalaryHistory } from "@/pages/employee/SalaryHistory";
+import EmployeeProfile from "@/pages/EmployeeProfile";
+import { SalaryHistory } from "@/pages/SalaryHistory";
 
 function Routes() {
   return (

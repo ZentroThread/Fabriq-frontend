@@ -22,8 +22,14 @@ function Chart({
     <div
       className={`mt-5 w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md${className ? ` ${className}` : ""}`}
     >
-      <div className={`text-style text-[20px] font-semibold ${className ? ` ${className}` : ""}`}>{label}</div>
-      <div className={`text-position-text ${className ? ` ${className}` : ""}`}>{description}</div>
+      <div
+        className={`text-style text-[20px] font-semibold ${className ? ` ${className}` : ""}`}
+      >
+        {label}
+      </div>
+      <div className={`text-position-text ${className ? ` ${className}` : ""}`}>
+        {description}
+      </div>
       <div className="mt-4 w-full ">
         {children ? (
           children

@@ -35,7 +35,9 @@ export default function RentalItemsSection() {
             <thead>
               <tr className="border-b text-gray-600 font-semibold text-sm">
                 <th className="py-2 w-[40%] text-muted-foreground">Item</th>
-                <th className="py-2 w-[20%] text-muted-foreground">Price/Day</th>
+                <th className="py-2 w-[20%] text-muted-foreground">
+                  Price/Day
+                </th>
                 <th className="py-2 w-[10%] text-muted-foreground">Days</th>
                 <th className="py-2 w-[20%] text-muted-foreground">Total</th>
                 <th className="py-2 w-[10%] text-center text-muted-foreground">

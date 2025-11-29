@@ -9,9 +9,9 @@ interface AddButtonProps {
   hoverbg?: string;
   textcolor?: string;
   bordercolor?: string;
-  hovertext?:string
+  hovertext?: string;
   padding?: string;
-  onClick ?: () => void;
+  onClick?: () => void;
 }
 
 function Button({
@@ -25,18 +25,18 @@ function Button({
   hovertext,
   bordercolor,
   padding = "p-5",
-  onClick
+  onClick,
 }: AddButtonProps) {
   return (
-    <div onClick={onClick}
-  className={`${width} ${height} ${bgcolor}
+    <div
+      onClick={onClick}
+      className={`${width} ${height} ${bgcolor}
   ${hoverbg} ${textcolor} ${bordercolor} ${padding}  ${hovertext} 
-  font-semibold rounded-xl border-1 mt-4 mb-4 flex items-center justify-center gap-2 text-[14px]`} 
->
-  {icon && <span>{icon}</span>}
-  <span>{text}</span>
-</div>
-
+  font-semibold rounded-xl border-1 mt-4 mb-4 flex items-center justify-center gap-2 text-[14px]`}
+    >
+      {icon && <span>{icon}</span>}
+      <span>{text}</span>
+    </div>
   );
 }
 

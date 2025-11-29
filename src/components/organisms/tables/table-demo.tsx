@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/table";
 import { invoices } from "@/constants/data";
 
-
 export function TableDemo() {
   return (
     <Table className="text-position-text font-light">

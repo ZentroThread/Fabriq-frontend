@@ -1,19 +1,15 @@
-
-
 interface DashboardCardProps {
   lable: string;
   lable1: string;
-  
-  
+
   width?: string;
 }
 
 function EmployeeCard({
   lable,
   lable1,
-  
+
   width = "w-auto",
-  
 }: DashboardCardProps) {
   return (
     <div
@@ -22,11 +18,9 @@ function EmployeeCard({
       <div className="flex flex-col w-full">
         <span className="text-[16px] pb-3">{lable}</span>
         <span className=" pb-3 text-[26px] text-style">{lable1}</span>
-        
       </div>
       {/* You can render the icon here if you want */}
       {/* <Icon className="w-6 h-6" /> */}
-      
     </div>
   );
 }

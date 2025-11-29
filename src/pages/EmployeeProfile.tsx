@@ -1,5 +1,5 @@
 import Button from "@/components/atoms/button/add-button";
-import Chart from "@/components/organisms/charts/Chart";
+import Chart from "@/components/templates/Chart";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 
@@ -123,7 +123,7 @@ export default function EmployeeProfile() {
               </label>
               <Input className="w-80"></Input>
             </div>
-            
+
             {/* ...existing code... */}
           </div>
           {/* image */}
@@ -139,24 +139,28 @@ export default function EmployeeProfile() {
           <div className="flex gap-2">
             <Button
               bordercolor="border-border-card3"
-               bgcolor="bg-bg-card3"
-               textcolor="text-black"
-               hoverbg="hover:bg-hover-red"
-               hovertext="hover:text-background"
+              bgcolor="bg-bg-card3"
+              textcolor="text-black"
+              hoverbg="hover:bg-hover-red"
+              hovertext="hover:text-background"
               text={"Salary History"}
               onClick={() => showSalaryHistory("1")}
             />
-            <Button bordercolor="border-border-card2"
-               bgcolor="bg-bg-card2"
-               hovertext="hover:text-background"
-               textcolor="text-black" text={"Leave History"} />
-            <Button 
-            bordercolor="border-border-add"
-               bgcolor="bg-bg-add"
-               hoverbg="hover:bg-hover-green"
-               hovertext="hover:text-background"
-               textcolor="text-black"
-            text={"Update"} />
+            <Button
+              bordercolor="border-border-card2"
+              bgcolor="bg-bg-card2"
+              hovertext="hover:text-background"
+              textcolor="text-black"
+              text={"Leave History"}
+            />
+            <Button
+              bordercolor="border-border-add"
+              bgcolor="bg-bg-add"
+              hoverbg="hover:bg-hover-green"
+              hovertext="hover:text-background"
+              textcolor="text-black"
+              text={"Update"}
+            />
           </div>
         </div>
       </Chart>

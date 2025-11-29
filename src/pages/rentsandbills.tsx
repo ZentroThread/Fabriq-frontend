@@ -1,9 +1,9 @@
-import RentalSummary from "@/components/organisms/rents/RentalSummary"
-import CustomerInformation from "@/components/organisms/rents/CustomerInformation"
-import RentalBillingLayout from "@/components/organisms/layout/RentalBillingLayout"
-import RentalDuration from "@/components/organisms/rents/RentalDuration"
-import AddItemsSection from "@/components/organisms/rents/AddItemsSection"
-import RentalItemsSection from "@/components/organisms/rents/RentalItemsSection"
+import RentalSummary from "@/components/templates/rents/RentalSummary";
+import CustomerInformation from "@/components/templates/rents/CustomerInformation";
+import RentalBillingLayout from "@/components/organisms/layout/RentalBillingLayout";
+import RentalDuration from "@/components/templates/rents/RentalDuration";
+import AddItemsSection from "@/components/templates/rents/AddItemsSection";
+import RentalItemsSection from "@/components/templates/rents/RentalItemsSection";
 export const RentsAndBill = () => {
   return (
     <div className="p-5">
@@ -15,12 +15,11 @@ export const RentsAndBill = () => {
       </div>
       <RentalBillingLayout
         customerInfo={<CustomerInformation />}
-        duration={<RentalDuration/>}
-        items={<AddItemsSection/>}
+        duration={<RentalDuration />}
+        items={<AddItemsSection />}
         summary={<RentalSummary />}
         rentList={<RentalItemsSection />}
       />
     </div>
-     
-  )
-}
+  );
+};

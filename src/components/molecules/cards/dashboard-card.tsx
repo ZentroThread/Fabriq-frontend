@@ -4,7 +4,7 @@ interface DashboardCardProps {
   lable: string;
   lable1: string;
   lable2?: string;
-  icon ?: LucideIcon;
+  icon?: LucideIcon;
   iconbg?: string;
   width?: string;
 }

@@ -12,8 +12,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-interface Calendar28Props{
-  height ?: string
+interface Calendar28Props {
+  height?: string;
 }
 
 function formatDate(date: Date | undefined) {
@@ -35,11 +35,9 @@ function isValidDate(date: Date | undefined) {
   return !isNaN(date.getTime());
 }
 
-export function Calendar28({height = "h-12"}: Calendar28Props) {
+export function Calendar28({ height = "h-12" }: Calendar28Props) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date
-  );
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [month, setMonth] = React.useState<Date | undefined>(date);
   const [value, setValue] = React.useState(formatDate(date));
 
@@ -51,7 +49,6 @@ export function Calendar28({height = "h-12"}: Calendar28Props) {
           value={value}
           placeholder="June 01, 2025"
           className={`bg-background text-position-text font-light pr-10 rounded-xl ${height}`}
-          
           onChange={(e) => {
             const date = new Date(e.target.value);
             setValue(e.target.value);
