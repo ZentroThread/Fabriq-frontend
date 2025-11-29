@@ -2,7 +2,7 @@ import AddButton from "@/components/atoms/button/add-button";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import { Download, DollarSign, Package, Users, Clock4 } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
-import Chart from "@/components/organisms/charts/Chart";
+import Chart from "@/components/templates/Chart";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
 import { ChartPie } from "@/components/organisms/charts/ChartPie";
 import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";

@@ -22,7 +22,7 @@ export default function RentalItemsSection() {
   }
 
   return (
-    <div className="p-6 rounded-3xl shadow bg-white border w-full border-(--color-border)">
+    <div className="p-6 rounded-3xl shadow bg-card  w-full ">
       {/* Title */}
       <div className="text-[28px] text-style mb-4">Rental Items</div>
 
@@ -35,7 +35,9 @@ export default function RentalItemsSection() {
             <thead>
               <tr className="border-b text-gray-600 font-semibold text-sm">
                 <th className="py-2 w-[40%] text-muted-foreground">Item</th>
-                <th className="py-2 w-[20%] text-muted-foreground">Price/Day</th>
+                <th className="py-2 w-[20%] text-muted-foreground">
+                  Price/Day
+                </th>
                 <th className="py-2 w-[10%] text-muted-foreground">Days</th>
                 <th className="py-2 w-[20%] text-muted-foreground">Total</th>
                 <th className="py-2 w-[10%] text-center text-muted-foreground">

@@ -31,13 +31,21 @@ function Login() {
             <img src={logo} alt="logo" className="w-32 object-contain" />
           </div>
 
-          <h1 
-          style={{fontFamily: "Bodoni Moda"}}
-          className="text-4xl font-bold ">Hiru Sandu</h1>
-          <p 
-          style={{fontFamily: "Bodoni Moda"}}
-          className="text-lg text-gray-600 -mt-1">Bridal Wear</p>
-          <p className="text-sm text-light-gray-medium mt-1">Elegance in Every Thread</p>
+          <h1
+            style={{ fontFamily: "Bodoni Moda" }}
+            className="text-4xl font-bold "
+          >
+            Hiru Sandu
+          </h1>
+          <p
+            style={{ fontFamily: "Bodoni Moda" }}
+            className="text-lg text-gray-600 -mt-1"
+          >
+            Bridal Wear
+          </p>
+          <p className="text-sm text-light-gray-medium mt-1">
+            Elegance in Every Thread
+          </p>
 
           {/* Model Image */}
           <div className="mt-6 flex justify-center">
@@ -52,13 +60,11 @@ function Login() {
         {/* LOGIN FORM */}
         <div className="flex flex-col justify-center  w-100 mt-35">
           {/* ...existing login form code... */}
-          <div
-            className="bg-light-rose-lightest p-10 rounded-2xl border-[1.5px]  h-full shadow-2xl border-[#f3c4cf]"
-            
-          >
-            <h2 
-            style={{fontFamily: "Bodoni Moda"}}
-            className="text-3xl font-bold  text-gray-800 text-center">
+          <div className="bg-light-rose-lightest p-10 rounded-2xl border-[1.5px]  h-full shadow-2xl border-[#f3c4cf]">
+            <h2
+              style={{ fontFamily: "Bodoni Moda" }}
+              className="text-3xl font-bold  text-gray-800 text-center"
+            >
               Welcome Back
             </h2>
             <p className="text-center text-light-gray-medium text-sm mb-6">
@@ -67,7 +73,9 @@ function Login() {
 
             {/* USERNAME */}
             <div className="mb-4">
-              <label className="text-sm font-medium text-gray-700">Username</label>
+              <label className="text-sm font-medium text-gray-700">
+                Username
+              </label>
 
               <div
                 className="
@@ -92,7 +100,9 @@ function Login() {
 
             {/* PASSWORD */}
             <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700">Password</label>
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
 
               <div
                 className="

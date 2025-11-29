@@ -27,6 +27,8 @@
   --color-input: #e4e4e7;
   --color-ring: #18181b;
   --color-dbcard: #c09e8e;
+  --color-input-border: #e9d8d0;
+  --color-input-active-border: #b87e64;
   /* Custom app colors - Light mode */
 
   /* Unique light color variables */
@@ -60,6 +62,11 @@
   --color-border-card3: #ffcaca;
   --color-icon-card3: #fc525a;
 
+  --color-border-add: #135e4b;
+  --color-bg-add: #a1d8b5;
+
+  --color-hover-red: #ec646c;
+  --color-hover-green: #135e4b;
   /* Map descriptive variables to the light-* variables */
   --color-pie-1: var(--color-light-pie-1);
   --color-pie-2: var(--color-light-pie-2);
@@ -323,7 +330,6 @@ body {
   --color-text-color: var(--color-dark-yellow);
   --color-shadow: rgba(0, 0, 0, 0.8);
 
-
   --color-button: var(--color-dark-yellow);
   --color-button-hover: var(--color-dark-yellow-light);
   --color-button-text: var(--color-dark-black);
@@ -350,5 +356,11 @@ body {
 .text-style {
   font-family: "Bodoni Moda", serif;
   color: var(--color-text-color);
+  font-weight: 500;
+}
+
+.text-style-white {
+  font-family: "Bodoni Moda", serif;
+  color: var(--color-position-text);
   font-weight: 500;
 }

@@ -1,5 +1,5 @@
 import AttendanceCard from "@/components/molecules/cards/attendance-card";
-import Chart from "@/components/organisms/charts/Chart";
+import Chart from "@/components/templates/Chart";
 import { Calendar28 } from "@/components/organisms/date-picker/calender";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import { TableDemo } from "@/components/organisms/tables/table-demo";

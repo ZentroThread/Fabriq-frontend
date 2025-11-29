@@ -1,7 +1,7 @@
 import { ChartDonut } from "@/components/organisms/charts/ChartDonut";
 import { ChartLineDots } from "@/components/organisms/charts/ChartLineDots";
 import { ChartPie } from "@/components/organisms/charts/ChartPie";
-import Chart from "@/components/organisms/charts/Chart";
+import Chart from "@/components/templates/Chart";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
 

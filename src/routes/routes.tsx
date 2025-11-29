@@ -1,20 +1,14 @@
-
-
-
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/dashboard";
 import Reports from "../pages/reports";
 import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
-import { RentsAndBill } from "@/pages/rentsAndBill";  
-import EmployeeOverview from "@/pages/employeeOverview";
-import EmployeeProfile from "@/pages/employee/employeeProfile";
-import { SalaryHistory } from "@/pages/employee/salaryHistory";
-import LeaveHistory from "@/pages/employee/leaveHistory";
-
+import { RentsAndBill } from "@/pages/rentsandbills";
+import EmployeeOverview from "@/pages/employee-overview";
+import EmployeeProfile from "@/pages/employee-profile";
+import { SalaryHistory } from "@/pages/salary-history";
 
 import Login from "../pages/login";
-
 
 import Layout from "../components/organisms/layout/layout";
 
@@ -31,7 +25,7 @@ function AppRoutes() {
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/items" element={<Items />} />
         <Route path="/reports" element={<Reports />} />
-        
+
         <Route path="/attire" element={<Items />} />
         <Route path="/rent" element={<RentsAndBill />} />
         <Route path="/emp" element={<EmployeeOverview />} />

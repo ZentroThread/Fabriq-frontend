@@ -2,7 +2,7 @@ import Button from "@/components/atoms/button/add-button";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
 import { Input } from "@/components/molecules/input/input";
-import Chart from "@/components/organisms/charts/Chart";
+import Chart from "@/components/templates/Chart";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import { BanknoteArrowUp, Package, Plus, Tag } from "lucide-react";
 import nilame1 from "@/assets/items/nilame1.jpeg";
