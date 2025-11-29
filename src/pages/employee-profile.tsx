@@ -10,6 +10,10 @@ export default function EmployeeProfile() {
     navigate(`/salary-history/${id}`);
   };
 
+  const showLeaveHistory = (id: string) => {
+    navigate(`/leave-history/${id}`);
+  }
+
   return (
     <div className="p-5 flex flex-col">
       <Chart className="h-full flex flex-col justify-between relative">
@@ -152,6 +156,7 @@ export default function EmployeeProfile() {
               hovertext="hover:text-background"
               textcolor="text-black"
               text={"Leave History"}
+              onClick={() => showLeaveHistory("1")}
             />
             <Button
               bordercolor="border-border-add"

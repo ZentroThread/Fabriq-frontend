@@ -1,7 +1,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 
-export default function LeaveHistoryPage() {
+export default function LeaveHistory() {
 
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
