@@ -1,13 +1,22 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
+import { useLocation, Outlet } from "react-router-dom"; 
 import Nav from "../../molecules/navigationbar/nav";
 import Sidebar from "../../molecules/sidebar/Sidebar";
 
-export default function Layout({ children }: { children: ReactNode }) {
+function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  const noLayoutPages = ["/", "/login"];
+  const hideLayout = noLayoutPages.includes(location.pathname);
+
+  if (hideLayout) {
+    return <Outlet />;   // <-- Login page will render here
+  }
 
   return (
     <div className="flex h-screen overflow-hidden flex-col bg-layout-bg">
-      {/* Navigation - Always on top with highest z-index */}
+      {/* Navbar */}
       <div className="relative z-40">
         <Nav
           username="John Doe"
@@ -17,9 +26,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         />
       </div>
 
-      {/* Content area with sidebar */}
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Sidebar - Positioned below navbar */}
+        {/* Sidebar */}
         <div
           className={`fixed top-20 left-0 bottom-0 z-30 w-[300px] bg-sidebar-bg shadow-lg transform transition-transform duration-300
           ${
@@ -29,7 +37,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Sidebar open={sidebarOpen} />
         </div>
 
-        {/* Blur Overlay - Only covers main content area, below navbar and sidebar */}
+        {/* Overlay */}
         {sidebarOpen && (
           <div
             className="fixed top-20 left-0 right-0 bottom-0 z-20 bg-overlay-bg/30 backdrop-blur-sm md:hidden"
@@ -37,8 +45,12 @@ export default function Layout({ children }: { children: ReactNode }) {
           ></div>
         )}
 
-        <main className="flex-1 overflow-auto p-4 bg-main-bg">{children}</main>
+        {/* CONTENT (Dashboard, Attendance, Items, Reports) */}
+        <main className="flex-1 overflow-auto p-4 bg-main-bg">
+          <Outlet />  
+        </main>
       </div>
     </div>
   );
 }
+export default Layout;
