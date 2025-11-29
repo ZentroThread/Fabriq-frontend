@@ -1,4 +1,4 @@
-import InputField from "@/components/molecules/input/InputField";
+import InputField from "@/components/molecules/input/inputField";
 import { useState } from "react";
 
 export default function AddItemsSection() {

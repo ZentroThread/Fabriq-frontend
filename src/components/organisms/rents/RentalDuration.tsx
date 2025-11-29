@@ -1,4 +1,4 @@
-import RentalDateRangePicker from "@/components/molecules/input/RentalDateRangePicker"
+import RentalDateRangePicker from "@/components/molecules/input/rentalDateRangePicker"
 
 const RentalDuration = () => {
   return (

@@ -6,11 +6,11 @@ import Dashboard from "../pages/dashboard";
 import Reports from "../pages/reports";
 import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
-import { RentsAndBill } from "@/pages/RentsAndBill";  
-import EmployeeOverview from "@/pages/EmployeeOverview";
-import EmployeeProfile from "@/pages/employee/EmployeeProfile";
-import { SalaryHistory } from "@/pages/employee/SalaryHistory";
-import LeaveHistory from "@/pages/employee/LeaveHistory";
+import { RentsAndBill } from "@/pages/rentsAndBill";  
+import EmployeeOverview from "@/pages/employeeOverview";
+import EmployeeProfile from "@/pages/employee/employeeProfile";
+import { SalaryHistory } from "@/pages/employee/salaryHistory";
+import LeaveHistory from "@/pages/employee/leaveHistory";
 
 
 import Login from "../pages/login";

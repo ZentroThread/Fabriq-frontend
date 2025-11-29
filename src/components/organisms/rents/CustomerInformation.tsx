@@ -1,4 +1,4 @@
-import InputField from "@/components/molecules/input/InputField"
+import InputField from "@/components/molecules/input/inputField"
 import { HiUser, HiPhone, HiMail } from "react-icons/hi";
 
 export default function CustomerInformation() {

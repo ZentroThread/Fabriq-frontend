@@ -1,4 +1,4 @@
-import { DatePickerInput } from "./DatePickerInput";
+import { DatePickerInput } from "./datePickerInput";
 
 interface RentalDateRangePickerProps {
   startDate: {
