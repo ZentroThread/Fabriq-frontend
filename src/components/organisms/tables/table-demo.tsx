@@ -7,45 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const invoices = [
-  {
-    invoice: "INV001",
-
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-];
+import { invoices } from "@/constants/data";
 
 export function TableDemo() {
   return (

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, Outlet } from "react-router-dom"; 
+import { useLocation, Outlet } from "react-router-dom";
 import Nav from "../../molecules/navigationbar/nav";
 import Sidebar from "../../molecules/sidebar/Sidebar";
 
@@ -11,7 +11,7 @@ function Layout() {
   const hideLayout = noLayoutPages.includes(location.pathname);
 
   if (hideLayout) {
-    return <Outlet />;   // <-- Login page will render here
+    return <Outlet />; // <-- Login page will render here
   }
 
   return (
@@ -47,7 +47,7 @@ function Layout() {
 
         {/* CONTENT (Dashboard, Attendance, Items, Reports) */}
         <main className="flex-1 overflow-auto p-4 bg-main-bg">
-          <Outlet />  
+          <Outlet />
         </main>
       </div>
     </div>

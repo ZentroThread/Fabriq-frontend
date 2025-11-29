@@ -12,3 +12,91 @@ export const chartDataDonut = [
   { browser: "safari", visitors: 200, fill: "var(--color-pie-2)" },
   { browser: "firefox", visitors: 187, fill: "var(--color-pie-3)" },
 ];
+
+export const employees = [
+  {
+    initials: "NP",
+    id: "1",
+    name: "Nimal Perera",
+    role: "Sales Assistant",
+    phone: "077-2345678",
+    salary: "38,000",
+    status: "Present",
+    joinDate: "2024-02-20",
+  },
+  {
+    initials: "KF",
+    id: "2",
+    name: "Kumari Fernando",
+    role: "Sales Assistant",
+    phone: "077-3456789",
+    salary: "38,000",
+    status: "Leave",
+    joinDate: "2024-03-10",
+  },
+  {
+    initials: "RD",
+    id: "3",
+    name: "Roshan Dias",
+    role: "Stock Manager",
+    phone: "077-4567890",
+    salary: "50,000",
+    status: "Present",
+    joinDate: "2023-11-05",
+  },
+  {
+    initials: "SW",
+    id: "4",
+    name: "Sanduni Wijesinghe",
+    role: "Designer",
+    phone: "077-5678901",
+    salary: "55,000",
+    status: "Absent",
+    joinDate: "2024-04-01",
+  },
+];
+
+export const items = [
+  { name: "Saree A", price: 2000, days: 3 },
+  { name: "Saree B", price: 2500, days: 2 },
+  { name: "Saree C", price: 1800, days: 5 },
+];
+
+export const invoices = [
+  {
+    invoice: "INV001",
+
+    totalAmount: "$250.00",
+    paymentMethod: "Credit Card",
+  },
+  {
+    invoice: "INV002",
+
+    totalAmount: "$150.00",
+    paymentMethod: "PayPal",
+  },
+  {
+    invoice: "INV003",
+
+    totalAmount: "$350.00",
+    paymentMethod: "Bank Transfer",
+  },
+  {
+    invoice: "INV004",
+
+    totalAmount: "$450.00",
+    paymentMethod: "Credit Card",
+  },
+  {
+    invoice: "INV005",
+
+    totalAmount: "$550.00",
+    paymentMethod: "PayPal",
+  },
+  {
+    invoice: "INV006",
+
+    totalAmount: "$200.00",
+    paymentMethod: "Bank Transfer",
+  },
+];
