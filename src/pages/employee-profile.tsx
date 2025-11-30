@@ -127,7 +127,7 @@ export default function EmployeeProfile() {
             bordercolor="border-border-card3"
             bgcolor="bg-bg-card3"
             textcolor="text-black"
-            hoverbg="hover:bg-hover-red"
+            hoverbg="hover:bg-red"
             hovertext="hover:text-background"
             text="Salary History"
             width="w-full sm:w-35"
@@ -137,6 +137,7 @@ export default function EmployeeProfile() {
             bordercolor="border-border-card2"
             bgcolor="bg-bg-card2"
             hovertext="hover:text-background"
+            hoverbg="hover:bg-light-brown"
             textcolor="text-black"
             text="Leave History"
             width="w-full sm:w-35"
@@ -144,8 +145,8 @@ export default function EmployeeProfile() {
           />
           <Button
             bordercolor="border-border-add"
-            bgcolor="bg-bg-add"
-            hoverbg="hover:bg-hover-green"
+            bgcolor="bg-bg-red"
+            hoverbg=""
             hovertext="hover:text-background"
             textcolor="text-black"
             text="Update"

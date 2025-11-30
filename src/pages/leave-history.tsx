@@ -1,6 +1,8 @@
+import Button from "@/components/atoms/button/add-button";
 import Chart from "@/components/templates/Chart";
 import { Calendar } from "@/components/ui/calendar";
 import { leaveRecords } from "@/constants/data";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function LeaveHistory() {
@@ -43,17 +45,7 @@ export default function LeaveHistory() {
       </Chart>
 
       <div className="w-1/3 flex flex-col mt-5 items-center space-y-6">
-        <div
-          className="w-35 h-35 rounded-2xl bg-(--color-avatar-bg) 
-                        border-1 border-(--color-avatar-border) shadow"
-        ></div>
-
-        <button
-          className="w-40 py-2 bg-(--color-button) text-(--color-button-text) 
-                           rounded-md shadow hover:bg-(--color-button-hover) transition"
-        >
-          + Add New
-        </button>
+        <Button text="Add New" width="w-32 sm:w-35" icon={<Plus />} />
 
         <div className="w-auto border border-(--color-border) rounded-md p-4 bg-(--color-card) shadow">
           <Calendar
