@@ -22,7 +22,20 @@ export const registerSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-export type User = z.infer<typeof userSchema>;
-export type AuthResponse = z.infer<typeof authResponseSchema>;
-export type LoginInput = z.infer<typeof loginSchema>;
-export type RegisterInput = z.infer<typeof registerSchema>;
+//add items table
+export const addItemFormSchema  = z.object({
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
+  }),
+  description: z.string().min(5, {
+    message: "Description must be at least 5 characters.",
+  }),
+  price: z.string().min(1, {
+    message: "Price is required.",
+  }),
+  stock: z.string().min(1, {
+    message: "Stock quantity is required.",
+  }),
+  image: z.string().optional(),
+});
+
