@@ -5,18 +5,22 @@ import { useForm } from "react-hook-form";
 import { useContext } from "react";
 import { ThemeProviderContext } from "../providers/theme-provider";
 
+//useForm hook for additems
 export function useAddItemForm() {
   return useForm<AddItemFormValues>({
     resolver: zodResolver(addItemFormSchema),
     defaultValues: {
       title: "",
+      code: "",
       description: "",
       price: "",
       stock: "",
-      image: "",
+      categoryId: undefined,
+      status: "",
+      image: undefined,
     },
   });
-};
+}
 
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
@@ -26,4 +30,3 @@ export const useTheme = () => {
 
   return context;
 };
-

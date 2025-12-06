@@ -38,8 +38,10 @@ function Items() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card ">
-          <DialogHeader>
-            <DialogTitle className="text-style font-extrabold text-xl">Add New Item</DialogTitle>
+          <DialogHeader className="flex items-center">
+            <DialogTitle className="text-style font-extrabold text-xl">
+              Add New Item
+            </DialogTitle>
             <DialogDescription className="text-position-text font-light">
               Add a new item to your bridal attire and accessories inventory
             </DialogDescription>

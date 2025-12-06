@@ -67,6 +67,7 @@
 
   --color-bg-red: #a30000;
   --color-bg-green: #008000;
+  --color-bg-error: #d10000;
 
   /* Map descriptive variables to the light-* variables */
   --color-pie-1: var(--color-light-pie-1);
@@ -109,7 +110,8 @@
   --color-security-deposit-text: var(--color-light-gray-muted);
   --color-leave-history-bg: var(--color-light-pink);
   --color-red: var(--color-bg-red);
-  --color-green : var(--color-bg-green);
+  --color-green: var(--color-bg-green);
+  --color-error: var(--color-bg-error);
   /* Add button-hover variable for theme toggle */
 }
 
@@ -128,9 +130,11 @@
   --color-dark-white: #ffffff;
   --color-dark-white-light: #fafafa;
   --color-bg-red: #a30000;
---color-bg-green: #008000;
+  --color-bg-green: #008000;
+  --color-bg-error: #d10000;
   /* Map descriptive variables to dark-* variables */
-  --color-green : var(--color-bg-green);
+  --color-error: var(--color-bg-error);
+  --color-green: var(--color-bg-green);
   --color-red: var(--color-bg-red);
   --color-pie-1: var(--color-dark-yellow);
   --color-pie-2: var(--color-dark-gray-lightest);

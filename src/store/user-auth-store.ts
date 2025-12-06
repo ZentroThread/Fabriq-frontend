@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { User } from '@/types/types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { User } from "@/types/types";
 
 interface AuthState {
   user: User | null;
@@ -20,7 +20,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: () => !!get().token,
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
     }
   )
 );
