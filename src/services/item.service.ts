@@ -15,7 +15,7 @@ interface AddItemPayload {
 export const itemService = {
   addItem: async (data: AddItemPayload) => {
     const formData = new FormData();
-    const { user, token } = useAuthStore.getState();
+    const { token } = useAuthStore.getState();
 
     formData.append("attireCode", data.code);
     formData.append("attireName", data.title);
@@ -24,7 +24,6 @@ export const itemService = {
     formData.append("attirePrice", data.price.toString());
     formData.append("categoryId", data.category.toString());
     formData.append("attireStock", data.stock.toString());
-    // formData.append("tenantId", tenantId);
 
     if (data.image && data.image instanceof File) {
       formData.append("image", data.image);

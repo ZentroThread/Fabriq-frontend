@@ -210,7 +210,7 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
             <FormField
               control={form.control}
               name="image"
-              render={({ field: { value, onChange, ...field } }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Image </FormLabel>
                   <FormControl>
