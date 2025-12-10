@@ -106,3 +106,15 @@ export const leaveRecords = [
   { id: 2, remark: "Personal Leave", date: "2025-11-15" },
   { id: 3, remark: "Half Day", date: "2025-11-10" },
 ];
+
+export const categories = [
+  { value: 1, label: "Saree" },
+  { value: 2, label: "Nilame" },
+  { value: 3, label: "Jewelry" },
+];
+
+export const status = [
+  { value: "Available", label: "Available" },
+  { value: "In Laundry", label: "In Laundry" },
+  { value: "Rented", label: "Rented" },
+];

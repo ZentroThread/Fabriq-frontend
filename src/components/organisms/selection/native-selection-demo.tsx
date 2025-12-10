@@ -5,7 +5,7 @@ import {
 
 export function NativeSelectDemo() {
   return (
-    <NativeSelect className="text-position-text   bg-card font-light rounded-xl ml-3 ">
+    <NativeSelect className="text-position-text w-auto  bg-card font-light rounded-md border-position-text border-1 ml-3 ">
       <NativeSelectOption value="">Select status</NativeSelectOption>
       <NativeSelectOption value="last-month">Last Month</NativeSelectOption>
       <NativeSelectOption value="last-3-months">
