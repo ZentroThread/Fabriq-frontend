@@ -1,5 +1,7 @@
 import Swal from "sweetalert2";
 import { useAuthStore } from "@/store/user-auth-store";
+import { API_ENDPOINTS } from "@/constants/api.constants";
+import { API_BASE_URL } from "@/constants/constdata";
 
 interface AddItemPayload {
   code: string;
@@ -28,11 +30,11 @@ export const itemService = {
     if (data.image && data.image instanceof File) {
       formData.append("image", data.image);
     }
-    console.log("📦 FormData contents:");
-    for (const [key, value] of formData.entries()) {
-      console.log(`  ${key}:`, value);
-    }
-    const response = await fetch("http://localhost:8081/v1/attire/add", {
+    // console.log("📦 FormData contents:");
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`  ${key}:`, value);
+    // }
+    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ATTIRE.ADD}`, {
       method: "POST",
       headers: {
         // Add Authorization header if you need it
@@ -43,20 +45,13 @@ export const itemService = {
     console.log(formData);
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Backend error response:", errorText);
-      console.error("Response status:", response.status);
-      console.error(
-        "Response headers:",
-        Object.fromEntries(response.headers.entries())
-      );
 
       let errorMessage = errorText || "Failed to add item";
       try {
         const errorData = JSON.parse(errorText);
         errorMessage = errorData?.message || errorText;
       } catch {
-        // Response is plain text, use it directly
-        errorMessage = errorText;
+        /* empty */
       }
 
       throw new Error(errorMessage);

@@ -7,32 +7,59 @@ import { RentsAndBill } from "@/pages/rentsandbills";
 import EmployeeOverview from "@/pages/employee-overview";
 import EmployeeProfile from "@/pages/employee-profile";
 import { SalaryHistory } from "@/pages/salary-history";
-
 import Login from "../pages/login";
-
 import Layout from "../components/organisms/layout/layout";
 import LeaveHistory from "@/pages/leave-history";
+import { ProtectedRoute } from "@/components/molecules/protected-route";
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* Login pages (NO layout) */}
+      {/* Public routes - Login pages (NO layout) */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Dashboard + other pages WITH layout */}
-      <Route element={<Layout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/attendance" element={<Attendance />} />
-        <Route path="/items" element={<Items />} />
-        <Route path="/reports" element={<Reports />} />
+      {/* Protected routes WITH layout and authentication */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          {/* Dashboard - All authenticated users */}
+          <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route path="/attire" element={<Items />} />
-        <Route path="/rent" element={<RentsAndBill />} />
-        <Route path="/emp" element={<EmployeeOverview />} />
-        <Route path="/emp/:id" element={<EmployeeProfile />} />
-        <Route path="/salary-history/:id" element={<SalaryHistory />} />
-        <Route path="/leave-history/:id" element={<LeaveHistory />} />
+          {/* Employees - Owner only */}
+          <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
+            <Route path="/emp" element={<EmployeeOverview />} />
+            <Route path="/emp/:id" element={<EmployeeProfile />} />
+            <Route path="/salary-history/:id" element={<SalaryHistory />} />
+            <Route path="/leave-history/:id" element={<LeaveHistory />} />
+          </Route>
+
+          {/* Attendance - Owner only */}
+          <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
+            <Route path="/attendance" element={<Attendance />} />
+          </Route>
+
+          {/* Rentals & Billing - Owner and Cashier */}
+          <Route
+            element={<ProtectedRoute allowedRoles={["owner", "cashier"]} />}
+          >
+            <Route path="/rent" element={<RentsAndBill />} />
+          </Route>
+
+          {/* Items - Owner and Sales Assistant */}
+          <Route
+            element={
+              <ProtectedRoute allowedRoles={["owner", "sales_assistant"]} />
+            }
+          >
+            <Route path="/items" element={<Items />} />
+            <Route path="/attire" element={<Items />} />
+          </Route>
+
+          {/* Reports - Owner only */}
+          <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
+            <Route path="/reports" element={<Reports />} />
+          </Route>
+        </Route>
       </Route>
     </Routes>
   );

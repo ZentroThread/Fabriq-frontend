@@ -1,20 +1,23 @@
 import { z } from "zod";
 
+// User role enum
+export const userRoleSchema = z.enum(["owner", "cashier", "sales_assistant"]);
+
 export const userSchema = z.object({
   id: z.number(),
-  name: z.string(),
-  email: z.string().email(),
-  tenantId: z.string().optional(),
+  username: z.string(),
+  role: userRoleSchema,
+  tenantId: z.string(),
 });
 
+// Backend returns just the JWT token as a string
 export const authResponseSchema = z.object({
   token: z.string(),
-  user: userSchema,
 });
 
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(1, "*Username is Required"),
+  password: z.string().min(1, "*Password is Required"),
 });
 
 export const registerSchema = z.object({
