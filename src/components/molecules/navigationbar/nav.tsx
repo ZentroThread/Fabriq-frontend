@@ -4,6 +4,7 @@ import { Bell, X } from "lucide-react";
 import ThemeToggle from "../../atoms/toggle/theme-toggle";
 import { useAuthStore } from "@/store/user-auth-store";
 import { useNavigate } from "react-router-dom";
+import { AlertDialogDemo } from "../../atoms/alert/alert-dialog";
 
 function Nav({
   username,
@@ -38,19 +39,31 @@ function Nav({
 
       <div className="ml-auto flex gap-6 items-center">
         <ThemeToggle />
-        <Bell className="mr-3 p-0.5" />
+        <button
+          className="  hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          title="Notifications"
+        >
+          <Bell className="mr-3 p-0.5" />
+        </button>
         <div className="w-12 h-12 bg-avatar-bg rounded-full border border-avatar-border" />
         <div className="flex flex-col text-left">
           <span className="text-sm font-semibold">{username}</span>
           <span className="text-xs text-position-text">{position}</span>
         </div>
-        <button
-          onClick={handleLogout}
-          className="ml-4 p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          title="Logout"
+        <AlertDialogDemo
+          title="Confirm Logout"
+          description="Are you sure you want to logout? It requires username and password again login"
+          cancel="Cancel"
+          yes="Logout"
+          onConfirm={handleLogout}
         >
-          <LogOut size={20} />
-        </button>
+          <button
+            className="ml-4 p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            title="Logout"
+          >
+            <LogOut size={20} />
+          </button>
+        </AlertDialogDemo>
       </div>
     </div>
   );

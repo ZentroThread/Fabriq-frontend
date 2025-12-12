@@ -4,6 +4,8 @@ import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useItemStore } from "@/store/item-store";
 import { itemService } from "@/services/item.service";
+import SuccessAlert from "@/components/atoms/alert/success-alert";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +34,7 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
   const form = useAddItemForm();
   const queryClient = useQueryClient();
   const addItem = useItemStore((state) => state.addItem);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const mutation = useMutation({
     mutationFn: itemService.addItem,
@@ -44,11 +47,14 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
       // Invalidate and refetch queries
       queryClient.invalidateQueries({ queryKey: ["items"] });
 
-      // Reset form and close dialog
-      form.reset();
-      if (onClose) {
-        onClose();
-      }
+      // Show success alert
+      setShowSuccess(true);
+
+      // Hide success alert after 3 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+        if (onClose) onClose();
+      }, 3000);
     },
     onError: (error) => {
       console.error("Error adding item:", error);
@@ -68,6 +74,14 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
 
   return (
     <Form {...form}>
+      {showSuccess && (
+        <div className="mb-4">
+          <SuccessAlert
+            title="Success!"
+            description="Item added successfully!"
+          />
+        </div>
+      )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="bg-card">
         <ScrollArea className="h-[500px] w-full pr-4 [&>div>div]:space-y-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-500">
           <div className="space-y-4">
@@ -89,7 +103,7 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
               name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Title</FormLabel>
+                  <FormLabel>Item Code</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., ATR001" {...field} />
                   </FormControl>

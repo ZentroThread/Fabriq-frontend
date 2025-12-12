@@ -8,7 +8,7 @@ import { useAuthStore } from "@/store/user-auth-store";
 import { useMutation } from "@tanstack/react-query";
 import { extractUserFromToken } from "@/lib/jwt";
 import type { User } from "../types/types";
-import { loginUser } from "@/api/login";
+import { loginService } from "@/services/login.service";
 //useForm hook for additems
 export function useAddItemForm() {
   return useForm<AddItemFormValues>({
@@ -41,7 +41,7 @@ export const useLogin = () => {
   const setError = useAuthStore((state) => state.setError);
 
   return useMutation({
-    mutationFn: loginUser,
+    mutationFn: loginService.login,
     onMutate: () => {
       setLoading(true);
       setError(null);

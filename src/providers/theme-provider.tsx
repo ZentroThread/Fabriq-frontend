@@ -25,7 +25,7 @@ export const ThemeProviderContext =
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = "vite-ui-theme",
+  storageKey = "light",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
