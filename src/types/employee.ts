@@ -14,7 +14,7 @@ export interface Employee {
   empLastName: string;
   nicNumber: string;
   mobileNumber: string;
-  dateOfBirth: number;     
+  dateOfBirth: string;     
   role: string;
   address: string;
   gender: "MALE" | "FEMALE";

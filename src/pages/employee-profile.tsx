@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEmployee } from "@/hooks/employee/useEmployee";
 import { useUpdateEmployee } from "@/hooks/employee/useUpdateEmployee";
 import { useEffect, useState } from "react";
+import type { Employee, EmployeeBankDetails } from "@/types/employee";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
@@ -12,47 +13,54 @@ export default function EmployeeProfile() {
   const { id } = useParams();
   const empCode = String(id);
 
-  const {data: employee, isLoading, isError} = useEmployee(empCode);
+  const {data: employee} = useEmployee(empCode);
 
-  const { mutate: updateEmployee, isPending } = useUpdateEmployee();
+  const { mutate: updateEmployee } = useUpdateEmployee();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<typeof employee>>({});
+  const [formData, setFormData] = useState<Partial<Employee>>({});
 
-  useEffect(() => {
-    if (employee) {
-      setFormData(employee);
-    }
-  }, [employee]);
+useEffect(() => {
+  if (employee) {
+    setFormData(employee);
+  }
+}, [employee]);
 
-  const handleChange = (field: string, value: any) => {
-  setFormData((prev: any) => ({
+  const handleChange =<K extends keyof Employee>
+  (field: K, value: Employee[K]) => {
+  setFormData(prev => ({
     ...prev,
     [field]: value,
   }));
 };
 
-const handleBankChange = (field: string, value: any) => {
-  setFormData((prev: any) => ({
+const handleBankChange = <K extends keyof EmployeeBankDetails>(
+  field: K,
+  value: EmployeeBankDetails[K]
+) => {
+  setFormData(prev => ({
     ...prev,
     employeeBankDetails: {
-      ...prev.employeeBankDetails,
+      ...(prev.employeeBankDetails || {}),
       [field]: value,
-    },
+    } as EmployeeBankDetails,
   }));
 };
+
 const handleUpdate = () => {
-  updateEmployee(
-    {
-      code: empCode,
-      data: formData,
-    },
-    {
-      onSuccess: () => {
-        setIsEditing(false);
+  if (formData) {
+    updateEmployee(
+      {
+        code: empCode,
+        data: formData,
       },
-    }
-  );
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      }
+    );
+  }
 };
 
 
@@ -71,7 +79,7 @@ const handleUpdate = () => {
         {/* Header */}
         <div className="mb-6 sm:mb-10">
           <span className="text-style justify-center text-xl sm:text-2xl flex items-center">
-            {employee?.empFirstName} {employee?.empLastName}
+            {employee?.empFirstName ?? ""} {employee?.empLastName ?? ""}
           </span>
           <span className="justify-center flex items-center text-position-text font-light text-sm sm:text-base">
             {employee?.role}
@@ -96,8 +104,8 @@ const handleUpdate = () => {
                   Employee Name
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.empFirstName || ""}
-                  disabled={!isEditing}
+                  value={formData?.empFirstName ?? ""}
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("empFirstName", e.target.value)} 
                 />
               </div>
@@ -107,8 +115,8 @@ const handleUpdate = () => {
                   Last Name
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.empLastName || ""}
-                  disabled={!isEditing}
+                  value={formData?.empLastName ?? ""}
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("empLastName", e.target.value)} 
                 />
               </div>
@@ -117,8 +125,8 @@ const handleUpdate = () => {
                   Employee ID
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.empCode || ""}
-                  disabled={!isEditing}
+                  value={formData?.empCode ?? ""}
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("empCode", e.target.value)} 
                 />
               </div>
@@ -128,8 +136,8 @@ const handleUpdate = () => {
                   Role
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.role || ""}
-                  disabled={!isEditing}
+                  value={formData?.role ?? ""}
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("role", e.target.value)}
                     />
               </div>
@@ -139,8 +147,8 @@ const handleUpdate = () => {
                   Address
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.address || ""}
-                  disabled={!isEditing}
+                  value={formData?.address ?? ""}
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("address", e.target.value)}
                    /> 
               </div>
@@ -149,7 +157,10 @@ const handleUpdate = () => {
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   District
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={""}
+                  readOnly
+                />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
@@ -157,8 +168,8 @@ const handleUpdate = () => {
                   Date of Birth
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.dateOfBirth || ""} 
-                  disabled={!isEditing}
+                  value={formData?.dateOfBirth ?? ""} 
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("dateOfBirth", e.target.value)}
                   />
               </div>
@@ -167,7 +178,8 @@ const handleUpdate = () => {
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Age
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" value={employee?.age} />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                value={employee?.age.toString() ?? ""} readOnly />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
@@ -175,9 +187,9 @@ const handleUpdate = () => {
                   Gender
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.gender || ""}  
-                  disabled={!isEditing}
-                  onChange={(e) => handleChange("gender", e.target.value)}
+                  value={formData?.gender ?? ""}  
+                  readOnly={!isEditing}
+                  onChange={(e) => handleChange("gender", e.target.value as "MALE" | "FEMALE")}
                   />
               </div>
 
@@ -186,8 +198,8 @@ const handleUpdate = () => {
                   Joined Date
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.joinedDate || ""}  
-                  disabled={!isEditing}
+                  value={formData?.joinedDate ?? ""}  
+                  readOnly={!isEditing}
                   onChange={(e) => handleChange("joinedDate", e.target.value)}
                   />
               </div>
@@ -197,8 +209,8 @@ const handleUpdate = () => {
                   Bank Acc Number
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.employeeBankDetails?.accountNumber || ""}  
-                  disabled={!isEditing}
+                  value={formData?.employeeBankDetails?.accountNumber ?? ""}  
+                  readOnly={!isEditing}
                   onChange={(e) => handleBankChange("accountNumber", e.target.value)}
                   />
               </div>
