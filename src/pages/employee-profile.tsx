@@ -22,6 +22,7 @@ export default function EmployeeProfile() {
 
   const updateFormData = useCallback(() => {
     if (employee) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(employee);
     }
   }, [employee]);
