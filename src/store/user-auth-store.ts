@@ -1,48 +1,46 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User, UserRole } from "@/types/types";
-import { isTokenExpired } from "@/lib/jwt";
+import { API_BASE_URL } from "@/constants/constdata";
+import { API_ENDPOINTS } from "@/constants/api.constants";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   error: string | null;
 
-  // Actions
-  setAuth: (user: User, token: string) => void;
+  setUser: (user: User | null) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
 
-  // Getters
   isAuthenticated: () => boolean;
   hasRole: (role: UserRole | UserRole[]) => boolean;
   getTenantId: () => string | null;
-  getToken: () => string | null;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       isLoading: false,
       error: null,
 
-      setAuth: (user, token) => {
-        // Validate token before setting
-        if (isTokenExpired(token)) {
-          set({ user: null, token: null, error: "Token expired" });
-          return;
-        }
-        set({ user, token, error: null });
-      },
+      setUser: (user) => set({ user }),
 
-      logout: () => {
-        set({ user: null, token: null, error: null });
-        // Clear any other cached data if needed
+      logout: async () => {
+        try {
+          // Call backend to clear HttpOnly cookie
+          await fetch(`${API_BASE_URL}${API_ENDPOINTS.LOGIN.LOGOUT}`, {
+            method: "POST",
+            credentials: "include",
+          });
+        } catch (error) {
+          console.error("Logout API call failed:", error);
+        }
+        // Clear local state
+        set({ user: null, error: null });
         localStorage.removeItem("auth-storage");
       },
 
@@ -53,16 +51,7 @@ export const useAuthStore = create<AuthState>()(
       clearError: () => set({ error: null }),
 
       isAuthenticated: () => {
-        const { token } = get();
-        if (!token) return false;
-
-        // Check if token is expired
-        if (isTokenExpired(token)) {
-          get().logout();
-          return false;
-        }
-
-        return true;
+        return get().user !== null;
       },
 
       hasRole: (role) => {
@@ -77,25 +66,13 @@ export const useAuthStore = create<AuthState>()(
       },
 
       getTenantId: () => {
-        const { user } = get();
-        return user?.tenantId || null;
-      },
-
-      getToken: () => {
-        const { token } = get();
-        if (!token || isTokenExpired(token)) {
-          get().logout();
-          return null;
-        }
-        return token;
+        return get().user?.tenantId || null;
       },
     }),
     {
       name: "auth-storage",
-      // Only persist essential data
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
       }),
     }
   )

@@ -2,7 +2,9 @@ import { API_BASE_URL } from "@/constants/constdata";
 import { useAuthStore } from "@/store/user-auth-store";
 
 /**
- * API Client using native fetch with automatic JWT token injection
+ * API Client using native fetch with HttpOnly Cookie authentication
+ * 🔒 JWT token is stored in HttpOnly cookie (secure, XSS-proof)
+ * 🍪 Browser automatically sends cookie with every request (credentials: 'include')
  */
 
 interface RequestOptions extends RequestInit {
@@ -21,13 +23,10 @@ class ApiClient {
       "Content-Type": "application/json",
     };
 
-    // Get token from Zustand store
-    const token = useAuthStore.getState().getToken();
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
+    // ✅ NO MORE Authorization header - JWT is in HttpOnly cookie!
+    // The browser automatically sends the cookie with credentials: 'include'
 
-    // Add tenant ID if available
+    // Add tenant ID if available (still needed for multi-tenancy)
     const tenantId = useAuthStore.getState().getTenantId();
     if (tenantId) {
       headers["X-Tenant-ID"] = tenantId;
@@ -84,6 +83,7 @@ class ApiClient {
     const response = await fetch(url, {
       method: "GET",
       headers: this.getHeaders(),
+      credentials: "include", // Include cookies
       ...fetchOptions,
     });
 
@@ -101,6 +101,7 @@ class ApiClient {
     const response = await fetch(url, {
       method: "POST",
       headers: this.getHeaders(),
+      credentials: "include", // Include cookies
       body: JSON.stringify(data),
       ...fetchOptions,
     });
@@ -119,6 +120,7 @@ class ApiClient {
     const response = await fetch(url, {
       method: "PUT",
       headers: this.getHeaders(),
+      credentials: "include", // Include cookies
       body: JSON.stringify(data),
       ...fetchOptions,
     });
@@ -137,6 +139,7 @@ class ApiClient {
     const response = await fetch(url, {
       method: "PATCH",
       headers: this.getHeaders(),
+      credentials: "include", // Include cookies
       body: JSON.stringify(data),
       ...fetchOptions,
     });
@@ -151,6 +154,7 @@ class ApiClient {
     const response = await fetch(url, {
       method: "DELETE",
       headers: this.getHeaders(),
+      credentials: "include", // Include cookies
       ...fetchOptions,
     });
 
@@ -167,16 +171,16 @@ class ApiClient {
     const url = this.buildURL(endpoint, params);
 
     // Don't set Content-Type for FormData, browser will set it with boundary
-    const token = useAuthStore.getState().getToken();
     const tenantId = useAuthStore.getState().getTenantId();
 
     const headers: HeadersInit = {};
-    if (token) headers["Authorization"] = `Bearer ${token}`;
+    // ✅ NO Authorization header - JWT is in HttpOnly cookie!
     if (tenantId) headers["X-Tenant-ID"] = tenantId;
 
     const response = await fetch(url, {
       method: "POST",
       headers,
+      credentials: "include", // ✅ Include cookies (JWT token)
       body: formData,
       ...fetchOptions,
     });

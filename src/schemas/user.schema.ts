@@ -12,7 +12,7 @@ export const userSchema = z.object({
 
 // Backend returns just the JWT token as a string
 export const authResponseSchema = z.object({
-  token: z.string(),
+  response: z.string(),
 });
 
 export const loginSchema = z.object({

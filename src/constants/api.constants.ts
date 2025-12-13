@@ -12,6 +12,8 @@ export const API_ENDPOINTS = {
   LOGIN: {
     REGISTER: "/v1/user/register",
     LOGIN: "/v1/user/login",
+    LOGOUT: "/v1/user/logout",
+    GETCURRENTUSER: "/v1/user/me",
   },
   // Add more endpoints...
 };

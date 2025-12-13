@@ -5,8 +5,7 @@ import { ItemCard } from "@/components/molecules/cards/item-card";
 import { Input } from "@/components/molecules/input/input";
 import Chart from "@/components/templates/Chart";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { BanknoteArrowUp, Package, Plus, Tag } from "lucide-react";
-import nilame1 from "@/assets/items/nilame1.jpeg";
+import { BanknoteArrowUp, Package, Plus, Tag, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,9 +14,32 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
+import { useFilteredItems, useAddItem } from "@/hooks/useItems";
+import nilame1 from "@/assets/items/nilame1.jpeg";
 
 function Items() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    items: filteredItems,
+    allItems,
+    isLoading,
+    error,
+    refetch,
+  } = useFilteredItems(searchQuery);
+  const addItemMutation = useAddItem();
+
+  console.log("📦 Filtered Items:", filteredItems);
+  console.log("📦 All Items:", allItems);
+
+  const handleItemAdded = () => {
+    setIsDialogOpen(false);
+    // No need to manually refetch - TanStack Query handles it automatically
+  };
+
+  // Calculate stats from all items
+  //const totalRevenue = allItems.reduce((sum, item) => sum + (item.price * item.stock), 0);
+  //const activeRentals = allItems.filter(item => item.status === "RENTED").length;
 
   return (
     <div className="p-5 flex flex-col ">
@@ -46,7 +68,7 @@ function Items() {
               Add a new item to your bridal attire and accessories inventory
             </DialogDescription>
           </DialogHeader>
-          <AddItemForm onClose={() => setIsDialogOpen(false)} />
+          <AddItemForm onClose={handleItemAdded} />
         </DialogContent>
       </Dialog>
       <div className="grid lg:grid-cols-3  sm:grid-cols-2  gap-6 mt-5 mb-5">
@@ -71,61 +93,55 @@ function Items() {
 
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
-          <Input />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search items..."
+          />
           <NativeSelectDemo />
         </div>
       </Chart>
 
-      <div
-        className="pt-5  grid gap-6 
-                grid-cols-1 
-                sm:grid-cols-2 
-                md:grid-cols-3 
-                lg:grid-cols-4"
-      >
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <span className="ml-2 text-position-text">Loading items...</span>
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center h-64">
+          <p className="text-destructive mb-4">
+            {error instanceof Error ? error.message : "Failed to load items"}
+          </p>
+          <Button text="Retry" onClick={() => refetch()} />
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-position-text">
+            {searchQuery
+              ? "No items match your search"
+              : "No items found. Add your first item!"}
+          </p>
+        </div>
+      ) : (
+        <div
+          className="pt-5 grid gap-6 
+                    grid-cols-1 
+                    sm:grid-cols-2 
+                    md:grid-cols-3 
+                    lg:grid-cols-4"
+        >
+          {filteredItems.map((item) => (
+            <ItemCard
+              code={item.code}
+              title={item.title || "Untitled"}
+              description={item.description || "No description"}
+              price={`LKR ${(item.price || 0).toLocaleString()}`}
+              stock={(item.stock || 0).toString()}
+              image={item.image || "no photo available"}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

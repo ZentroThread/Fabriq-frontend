@@ -1,4 +1,13 @@
-import type { JWTPayload, User, UserRole } from "@/types/types";
+import type { User, UserRole } from "@/types/types";
+
+export interface JWTPayload {
+  sub: string; // username
+  userId: string;
+  role: string;
+  tenantId: string;
+  iat: number;
+  exp: number;
+}
 
 /**
  * Decode JWT token without verification (client-side)

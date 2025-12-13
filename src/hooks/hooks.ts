@@ -6,9 +6,10 @@ import { useContext } from "react";
 import { ThemeProviderContext } from "../providers/theme-provider";
 import { useAuthStore } from "@/store/user-auth-store";
 import { useMutation } from "@tanstack/react-query";
-import { extractUserFromToken } from "@/lib/jwt";
 import type { User } from "../types/types";
 import { loginService } from "@/services/login.service";
+import { API_BASE_URL } from "@/constants/constdata";
+import { API_ENDPOINTS } from "@/constants/api.constants";
 //useForm hook for additems
 export function useAddItemForm() {
   return useForm<AddItemFormValues>({
@@ -36,7 +37,7 @@ export const useTheme = () => {
 };
 
 export const useLogin = () => {
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setUser = useAuthStore((state) => state.setUser);
   const setLoading = useAuthStore((state) => state.setLoading);
   const setError = useAuthStore((state) => state.setError);
 
@@ -46,29 +47,38 @@ export const useLogin = () => {
       setLoading(true);
       setError(null);
     },
-    onSuccess: (data: { token: string }) => {
+    onSuccess: async () => {
       try {
-        // Decode JWT token to extract role and userId
-        const payload = JSON.parse(atob(data.token.split(".")[1]));
-        const role = payload.role;
-        const userId = payload.userId || payload.id;
+        // ✅ With HttpOnly cookie: No token in response!
+        // JWT is automatically stored in HttpOnly cookie by browser
+        // Now fetch user data from /me endpoint (cookie sent automatically)
 
-        if (!role || !userId) {
-          throw new Error("Invalid token: missing role or user ID");
+        const response = await fetch(
+          `${API_BASE_URL}${API_ENDPOINTS.LOGIN.GETCURRENTUSER}`,
+          {
+            credentials: "include", // Send cookie
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
         }
 
-        // Extract user details from JWT token
-        const userDetails = extractUserFromToken(data.token, role, userId);
+        const userData = await response.json();
 
-        if (!userDetails || !userDetails.id || !userDetails.role) {
-          throw new Error("Invalid token: missing user information");
-        }
+        // Convert backend Login object to frontend User object
+        const user: User = {
+          id: userData.id,
+          username: userData.username,
+          role: userData.role,
+          tenantId: userData.tenantId,
+        };
 
-        // Store auth data in Zustand
-        setAuth(userDetails as User, data.token);
+        // Store user in Zustand (no token needed)
+        setUser(user);
         setLoading(false);
       } catch (error) {
-        setError("Failed to decode user information from token");
+        setError("Failed to fetch user information");
         setLoading(false);
         throw error;
       }

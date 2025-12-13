@@ -16,11 +16,3 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 
 // JWT Payload structure
-export interface JWTPayload {
-  sub: string; // username
-  userId: string;
-  role: string;
-  tenantId: string;
-  iat: number;
-  exp: number;
-}

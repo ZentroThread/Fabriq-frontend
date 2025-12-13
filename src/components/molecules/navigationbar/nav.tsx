@@ -3,7 +3,7 @@ import logo from "../../../assets/images/logo.jpg";
 import { Bell, X } from "lucide-react";
 import ThemeToggle from "../../atoms/toggle/theme-toggle";
 import { useAuthStore } from "@/store/user-auth-store";
-import { useNavigate } from "react-router-dom";
+
 import { AlertDialogDemo } from "../../atoms/alert/alert-dialog";
 
 function Nav({
@@ -18,11 +18,9 @@ function Nav({
   setSidebarOpen: (v: boolean) => void;
 }) {
   const logout = useAuthStore((state) => state.logout);
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
   };
 
   return (

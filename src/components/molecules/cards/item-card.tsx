@@ -8,6 +8,7 @@ interface ItemCardProps {
   price: string;
   stock?: string;
   image: string;
+  code: string;
 }
 
 export function ItemCard({
@@ -16,6 +17,7 @@ export function ItemCard({
   price,
   stock,
   image,
+  code,
 }: ItemCardProps) {
   return (
     <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-105 ">
@@ -29,7 +31,7 @@ export function ItemCard({
       </div>
       <CardHeader>
         <CardTitle className="text-lg pl-2 text-text-inactive ">
-          {title}
+          {title}.{code}
         </CardTitle>
       </CardHeader>
 
