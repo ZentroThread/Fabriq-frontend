@@ -1,11 +1,12 @@
 import Button from "@/components/atoms/button/add-button";
 import Chart from "@/components/templates/Chart";
 import { Input } from "@/components/ui/input";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { useEmployee } from "@/hooks/employee/useEmployee";
 import { useUpdateEmployee } from "@/hooks/employee/useUpdateEmployee";
-import { useCallback, useEffect, useState } from "react";
+import {  useState } from "react";
 import type { Employee, EmployeeBankDetails } from "@/types/employee";
+
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
@@ -18,18 +19,9 @@ export default function EmployeeProfile() {
   const { mutate: updateEmployee } = useUpdateEmployee();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<Employee>>({});
+  const [formData, setFormData] = useState<Partial<Employee>>(() => employee ?? {});
 
-  const updateFormData = useCallback(() => {
-    if (employee) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData(employee);
-    }
-  }, [employee]);
 
-  useEffect(() => {
-    updateFormData();
-  }, [updateFormData]);
 
   const handleChange =<K extends keyof Employee>
   (field: K, value: Employee[K]) => {
