@@ -2,9 +2,21 @@ import Button from "@/components/atoms/button/add-button";
 import Chart from "@/components/templates/Chart";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { EmployeeProfileSkeleton } from "@/components/molecules/skeletons/employee-profile-skeleton";
+import { useState, useEffect } from "react";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <EmployeeProfileSkeleton />;
+  }
 
   const showSalaryHistory = (id: string) => {
     navigate(`/salary-history/${id}`);

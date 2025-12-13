@@ -2,10 +2,11 @@ import { useState } from "react";
 import Button from "@/components/atoms/button/add-button";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
+import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
 import { Input } from "@/components/molecules/input/input";
 import Chart from "@/components/templates/Chart";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { BanknoteArrowUp, Package, Plus, Tag, Loader2 } from "lucide-react";
+import { BanknoteArrowUp, Package, Plus, Tag } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -40,6 +41,10 @@ function Items() {
   // Calculate stats from all items
   //const totalRevenue = allItems.reduce((sum, item) => sum + (item.price * item.stock), 0);
   //const activeRentals = allItems.filter(item => item.status === "RENTED").length;
+
+  if (isLoading) {
+    return <ItemsSkeleton />;
+  }
 
   return (
     <div className="p-5 flex flex-col ">
@@ -102,12 +107,7 @@ function Items() {
         </div>
       </Chart>
 
-      {isLoading ? (
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <span className="ml-2 text-position-text">Loading items...</span>
-        </div>
-      ) : error ? (
+      {error ? (
         <div className="flex flex-col items-center justify-center h-64">
           <p className="text-destructive mb-4">
             {error instanceof Error ? error.message : "Failed to load items"}
@@ -138,6 +138,7 @@ function Items() {
               price={`LKR ${(item.price || 0).toLocaleString()}`}
               stock={(item.stock || 0).toString()}
               image={item.image || "no photo available"}
+              status={item.status}
             />
           ))}
         </div>

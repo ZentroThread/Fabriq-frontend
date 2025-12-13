@@ -3,12 +3,23 @@ import { Calendar, Plus, XCircle } from "lucide-react";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { employees } from "@/constants/data";
-
+import { EmployeeOverviewSkeleton } from "@/components/molecules/skeletons/employee-overview-skeleton";
 import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/molecules/input/input";
+import { useState, useEffect } from "react";
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <EmployeeOverviewSkeleton />;
+  }
 
   const getStatusStyle = (status: string) => {
     switch (status) {

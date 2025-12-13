@@ -7,8 +7,21 @@ import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multip
 import { ChartPie } from "@/components/organisms/charts/ChartPie";
 import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
 import { TableDemo } from "@/components/organisms/tables/table-demo";
+import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
+import { useState, useEffect } from "react";
 
 function Reports() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <ReportsSkeleton />;
+  }
+
   return (
     <div className="p-5 flex flex-col ">
       <div className="text-style text-[30px] font-semibold">
