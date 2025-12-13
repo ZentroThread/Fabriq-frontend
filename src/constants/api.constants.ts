@@ -1,3 +1,5 @@
+
+
 export const API_ENDPOINTS = {
   ATTIRE: {
     ADD: "/v1/attire/add",
@@ -10,4 +12,12 @@ export const API_ENDPOINTS = {
     GET_ALL: "/v1/customer/rea-customers",
   },
   // Add more endpoints...
+
+  EMPLOYEE: {
+    ADD: "/v1/employees",
+    GET_ALL: "/v1/employees",
+    DELETE: (id: number) => `/v1/employees/${id}`,
+    UPDATE: (code: string) => `/v1/employees/${code}`,
+    GET_BY_CODE: (code: string ) => `/v1/employees/${code}`,
+  },
 };

@@ -2,13 +2,17 @@ import Button from "@/components/atoms/button/add-button";
 import { Calendar, Plus, XCircle } from "lucide-react";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { employees } from "@/constants/data";
+//import { employees } from "@/constants/data";
 
 import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/molecules/input/input";
+import { useEmployees } from "@/hooks/employee/useEmployess";
+
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
+
+  const {data:employees, isLoading, isError} = useEmployees();
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -23,7 +27,7 @@ export default function EmployeeOverview() {
     }
   };
 
-  const handleRowClick = (id: string) => {
+  const handleRowClick = (id: string | number) => {
     console.log("Clicked employee ID:", id);
     navigate(`/emp/${id}`);
   };
@@ -79,6 +83,7 @@ export default function EmployeeOverview() {
           </div>
         </div>
 
+    
         {/* Table */}
         <table className="w-full text-left overflow-x-auto">
           <thead>
@@ -94,32 +99,32 @@ export default function EmployeeOverview() {
           </thead>
 
           <tbody>
-            {employees.map((emp, index) => (
+            {employees?.map((emp, index) => (
               <tr
                 key={index}
                 className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition cursor-pointer"
-                onClick={() => handleRowClick(emp.id)}
+                onClick={() => handleRowClick(emp.empCode)}
               >
                 <td className="py-4 flex items-center gap-3 text-(--color-text)">
                   <div className="w-10 h-10 rounded-full bg-avatar-bg border border-(--color-avatar-border) flex items-center justify-center font-semibold">
-                    {emp.initials}
+                    {emp.empFirstName.charAt(0)}{emp.empLastName.charAt(0)}
                   </div>
-                  {emp.name}
+                  {emp.empFirstName} {emp.empLastName}
                 </td>
 
                 <td className="text-muted-foreground">{emp.role}</td>
-                <td className="text-(--color-text)">{emp.phone}</td>
-                <td className="text-(--color-text)">LKR {emp.salary}</td>
+                <td className="text-(--color-text)">{emp.mobileNumber}</td>
+                <td className="text-(--color-text)">LKR {emp.basicSalary}</td>
 
                 <td
                   className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium 
-                ${getStatusStyle(emp.status)}`}
+                ${getStatusStyle("present")}`}
                 >
-                  {getIcon(emp.status)}
-                  {emp.status}
+                  {getIcon("present")}
+                  {"present"}
                 </td>
 
-                <td className="text-muted-foreground">{emp.joinDate}</td>
+                <td className="text-muted-foreground">{emp.joinedDate}</td>
 
                 <td className="flex gap-4 text-xl">
                   <div className="flex items-center gap-4">

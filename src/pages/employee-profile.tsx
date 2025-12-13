@@ -1,10 +1,61 @@
 import Button from "@/components/atoms/button/add-button";
 import Chart from "@/components/templates/Chart";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEmployee } from "@/hooks/employee/useEmployee";
+import { useUpdateEmployee } from "@/hooks/employee/useUpdateEmployee";
+import { useEffect, useState } from "react";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
+
+  const { id } = useParams();
+  const empCode = String(id);
+
+  const {data: employee, isLoading, isError} = useEmployee(empCode);
+
+  const { mutate: updateEmployee, isPending } = useUpdateEmployee();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<Partial<typeof employee>>({});
+
+  useEffect(() => {
+    if (employee) {
+      setFormData(employee);
+    }
+  }, [employee]);
+
+  const handleChange = (field: string, value: any) => {
+  setFormData((prev: any) => ({
+    ...prev,
+    [field]: value,
+  }));
+};
+
+const handleBankChange = (field: string, value: any) => {
+  setFormData((prev: any) => ({
+    ...prev,
+    employeeBankDetails: {
+      ...prev.employeeBankDetails,
+      [field]: value,
+    },
+  }));
+};
+const handleUpdate = () => {
+  updateEmployee(
+    {
+      code: empCode,
+      data: formData,
+    },
+    {
+      onSuccess: () => {
+        setIsEditing(false);
+      },
+    }
+  );
+};
+
+
 
   const showSalaryHistory = (id: string) => {
     navigate(`/salary-history/${id}`);
@@ -20,10 +71,10 @@ export default function EmployeeProfile() {
         {/* Header */}
         <div className="mb-6 sm:mb-10">
           <span className="text-style justify-center text-xl sm:text-2xl flex items-center">
-            Employee Name
+            {employee?.empFirstName} {employee?.empLastName}
           </span>
           <span className="justify-center flex items-center text-position-text font-light text-sm sm:text-base">
-            Role
+            {employee?.role}
           </span>
         </div>
 
@@ -44,28 +95,54 @@ export default function EmployeeProfile() {
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Employee Name
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.empFirstName || ""}
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("empFirstName", e.target.value)} 
+                />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
+                  Last Name
+                </label>
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.empLastName || ""}
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("empLastName", e.target.value)} 
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Employee ID
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.empCode || ""}
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("empCode", e.target.value)} 
+                />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Role
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.role || ""}
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("role", e.target.value)}
+                    />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Address
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.address || ""}
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("address", e.target.value)}
+                   /> 
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
@@ -79,35 +156,51 @@ export default function EmployeeProfile() {
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Date of Birth
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.dateOfBirth || ""} 
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+                  />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Age
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" value={employee?.age} />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Gender
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.gender || ""}  
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("gender", e.target.value)}
+                  />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Joined Date
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.joinedDate || ""}  
+                  disabled={!isEditing}
+                  onChange={(e) => handleChange("joinedDate", e.target.value)}
+                  />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Bank Acc Number
                 </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={formData?.employeeBankDetails?.accountNumber || ""}  
+                  disabled={!isEditing}
+                  onChange={(e) => handleBankChange("accountNumber", e.target.value)}
+                  />
               </div>
             </div>
           </div>
@@ -143,15 +236,21 @@ export default function EmployeeProfile() {
             width="w-full sm:w-35"
             onClick={() => showLeaveHistory("1")}
           />
-          <Button
+         <Button
             bordercolor="border-border-add"
             bgcolor="bg-bg-red"
-            hoverbg=""
-            hovertext="hover:text-background"
             textcolor="text-black"
-            text="Update"
+            text={isEditing ? "Update" : "Edit"}
             width="w-full sm:w-35"
+            onClick={() => {
+              if (isEditing) {
+                handleUpdate();
+              } else {
+                setIsEditing(true);
+              }
+            }}
           />
+
         </div>
       </Chart>
     </div>
