@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEmployee } from "@/hooks/employee/useEmployee";
 import { useUpdateEmployee } from "@/hooks/employee/useUpdateEmployee";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Employee, EmployeeBankDetails } from "@/types/employee";
 
 export default function EmployeeProfile() {
@@ -20,11 +20,15 @@ export default function EmployeeProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<Employee>>({});
 
-useEffect(() => {
-  if (employee) {
-    setFormData(employee);
-  }
-}, [employee]);
+  const updateFormData = useCallback(() => {
+    if (employee) {
+      setFormData(employee);
+    }
+  }, [employee]);
+
+  useEffect(() => {
+    updateFormData();
+  }, [updateFormData]);
 
   const handleChange =<K extends keyof Employee>
   (field: K, value: Employee[K]) => {
