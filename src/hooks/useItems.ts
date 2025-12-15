@@ -4,6 +4,7 @@ import { QUERY_KEYS } from "@/constants/query-keys";
 import { toast } from "sonner";
 
 interface Item {
+  id: number;
   code: string;
   title: string;
   description: string;
@@ -89,8 +90,9 @@ export const useDeleteItem = () => {
 
   return useMutation({
     mutationFn: itemService.deleteItem,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
+      await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       toast.success("Item deleted successfully!");
     },
     onError: (error: Error) => {

@@ -18,6 +18,7 @@ interface AlertDialogProps {
   cancel: string;
   yes: string;
   children?: ReactNode;
+  yesColor ?: string;
   onConfirm?: () => void;
 }
 
@@ -26,6 +27,7 @@ export function AlertDialogDemo({
   description,
   cancel,
   yes,
+  yesColor,
   children,
   onConfirm,
 }: AlertDialogProps) {
@@ -45,7 +47,7 @@ export function AlertDialogDemo({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancel}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>{yes}</AlertDialogAction>
+          <AlertDialogAction onClick={onConfirm} className={yesColor}>{yes}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

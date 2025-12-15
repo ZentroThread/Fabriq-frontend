@@ -13,6 +13,7 @@ interface AddItemPayload {
 }
 
 interface Item {
+  id: number;
   code: string;
   title: string;
   description: string;
@@ -44,6 +45,7 @@ interface AddItemResponse {
 
 // Helper function to map backend response to frontend Item
 const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
+  id: backendItem.id,
   code: backendItem.attireCode,
   title: backendItem.attireName,
   description: backendItem.attireDescription || "",
@@ -115,7 +117,7 @@ export const itemService = {
     }
 
     const result = await apiClient.upload<AddItemResponse>(
-      `${API_ENDPOINTS.ATTIRE.ADD}/${id}`,
+      API_ENDPOINTS.ATTIRE.UPDATE(Number(id)),
       formData
     );
 
@@ -123,7 +125,7 @@ export const itemService = {
   },
 
   deleteItem: async (id: string): Promise<void> => {
-    await apiClient.request<void>(`${API_ENDPOINTS.ATTIRE.GET_ALL}/${id}`, {
+    await apiClient.request<void>(API_ENDPOINTS.ATTIRE.DELETE(Number(id)), {
       method: "DELETE",
     });
   },

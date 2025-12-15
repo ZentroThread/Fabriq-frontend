@@ -25,17 +25,51 @@ import { addItemFormSchema } from "@/schemas/user.schema";
 import { useAddItemForm } from "@/hooks/hooks";
 import { categories, status } from "@/constants/data";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useUpdateItem } from "@/hooks/useItems";
+import { useEffect } from "react";
 
 interface AddItemFormProps {
   onClose?: () => void;
+  editMode?: boolean;
+  itemData?: {
+    id: number;
+    code: string;
+    title: string;
+    description: string;
+    price: string;
+    stock: string;
+    status: string;
+    categoryId: number;
+    image?: string;
+  };
 }
 
-export function AddItemForm({ onClose }: AddItemFormProps) {
+export function AddItemForm({
+  onClose,
+  editMode = false,
+  itemData,
+}: AddItemFormProps) {
   const form = useAddItemForm();
   const queryClient = useQueryClient();
   const addItem = useItemStore((state) => state.addItem);
   const [showSuccess, setShowSuccess] = useState(false);
+  // Pre-fill form when in edit mode
+  useEffect(() => {
+    if (editMode && itemData) {
+      form.reset({
+        code: itemData.code,
+        title: itemData.title,
+        description: itemData.description,
+        price: itemData.price,
+        stock: itemData.stock,
+        status: itemData.status,
+        categoryId: itemData.categoryId,
+        image: undefined, // Image will need to be re-uploaded in edit mode
+      });
+    }
+  }, [editMode, itemData, form]);
 
+  const updateItemMutation = useUpdateItem();
   const mutation = useMutation({
     mutationFn: itemService.addItem,
     onSuccess: (data) => {
@@ -64,12 +98,35 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
   });
 
   function onSubmit(values: z.infer<typeof addItemFormSchema>) {
-    mutation.mutate({
+    const payload = {
       ...values,
       price: Number(values.price),
       stock: Number(values.stock),
       category: Number(values.categoryId),
-    });
+    };
+
+    if (editMode && itemData) {
+      // Update existing item
+      updateItemMutation.mutate(
+        { id: String(itemData.id), data: payload },
+        {
+          onSuccess: () => {
+            setShowSuccess(true);
+            setTimeout(() => {
+              setShowSuccess(false);
+              if (onClose) onClose();
+            }, 3000);
+          },
+          onError: (error) => {
+            console.error("Error updating item:", error);
+            alert(`Failed to update item: ${error.message || "Unknown error"}`);
+          },
+        }
+      );
+    } else {
+      // Add new item
+      mutation.mutate(payload);
+    }
   }
 
   return (
@@ -78,7 +135,11 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
         <div className="mb-4">
           <SuccessAlert
             title="Success!"
-            description="Item added successfully!"
+            description={
+              editMode
+                ? "Item updated successfully!"
+                : "Item added successfully!"
+            }
           />
         </div>
       )}
@@ -226,7 +287,12 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
               name="image"
               render={({ field: { value, onChange } }) => (
                 <FormItem>
-                  <FormLabel>Image </FormLabel>
+                  <FormLabel>
+                    Image{" "}
+                    {editMode &&
+                      itemData?.image &&
+                      "(Current image displayed below)"}
+                  </FormLabel>
                   <FormControl>
                     <div>
                       <input
@@ -242,9 +308,9 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
 
                       <label
                         htmlFor="imageUpload"
-                        className="bg-support-button text-support-button-text text-[14px] p-2 rounded-md font-light hover:bg-support-button-hover"
+                        className="bg-support-button text-support-button-text text-[14px] p-2 rounded-md font-light hover:bg-support-button-hover cursor-pointer"
                       >
-                        Choose Image
+                        {editMode ? "Change Image" : "Choose Image"}
                       </label>
                     </div>
                   </FormControl>
@@ -252,15 +318,29 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
                   <FormMessage />
 
                   {/* Preview the uploaded image */}
-                  {value && value instanceof File && (
+                  {value && value instanceof File ? (
                     <div className="mt-2">
+                      <p className="text-xs text-position-text mb-1">
+                        New Image Preview:
+                      </p>
                       <img
                         src={URL.createObjectURL(value)}
                         alt="Preview"
                         className="max-w-xs max-h-48 rounded border"
                       />
                     </div>
-                  )}
+                  ) : editMode && itemData?.image ? (
+                    <div className="mt-2">
+                      <p className="text-xs text-position-text mb-1">
+                        Current Image:
+                      </p>
+                      <img
+                        src={itemData.image}
+                        alt="Current"
+                        className="max-w-xs max-h-48 rounded border"
+                      />
+                    </div>
+                  ) : null}
                 </FormItem>
               )}
             />
@@ -277,9 +357,15 @@ export function AddItemForm({ onClose }: AddItemFormProps) {
               <Button
                 type="submit"
                 className=" bg-bg-green hover:opacity-80 hover:bg-bg-green "
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || updateItemMutation.isPending}
               >
-                {mutation.isPending ? "Adding..." : "Add Item"}
+                {editMode
+                  ? updateItemMutation.isPending
+                    ? "Updating..."
+                    : "Update Item"
+                  : mutation.isPending
+                    ? "Adding..."
+                    : "Add Item"}
               </Button>
             </div>
           </div>

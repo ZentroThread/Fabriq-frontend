@@ -132,6 +132,8 @@ function Items() {
         >
           {filteredItems.map((item) => (
             <ItemCard
+              key={item.id}
+              id={item.id}
               code={item.code}
               title={item.title || "Untitled"}
               description={item.description || "No description"}
@@ -139,6 +141,7 @@ function Items() {
               stock={(item.stock || 0).toString()}
               image={item.image || "no photo available"}
               status={item.status}
+              categoryId={item.category}
             />
           ))}
         </div>
