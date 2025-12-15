@@ -116,7 +116,7 @@ export const itemService = {
       formData.append("image", data.image);
     }
 
-    const result = await apiClient.upload<AddItemResponse>(
+    const result = await apiClient.uploadPut<AddItemResponse>(
       API_ENDPOINTS.ATTIRE.UPDATE(Number(id)),
       formData
     );

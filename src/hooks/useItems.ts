@@ -70,9 +70,10 @@ export const useUpdateItem = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: AddItemPayload }) =>
       itemService.updateItem(id, data),
-    onSuccess: (_, variables) => {
+    onSuccess:async (_, variables) => {
       // Invalidate both the list and the specific item
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
+      await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.ITEMS.BY_ID(variables.id),
       });

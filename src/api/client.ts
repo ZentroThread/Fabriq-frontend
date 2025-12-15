@@ -85,4 +85,13 @@ export const apiClient = {
     });
     return response.data;
   },
+
+  async uploadPut<T>(endpoint: string, formData: FormData): Promise<T> {
+    const response = await axiosInstance.put<T>(endpoint, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
 };
