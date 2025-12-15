@@ -1,84 +1,88 @@
+import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 import { API_BASE_URL } from "@/constants/constdata";
 import { useAuthStore } from "@/store/user-auth-store";
 
 /**
- * 🔒 API Client with HttpOnly Cookie Authentication
+ * 🔒 API Client with Axios and HttpOnly Cookie Authentication
  * ✅ JWT token is in HttpOnly cookie - browser sends it automatically
  * ✅ No Authorization header needed
  */
-export const apiClient = {
-  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    // Get tenant ID from store (still needed for multi-tenancy)
+
+// Create axios instance
+const axiosInstance: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true, // ✅ CRITICAL: Browser sends HttpOnly cookie
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Request interceptor - Add tenant ID to headers
+axiosInstance.interceptors.request.use(
+  (config) => {
     const tenantId = useAuthStore.getState().getTenantId();
+    if (tenantId) {
+      config.headers["X-Tenant-ID"] = tenantId;
+    }
+    console.log("🌐 API Request:", config.url, { tenantId });
+    return config;
+  },
+  (error) => {
+    console.error("❌ Request Error:", error);
+    return Promise.reject(error);
+  }
+);
 
-    const config: RequestInit = {
-      credentials: "include", // ✅ CRITICAL: Browser sends HttpOnly cookie
-      ...options,
-      headers: {
-        ...(tenantId ? { "X-Tenant-ID": tenantId } : {}),
-        ...options.headers,
-      },
-    };
-
-    console.log("🌐 API Request:", `${API_BASE_URL}${endpoint}`, { tenantId });
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+// Response interceptor - Handle errors
+axiosInstance.interceptors.response.use(
+  (response) => {
     console.log("📡 Response status:", response.status);
+    console.log("✅ API Response data:", response.data);
+    return response;
+  },
+  (error) => {
+    console.error("❌ API Error:", error.response?.data || error.message);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ API Error:", errorText);
-      throw new Error(errorText || "Request failed");
+    // Handle 401 - Unauthorized
+    if (error.response?.status === 401) {
+      useAuthStore.getState().logout();
+      window.location.href = "/login";
     }
 
-    const data = await response.json();
-    console.log("✅ API Response data:", data);
-    return data;
+    return Promise.reject(error);
+  }
+);
+
+export const apiClient = {
+  async request<T>(
+    endpoint: string,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response = await axiosInstance.request<T>({
+      url: endpoint,
+      ...options,
+    });
+    return response.data;
   },
 
   async requestText(
     endpoint: string,
-    options: RequestInit = {}
+    options: AxiosRequestConfig = {}
   ): Promise<string> {
-    const tenantId = useAuthStore.getState().getTenantId();
-
-    const config: RequestInit = {
-      credentials: "include", // ✅ Browser sends HttpOnly cookie
+    const response = await axiosInstance.request<string>({
+      url: endpoint,
+      responseType: "text",
       ...options,
-      headers: {
-        ...(tenantId ? { "X-Tenant-ID": tenantId } : {}),
-        ...options.headers,
-      },
-    };
-
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || "Request failed");
-    }
-
-    return response.text();
+    });
+    return response.data;
   },
 
   async upload<T>(endpoint: string, formData: FormData): Promise<T> {
-    const tenantId = useAuthStore.getState().getTenantId();
-
-    const config: RequestInit = {
-      method: "POST",
-      credentials: "include", // ✅ Browser sends HttpOnly cookie
+    const response = await axiosInstance.post<T>(endpoint, formData, {
       headers: {
-        ...(tenantId ? { "X-Tenant-ID": tenantId } : {}),
+        "Content-Type": "multipart/form-data",
       },
-      body: formData,
-    };
-
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || "Upload failed");
-    }
-
-    return response.json();
+    });
+    return response.data;
   },
 };

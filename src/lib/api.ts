@@ -1,20 +1,29 @@
+import axios, { AxiosRequestConfig } from "axios";
 import { API_BASE_URL } from "@/constants/constdata";
+
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 export async function fetchApi<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: AxiosRequestConfig
 ): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.statusText}`);
+  try {
+    const response = await axiosInstance.request<T>({
+      url: endpoint,
+      ...options,
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `API Error: ${error.response?.statusText || error.message}`
+      );
+    }
+    throw error;
   }
-
-  return response.json();
 }
