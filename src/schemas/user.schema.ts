@@ -43,5 +43,5 @@ export const addItemFormSchema = z.object({
   stock: z.string().min(1, {
     message: "Stock quantity is required.",
   }),
-  image: z.instanceof(File, { message: "Image is required." }),
+  image: z.instanceof(File, { message: "Image is required." }).optional(),
 });

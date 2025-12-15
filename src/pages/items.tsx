@@ -128,7 +128,7 @@ function Items() {
                     grid-cols-1 
                     sm:grid-cols-2 
                     md:grid-cols-3 
-                    lg:grid-cols-4"
+                    lg:grid-cols-3"
         >
           {filteredItems.map((item) => (
             <ItemCard
@@ -137,7 +137,7 @@ function Items() {
               code={item.code}
               title={item.title || "Untitled"}
               description={item.description || "No description"}
-              price={`LKR ${(item.price || 0).toLocaleString()}`}
+              price={item.price || 0}
               stock={(item.stock || 0).toString()}
               image={item.image || "no photo available"}
               status={item.status}

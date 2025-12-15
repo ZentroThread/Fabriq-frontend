@@ -36,7 +36,7 @@ interface AddItemFormProps {
     code: string;
     title: string;
     description: string;
-    price: string;
+    price: number;
     stock: string;
     status: string;
     categoryId: number;
@@ -60,14 +60,14 @@ export function AddItemForm({
         code: itemData.code,
         title: itemData.title,
         description: itemData.description,
-        price: itemData.price,
-        stock: itemData.stock,
+        price: itemData.price.toString(), // Convert to string for form
+        stock: itemData.stock.toString(), // Convert to string for form
         status: itemData.status,
         categoryId: itemData.categoryId,
         image: undefined, // Image will need to be re-uploaded in edit mode
       });
     }
-  }, [editMode, itemData, form]);
+  }, [editMode, itemData]);
 
   const updateItemMutation = useUpdateItem();
   const mutation = useMutation({
@@ -100,8 +100,8 @@ export function AddItemForm({
   function onSubmit(values: z.infer<typeof addItemFormSchema>) {
     const payload = {
       ...values,
-      price: Number(values.price),
-      stock: Number(values.stock),
+      price: parseFloat(values.price) || 0,
+      stock: parseInt(values.stock, 10) || 0,
       category: Number(values.categoryId),
     };
 
@@ -197,7 +197,7 @@ export function AddItemForm({
                 <FormItem>
                   <FormLabel>Price (LKR)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 8000" {...field} />
+                    <Input type="numeric" placeholder="e.g., 8000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -211,7 +211,7 @@ export function AddItemForm({
                 <FormItem>
                   <FormLabel>Stock Quantity</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 3" {...field} />
+                    <Input type="numeric" placeholder="e.g., 3" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

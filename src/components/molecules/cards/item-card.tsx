@@ -17,7 +17,7 @@ interface ItemCardProps {
   id: number;
   title: string;
   description: string;
-  price: string;
+  price: number;
   stock?: string;
   image: string;
   code: string;
@@ -66,16 +66,24 @@ export function ItemCard({
           <p className="text-sm  pb-5 text-position-text font-light">
             {description}
           </p>
-          <div className="text-sm text-position-text font-light">
+          <div className="text-sm text-position-text font-light ">
             <div className="flex justify-between items-center w-full ">
-              <span>Per Day</span>
+              <span>Per Day (LKR)</span>
               <span>Stock</span>
             </div>
           </div>
-          <div className="flex justify-between items-center w-full gap-x-4 mt-2">
-            <span className="text-style">{price}</span>
-            <span className="text-style font-extrabold">{stock}</span>
-          </div>
+         <div className="flex justify-between items-center w-full gap-x-4 mt-2">
+  <span className="text-style">
+    {typeof price === 'number' 
+      ? price.toLocaleString('en-US') 
+      : price}
+  </span>
+  <span className="text-style font-extrabold">
+    {stock && !isNaN(Number(stock))
+      ? Number(stock).toLocaleString('en-US') 
+      : stock}
+  </span>
+</div>
           <div className="flex flex-2 justify-center gap-4 p-3">
             <Button
               text={"Edit"}
