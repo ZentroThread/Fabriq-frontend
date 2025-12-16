@@ -22,7 +22,12 @@ interface ItemCardProps {
   image: string;
   code: string;
   status: string;
-  categoryId?: number;
+  categoryId?: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
 }
 
 export function ItemCard({
@@ -34,7 +39,7 @@ export function ItemCard({
   image,
   code,
   status,
-  categoryId = 1,
+  categoryId,
 }: ItemCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const deleteItemMutation = useDeleteItem();
@@ -50,7 +55,17 @@ export function ItemCard({
           <img src={image} alt="attire" className="w-full h-70 object-cover" />
 
           {/* Corner Button */}
-          <button className="absolute top-2 right-2 bg-support-button text-support-button-text border  px-3 py-1 rounded-xl text-xs shadow hover:opacity-90">
+          <button
+            className={`absolute top-2 right-2 text-support-button-text border px-3 py-1 rounded-xl text-xs shadow hover:opacity-90 ${
+              status === "Available"
+                ? "bg-support-button"
+                : status === "In Laundry"
+                  ? "bg-bg-green"
+                  : status === "Rented"
+                    ? "bg-bg-red"
+                    : "bg-support-button"
+            }`}
+          >
             {status}
           </button>
         </div>
@@ -72,18 +87,18 @@ export function ItemCard({
               <span>Stock</span>
             </div>
           </div>
-         <div className="flex justify-between items-center w-full gap-x-4 mt-2">
-  <span className="text-style">
-    {typeof price === 'number' 
-      ? price.toLocaleString('en-US') 
-      : price}
-  </span>
-  <span className="text-style font-extrabold">
-    {stock && !isNaN(Number(stock))
-      ? Number(stock).toLocaleString('en-US') 
-      : stock}
-  </span>
-</div>
+          <div className="flex justify-between items-center w-full gap-x-4 mt-2">
+            <span className="text-style">
+              {typeof price === "number"
+                ? price.toLocaleString("en-US")
+                : price}
+            </span>
+            <span className="text-style font-extrabold">
+              {stock && !isNaN(Number(stock))
+                ? Number(stock).toLocaleString("en-US")
+                : stock}
+            </span>
+          </div>
           <div className="flex flex-2 justify-center gap-4 p-3">
             <Button
               text={"Edit"}
@@ -141,7 +156,12 @@ export function ItemCard({
               price,
               stock: stock || "0",
               status,
-              categoryId,
+              category: categoryId || {
+                tenantId: "",
+                categoryId: 0,
+                categoryCode: "",
+                categoryName: "",
+              },
               image,
             }}
             onClose={() => setIsDialogOpen(false)}

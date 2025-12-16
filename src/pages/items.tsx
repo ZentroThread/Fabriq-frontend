@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Button from "@/components/atoms/button/add-button";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
 import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
-import { Input } from "@/components/molecules/input/input";
 import Chart from "@/components/templates/Chart";
-import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import { BanknoteArrowUp, Package, Plus, Tag } from "lucide-react";
 import {
   Dialog,
@@ -15,20 +13,45 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
-import { useFilteredItems, useAddItem } from "@/hooks/useItems";
-import nilame1 from "@/assets/items/nilame1.jpeg";
+import { useFilteredItems } from "@/hooks/useItems";
+import { ItemSearchFilter } from "@/components/organisms/item-filter/item-filter";
+import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 
 function Items() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const {
-    items: filteredItems,
-    allItems,
-    isLoading,
-    error,
-    refetch,
-  } = useFilteredItems(searchQuery);
-  const addItemMutation = useAddItem();
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const { items: allItems, isLoading, error, refetch } = useFilteredItems("");
+
+  // Filter items based on search query
+  const filteredItems = useMemo(() => {
+    if (!allItems) return [];
+
+    let result = allItems;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (item) =>
+          item.title?.toLowerCase().includes(query) ||
+          item.code?.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply category filter
+    if (categoryFilter) {
+      result = result.filter((item) => {
+        if (typeof item.category === "object" && item.category !== null) {
+          return String(item.category.categoryId) === categoryFilter;
+        }
+        return false;
+      });
+    }
+
+    return result;
+  }, [allItems, searchQuery, categoryFilter]); // 👈 Add categoryFilter dependency
 
   console.log("📦 Filtered Items:", filteredItems);
   console.log("📦 All Items:", allItems);
@@ -41,6 +64,16 @@ function Items() {
   // Calculate stats from all items
   //const totalRevenue = allItems.reduce((sum, item) => sum + (item.price * item.stock), 0);
   //const activeRentals = allItems.filter(item => item.status === "RENTED").length;
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    // 👈 Add this handler
+    setCategoryFilter(category);
+    console.log("Category changed to:", category);
+  };
 
   if (isLoading) {
     return <ItemsSkeleton />;
@@ -98,12 +131,30 @@ function Items() {
 
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
-          <Input
+          {/* <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search items..."
+          /> */}
+          <ItemSearchFilter
+            items={(allItems || []).map((item) => ({
+              ...item,
+              id: String(item.id),
+              image: typeof item.image === "string" ? item.image : undefined,
+            }))}
+            onSearchChange={handleSearchChange}
           />
-          <NativeSelectDemo />
+          <NativeSelectDemo
+            option="All Categories"
+            value1="1"
+            value2="2"
+            value3="3"
+            string1="Saree"
+            string2="Nilame Costume"
+            string3="Jewellary"
+            value={categoryFilter}
+            onValueChange={handleCategoryChange}
+          />
         </div>
       </Chart>
 
@@ -139,9 +190,15 @@ function Items() {
               description={item.description || "No description"}
               price={item.price || 0}
               stock={(item.stock || 0).toString()}
-              image={item.image || "no photo available"}
+              image={
+                typeof item.image === "string"
+                  ? item.image
+                  : "no photo available"
+              }
               status={item.status}
-              categoryId={item.category}
+              categoryId={
+                typeof item.category === "object" ? item.category : undefined
+              }
             />
           ))}
         </div>

@@ -39,7 +39,12 @@ interface AddItemFormProps {
     price: number;
     stock: string;
     status: string;
-    categoryId: number;
+    category: {
+      tenantId: string;
+      categoryId: number;
+      categoryCode: string;
+      categoryName: string;
+    };
     image?: string;
   };
 }
@@ -63,11 +68,11 @@ export function AddItemForm({
         price: itemData.price.toString(), // Convert to string for form
         stock: itemData.stock.toString(), // Convert to string for form
         status: itemData.status,
-        categoryId: itemData.categoryId,
+        categoryId: itemData.category.categoryId,
         image: undefined, // Image will need to be re-uploaded in edit mode
       });
     }
-  }, [editMode, itemData]);
+  }, [editMode, itemData, form]);
 
   const updateItemMutation = useUpdateItem();
   const mutation = useMutation({
@@ -197,7 +202,11 @@ export function AddItemForm({
                 <FormItem>
                   <FormLabel>Price (LKR)</FormLabel>
                   <FormControl>
-                    <Input type="numeric" placeholder="e.g., 8000" {...field} />
+                    <Input
+                      type="numeric "
+                      placeholder="e.g., 8000"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

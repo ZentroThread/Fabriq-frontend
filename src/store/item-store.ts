@@ -6,7 +6,12 @@ interface Item {
   description: string;
   price: number;
   stock: number;
-  category: number;
+  category: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
   status: string;
   tenantId: string;
   image?: File | string;

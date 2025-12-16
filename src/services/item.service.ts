@@ -19,7 +19,12 @@ interface Item {
   description: string;
   price: number;
   stock: number;
-  category: number;
+  category: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
   status: string;
   tenantId: string;
   image?: File | string;
@@ -34,7 +39,12 @@ interface BackendItem {
   attireDescription: string | null;
   attirePrice: number;
   attireStock: number;
-  categoryId: number;
+  category: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
   attireStatus: string;
   imageUrl?: string;
 }
@@ -51,7 +61,7 @@ const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   description: backendItem.attireDescription || "",
   price: backendItem.attirePrice,
   stock: backendItem.attireStock,
-  category: backendItem.categoryId,
+  category: backendItem.category,
   status: backendItem.attireStatus,
   tenantId: backendItem.tenantId,
   image: backendItem.imageUrl,

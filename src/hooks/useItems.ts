@@ -3,14 +3,19 @@ import { itemService } from "@/services/item.service";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { toast } from "sonner";
 
-interface Item {
+export interface Item {
   id: number;
   code: string;
   title: string;
   description: string;
   price: number;
   stock: number;
-  category: number;
+  category: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
   status: string;
   tenantId: string;
   image?: string;
@@ -70,7 +75,7 @@ export const useUpdateItem = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: AddItemPayload }) =>
       itemService.updateItem(id, data),
-    onSuccess:async (_, variables) => {
+    onSuccess: async (_, variables) => {
       // Invalidate both the list and the specific item
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
@@ -106,7 +111,7 @@ export const useDeleteItem = () => {
 export const useFilteredItems = (searchQuery: string) => {
   const { data: items = [], ...queryResult } = useItems();
 
-  const filteredItems = (items as Item[]).filter((item) => {
+  const filteredItems = items.filter((item) => {
     const searchLower = searchQuery.toLowerCase();
     const title = item.title?.toLowerCase() || "";
     const description = item.description?.toLowerCase() || "";
