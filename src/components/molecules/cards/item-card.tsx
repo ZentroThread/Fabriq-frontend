@@ -56,14 +56,14 @@ export function ItemCard({
 
           {/* Corner Button */}
           <button
-            className={`absolute top-2 right-2 text-support-button-text border px-3 py-1 rounded-xl text-xs shadow hover:opacity-90 ${
+            className={`absolute top-2 right-2  border px-3 py-1 rounded-xl text-xs shadow hover:opacity-90 ${
               status === "Available"
-                ? "bg-support-button"
+                ? "bg-support-button text-support-button-text "
                 : status === "In Laundry"
-                  ? "bg-bg-green"
+                  ? "bg-bg-green text-light-white"
                   : status === "Rented"
-                    ? "bg-bg-red"
-                    : "bg-support-button"
+                    ? "bg-bg-red text-light-white"
+                    : "bg-support-button "
             }`}
           >
             {status}
@@ -136,7 +136,7 @@ export function ItemCard({
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card ">
+        <DialogContent className="max-w-xl max-h-[90vh]  bg-card ">
           <DialogHeader className="flex items-center">
             <DialogTitle className="text-style font-extrabold text-xl">
               Edit Item

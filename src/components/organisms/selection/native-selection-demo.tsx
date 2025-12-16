@@ -30,7 +30,7 @@ export function NativeSelectDemo({
     onValueChange?.(e.target.value);
   };
   return (
-    <NativeSelect 
+    <NativeSelect
       className="text-position-text w-auto bg-card font-light rounded-md border-position-text border-1 ml-3"
       value={value}
       onChange={handleChange}

@@ -7,13 +7,6 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-/**
- * Protected Route Component
- * - Checks if user is authenticated
- * - Optionally checks if user has required role
- * - Redirects to login if not authenticated
- * - Shows access denied if user doesn't have required role
- */
 export const ProtectedRoute = ({
   allowedRoles,
   redirectTo = "/login",

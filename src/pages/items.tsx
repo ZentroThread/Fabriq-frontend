@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
 import { useFilteredItems } from "@/hooks/useItems";
-import { ItemSearchFilter } from "@/components/organisms/item-filter/item-filter";
+import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 
 function Items() {
@@ -62,9 +62,11 @@ function Items() {
   };
 
   // Calculate stats from all items
-  //const totalRevenue = allItems.reduce((sum, item) => sum + (item.price * item.stock), 0);
-  //const activeRentals = allItems.filter(item => item.status === "RENTED").length;
-
+  const totalItems = allItems?.length || 0;
+  const withus =
+    allItems?.filter((item) => item.status !== "Rented").length || 0;
+  const rented =
+    allItems?.filter((item) => item.status === "Rented").length || 0;
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
   };
@@ -109,21 +111,21 @@ function Items() {
           <AddItemForm onClose={handleItemAdded} />
         </DialogContent>
       </Dialog>
-      <div className="grid lg:grid-cols-3  sm:grid-cols-2  gap-6 mt-5 mb-5">
+      <div className="grid lg:grid-cols-3  sm:grid-cols-1  md:grid-cols-2 gap-6 mt-5 mb-5">
         <DashboardCard
-          lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
+          lable={"Total Items"}
+          lable1={String(totalItems)}
           icon={Package}
         />
         <DashboardCard
-          lable={"Active Rentals"}
-          lable1={"28"}
+          lable={"Available + In Laundry"}
+          lable1={String(withus)}
           icon={Tag}
           iconbg="var(--color-light-pie-1)"
         />
         <DashboardCard
-          lable={"Attendance Rate"}
-          lable1={"93%"}
+          lable={"Rented Items"}
+          lable1={String(rented)}
           icon={BanknoteArrowUp}
           iconbg="var(--color-dbcard)"
         />

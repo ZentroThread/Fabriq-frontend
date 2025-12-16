@@ -10,7 +10,7 @@ import { SalaryHistory } from "@/pages/salary-history";
 import Login from "../pages/login";
 import Layout from "../components/organisms/layout/layout";
 import LeaveHistory from "@/pages/leave-history";
-import { ProtectedRoute } from "@/components/molecules/protected-route";
+import { ProtectedRoute } from "@/routes/protected-route";
 
 function AppRoutes() {
   return (

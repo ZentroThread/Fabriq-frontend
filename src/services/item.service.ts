@@ -1,57 +1,11 @@
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/api/client";
-
-interface AddItemPayload {
-  code: string;
-  title: string;
-  description: string;
-  price: number;
-  stock: number;
-  category: number;
-  status: string;
-  image?: File | string;
-}
-
-interface Item {
-  id: number;
-  code: string;
-  title: string;
-  description: string;
-  price: number;
-  stock: number;
-  category: {
-    tenantId: string;
-    categoryId: number;
-    categoryCode: string;
-    categoryName: string;
-  };
-  status: string;
-  tenantId: string;
-  image?: File | string;
-}
-
-// Backend response structure (what API actually returns)
-interface BackendItem {
-  id: number;
-  tenantId: string;
-  attireCode: string;
-  attireName: string;
-  attireDescription: string | null;
-  attirePrice: number;
-  attireStock: number;
-  category: {
-    tenantId: string;
-    categoryId: number;
-    categoryCode: string;
-    categoryName: string;
-  };
-  attireStatus: string;
-  imageUrl?: string;
-}
-
-interface AddItemResponse {
-  value: Item;
-}
+import type {
+  Item,
+  BackendItem,
+  AddItemPayload,
+  AddItemResponse,
+} from "@/types/item.types";
 
 // Helper function to map backend response to frontend Item
 const mapBackendItemToItem = (backendItem: BackendItem): Item => ({

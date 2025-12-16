@@ -105,14 +105,14 @@ export function ItemSearchFilter({
     <div className="w-full mr-3 relative" ref={searchRef}>
       {/* Search Input */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-position-text pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-position-text  pointer-events-none" />
         <input
           type="text"
           value={searchValue}
           onChange={(e) => handleSearchChange(e.target.value)}
           onFocus={() => setShowSuggestions(true)}
           placeholder="Search by name, code, or description..."
-          className="w-full  pl-10 pr-10 py-2.5  h-9 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary bg-background"
+          className="w-full  pl-10 pr-10 h-10 text-position-text  border-position-text border-1 rounded-md bg-main-bg focus:outline-none focus:ring-1 focus:ring-position-text "
         />
         {searchValue && (
           <button
