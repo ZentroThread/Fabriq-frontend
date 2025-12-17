@@ -29,7 +29,7 @@ export const RentsAndBill = () => {
       </div>
       <RentalBillingLayout
         customerInfo={<CustomerInformation />}
-        duration={<RentalDuration />}
+        //duration={<RentalDuration />}
         items={<AddItemsSection />}
         summary={<RentalSummary />}
         rentList={<RentalItemsSection />}

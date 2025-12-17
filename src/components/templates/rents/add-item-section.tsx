@@ -3,6 +3,8 @@ import { useState } from "react";
 import Chart from "../Chart";
 import Button from "@/components/atoms/button/add-button";
 import { Plus } from "lucide-react";
+import RentalDuration from "./rental-duration";
+import { Calendar28 } from "@/components/organisms/date-picker/calender";
 
 export default function AddItemsSection() {
   const [days, setDays] = useState(1);
@@ -21,7 +23,18 @@ export default function AddItemsSection() {
           value={days}
           onChange={(e) => setDays(Number(e.target.value))}
         />
-        <Button width="w-auto" text={"Add"} icon={<Plus />} />
+        <label htmlFor="orderdate" className="text-position-text text-[14px] font-light ">
+          Start Date
+        </label>
+        <Calendar28 />
+        <br />
+        <label htmlFor="enddate" className="text-position-text text-[14px] font-light">
+          End Date
+        </label>
+        <Calendar28 />
+
+        <br />
+        <Button   width="w-full" text={"Add"} icon={<Plus />} />
       </Chart>
     </div>
   );

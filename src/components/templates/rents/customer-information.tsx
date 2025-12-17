@@ -1,6 +1,7 @@
 import InputField from "@/components/molecules/input/input-feild";
 import Chart from "../Chart";
 import { Mail, Phone, User } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function CustomerInformation() {
   return (
@@ -17,9 +18,20 @@ export default function CustomerInformation() {
             placeholder="Enter customer name"
           />
           <InputField
-            label="Phone Number"
+            label="Mobile Number"
             icon={<Phone />}
-            placeholder="077-1234567"
+            placeholder="077-xxxxxxx"
+          />
+          
+          <InputField
+            label="Home Land Line"
+            icon={<User />}
+            placeholder="033-xxxxxxx"
+          />
+          <InputField
+            label="WhatsApp Number"
+            icon={<FaWhatsapp />}
+            placeholder="077-xxxxxxx"
           />
           <InputField
             label="Email (Optional)"

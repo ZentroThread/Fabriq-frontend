@@ -10,15 +10,7 @@ const RentalDuration = () => {
         description={"Set the rental start and return dates"}
         height="h-auto"
       >
-        <label htmlFor="orderdate" className="font-light">
-          Start Date
-        </label>
-        <Calendar28 />
-        <br />
-        <label htmlFor="orderdate" className="font-light">
-          End Date
-        </label>
-        <Calendar28 />
+        
       </Chart>
     </div>
   );

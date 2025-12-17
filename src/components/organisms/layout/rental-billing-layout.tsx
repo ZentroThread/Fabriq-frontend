@@ -1,6 +1,5 @@
 interface RentalBillingLayoutProps {
   customerInfo: React.ReactNode;
-  duration: React.ReactNode;
   items: React.ReactNode;
   summary: React.ReactNode;
   rentList: React.ReactNode;
@@ -8,7 +7,6 @@ interface RentalBillingLayoutProps {
 
 export default function RentalBillingLayout({
   customerInfo,
-  duration,
   items,
   summary,
   rentList,
@@ -18,7 +16,6 @@ export default function RentalBillingLayout({
       {/* LEFT SIDE (customer + duration + items + rentList) */}
       <div className="flex flex-col gap-6 md:col-span-2">
         {customerInfo}
-        {duration}
         {items}
         {rentList}
       </div>
