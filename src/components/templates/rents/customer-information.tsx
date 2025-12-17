@@ -22,7 +22,7 @@ export default function CustomerInformation() {
             icon={<Phone />}
             placeholder="077-xxxxxxx"
           />
-          
+
           <InputField
             label="Home Land Line"
             icon={<User />}

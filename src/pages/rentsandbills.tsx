@@ -1,7 +1,6 @@
 import RentalSummary from "@/components/templates/rents/rental-summary";
 import CustomerInformation from "@/components/templates/rents/customer-information";
 import RentalBillingLayout from "@/components/organisms/layout/rental-billing-layout";
-import RentalDuration from "@/components/templates/rents/rental-duration";
 import AddItemsSection from "@/components/templates/rents/add-item-section";
 import RentalItemsSection from "@/components/templates/rents/rental-item-section";
 import { RentsAndBillsSkeleton } from "@/components/molecules/skeletons/rents-bills-skeleton";
