@@ -10,6 +10,7 @@ import type { User } from "../types/types";
 import { loginService } from "@/services/login.service";
 import { API_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
+import { queryClient } from "@/main";
 //useForm hook for additems
 export function useAddItemForm() {
   return useForm<AddItemFormValues>({
@@ -49,7 +50,12 @@ export const useLogin = () => {
     },
     onSuccess: async () => {
       try {
-        // ✅ With HttpOnly cookie: No token in response!
+        // 🔥 Clear localStorage FIRST to remove old tenant data
+        localStorage.removeItem("auth-storage");
+
+        // 🔥 Clear all React Query cache to prevent showing old tenant data
+        await queryClient.cancelQueries(); // Cancel any in-flight queries
+        queryClient.clear(); // Clear all cache
         // JWT is automatically stored in HttpOnly cookie by browser
         // Now fetch user data from /me endpoint (cookie sent automatically)
 

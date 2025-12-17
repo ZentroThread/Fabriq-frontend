@@ -31,7 +31,15 @@ function Reports() {
         Comprehensive business insights and reports
       </div>
       <div className=" flex gap-2 lg:mr-5 lg:ml-auto mt-5 sm:ml-0 sm:mr-auto">
-        <NativeSelectDemo />
+        <NativeSelectDemo
+          option={""}
+          value1={""}
+          value2={""}
+          value3={""}
+          string1={""}
+          string2={""}
+          string3={""}
+        />
         <AddButton text="Export" icon={<Download />} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">

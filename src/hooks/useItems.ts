@@ -38,7 +38,9 @@ export const useItems = () => {
     queryKey: QUERY_KEYS.ITEMS.ALL,
     queryFn: itemService.getAllItems,
     retry: 1, // Retry once on failure
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    staleTime: 30000, // 30 seconds - balance between freshness and stability
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    refetchOnMount: true, // Always fetch fresh data when component mounts
   });
 };
 

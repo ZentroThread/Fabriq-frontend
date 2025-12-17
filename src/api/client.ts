@@ -18,13 +18,23 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 // Request interceptor - Add tenant ID to headers
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     const tenantId = useAuthStore.getState().getTenantId();
+//     if (tenantId) {
+//       config.headers["X-Tenant-ID"] = tenantId;
+//     }
+//     console.log("🌐 API Request:", config.url, { tenantId });
+//     return config;
+//   },
+//   (error) => {
+//     console.error("❌ Request Error:", error);
+//     return Promise.reject(error);
+//   }
+// );
 axiosInstance.interceptors.request.use(
   (config) => {
-    const tenantId = useAuthStore.getState().getTenantId();
-    if (tenantId) {
-      config.headers["X-Tenant-ID"] = tenantId;
-    }
-    console.log("🌐 API Request:", config.url, { tenantId });
+    console.log("🌐 API Request:", config.url);
     return config;
   },
   (error) => {

@@ -36,7 +36,7 @@ export const itemService = {
     if (data.image && data.image instanceof File) {
       formData.append("image", data.image);
     }
-
+    console.log(formData);
     const result = await apiClient.upload<AddItemResponse>(
       API_ENDPOINTS.ATTIRE.ADD,
       formData

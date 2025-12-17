@@ -53,7 +53,7 @@ function Items() {
     return result;
   }, [allItems, searchQuery, categoryFilter]); // 👈 Add categoryFilter dependency
 
-  console.log("📦 Filtered Items:", filteredItems);
+  //console.log("📦 Filtered Items:", filteredItems);
   console.log("📦 All Items:", allItems);
 
   const handleItemAdded = () => {
@@ -163,7 +163,9 @@ function Items() {
       {error ? (
         <div className="flex flex-col items-center justify-center h-64">
           <p className="text-destructive mb-4">
-            {error instanceof Error ? error.message : "Failed to load items"}
+            {error instanceof Error
+              ? "No items Found. Add New Items"
+              : "Failed to load items"}
           </p>
           <Button text="Retry" onClick={() => refetch()} />
         </div>

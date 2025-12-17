@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import type { User, UserRole } from "@/types/types";
 import { API_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
+import { queryClient } from "@/main";
 
 interface AuthState {
   user: User | null;
@@ -39,9 +40,17 @@ export const useAuthStore = create<AuthState>()(
         } catch (error) {
           console.error("Logout API call failed:", error);
         }
+
+        // 🔥 Clear all React Query cache to prevent tenant data leakage
+        await queryClient.cancelQueries(); // Cancel any in-flight queries
+        queryClient.clear();
+
         // Clear local state
         set({ user: null, error: null });
         localStorage.removeItem("auth-storage");
+
+        // Clear all browser storage to be extra safe
+        sessionStorage.clear();
       },
 
       setLoading: (loading) => set({ isLoading: loading }),
