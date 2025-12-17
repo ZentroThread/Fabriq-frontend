@@ -1,5 +1,4 @@
 import { PageHeaderSkeleton } from "@/components/molecules/skeletons/page-header-skeleton";
-import { ChartSkeleton } from "@/components/molecules/skeletons/chart-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function AttendanceSkeleton() {

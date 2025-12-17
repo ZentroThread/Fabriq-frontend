@@ -108,7 +108,7 @@ function Attendance() {
 
             <div className="flex gap-2 items-center mb-2">
               <Calendar28 />
-              <NativeSelectDemo />
+              <NativeSelectDemo option={""} value1={""} value2={""} value3={""} string1={""} string2={""} string3={""} />
             </div>
           </div>
 
