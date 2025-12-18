@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
-import type { Employee } from "@/types/employee";
+import type { Employee } from "@/types/employee.type";
 //import { useAuthStore } from "@/store/user-auth-store";
 
 

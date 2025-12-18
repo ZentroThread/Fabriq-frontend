@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllEmployees } from "@/api/employee-api";
-import type { Employee } from "@/types/employee";
+import type { Employee } from "@/types/employee.type";
+import { employeeService } from "@/services/employee.service";
 
 export function useEmployees() {
   return useQuery<Employee[]>({
     queryKey: ["employees"],
-    queryFn: getAllEmployees,
+    queryFn: employeeService.getAll,
   });
 }

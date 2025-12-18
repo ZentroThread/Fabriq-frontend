@@ -12,7 +12,10 @@ import { useEmployees } from "@/hooks/employee/useEmployess";
 export default function EmployeeOverview() {
   const navigate = useNavigate();
 
-  const {data:employees} = useEmployees();
+  const {data:employees,error,isLoading} = useEmployees();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   const getStatusStyle = (status: string) => {
     switch (status) {

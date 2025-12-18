@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getEmployeeByCode} from "@/api/employee-api";
-import type { Employee } from "@/types/employee";
+import type { Employee } from "@/types/employee.type";
 
 export function useEmployee(empCode: string | undefined) {
   return useQuery<Employee>({
