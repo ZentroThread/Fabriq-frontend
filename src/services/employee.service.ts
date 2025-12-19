@@ -10,7 +10,8 @@ const tenantId = "t_1";
 export const employeeService = {
 
   async getAll(): Promise<Employee[]> {
-    const response = await apiClient.request<Employee[]>(API_ENDPOINTS.EMPLOYEE.GET_ALL,{
+    const response = await apiClient.request<Employee[]>(API_ENDPOINTS.EMPLOYEE.GET_ALL,
+      {
           method: "GET",
           headers: {
             "X-Tenant-ID": tenantId,
@@ -18,5 +19,17 @@ export const employeeService = {
           },
         });
     return z.array(EmployeeSchema).parse(response);
+  },
+
+  async getByEmpCode(empCode: string): Promise<Employee> {
+    const response = await apiClient.request<Employee>(API_ENDPOINTS.EMPLOYEE.GET_BY_CODE(empCode), 
+    {
+      method: "GET",
+      headers: {
+        "X-Tenant-ID": tenantId,
+        "Content-Type": "application/json",
+      },
+    });
+    return EmployeeSchema.parse(response);
   }
 };

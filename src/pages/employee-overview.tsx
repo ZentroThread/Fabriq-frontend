@@ -7,12 +7,13 @@ import { useNavigate } from "react-router-dom";
 import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/molecules/input/input";
 import { useEmployees } from "@/hooks/employee/useEmployess";
-
+//import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
 
   const {data:employees,error,isLoading} = useEmployees();
+  //const {searchText,setSearchText} = useEmployeeStore();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

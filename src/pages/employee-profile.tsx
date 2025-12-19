@@ -5,8 +5,8 @@ import {  useNavigate, useParams } from "react-router-dom";
 import { useEmployee } from "@/hooks/employee/useEmployee";
 import { useUpdateEmployee } from "@/hooks/employee/useUpdateEmployee";
 import {  useState } from "react";
-import type { Employee, EmployeeBankDetails } from "@/types/employee";
-
+import type { Employee, EmployeeBankDetails } from "@/types/employee.type";
+import useEmployeeStore from "@/store/employee-store";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
@@ -14,14 +14,12 @@ export default function EmployeeProfile() {
   const { id } = useParams();
   const empCode = String(id);
 
-  const {data: employee} = useEmployee(empCode);
-
+  const {data: employee, isLoading} = useEmployee(empCode);
   const { mutate: updateEmployee } = useUpdateEmployee();
+  const {setSelectedEmployee} = useEmployeeStore();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<Employee>>(() => employee ?? {});
-
-
+  const [formData, setFormData] = useState<Partial<Employee>>({});
 
   const handleChange =<K extends keyof Employee>
   (field: K, value: Employee[K]) => {
@@ -60,7 +58,14 @@ const handleUpdate = () => {
   }
 };
 
+const startEdidting = () => {
+  if (!employee) return;
+  setFormData(employee);
+  setSelectedEmployee(employee);
+  setIsEditing(true);
+}
 
+if (isLoading) return <div>Loading...</div>;
 
   const showSalaryHistory = (id: string) => {
     navigate(`/salary-history/${id}`);
@@ -101,18 +106,17 @@ const handleUpdate = () => {
                   Employee Name
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.empFirstName ?? ""}
+                  value={isEditing ? formData?.empFirstName ?? "" : employee?.empFirstName ?? ""}
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("empFirstName", e.target.value)} 
                 />
               </div>
-
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Last Name
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.empLastName ?? ""}
+                  value={isEditing ? formData?.empLastName ?? "" : employee?.empLastName ?? ""}
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("empLastName", e.target.value)} 
                 />
@@ -122,7 +126,7 @@ const handleUpdate = () => {
                   Employee ID
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.empCode ?? ""}
+                  value={isEditing ? formData?.empCode ?? "" : employee?.empCode ?? ""}
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("empCode", e.target.value)} 
                 />
@@ -133,18 +137,17 @@ const handleUpdate = () => {
                   Role
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.role ?? ""}
+                  value={isEditing ? formData?.role ?? "" : employee?.role ?? ""}
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("role", e.target.value)}
                     />
               </div>
-
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Address
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.address ?? ""}
+                  value={isEditing ? formData?.address ?? "" : employee?.address ?? ""}
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("address", e.target.value)}
                    /> 
@@ -165,7 +168,7 @@ const handleUpdate = () => {
                   Date of Birth
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.dateOfBirth ?? ""} 
+                  value={isEditing ? formData?.dateOfBirth ?? "" : employee?.dateOfBirth ?? ""} 
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("dateOfBirth", e.target.value)}
                   />
@@ -176,7 +179,7 @@ const handleUpdate = () => {
                   Age
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                value={employee?.age.toString() ?? ""} readOnly />
+                value={isEditing ? formData?.age ?? "" : employee?.age ?? ""} readOnly />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
@@ -184,7 +187,7 @@ const handleUpdate = () => {
                   Gender
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.gender ?? ""}  
+                  value={isEditing ? formData?.gender ?? "" : employee?.gender ?? ""}  
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("gender", e.target.value as "MALE" | "FEMALE")}
                   />
@@ -195,20 +198,55 @@ const handleUpdate = () => {
                   Joined Date
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.joinedDate ?? ""}  
+                  value={isEditing ? formData?.joinedDate ?? "" : employee?.joinedDate ?? ""}  
                   readOnly={!isEditing}
                   onChange={(e) => handleChange("joinedDate", e.target.value)}
                   />
               </div>
 
+              {/* Bank Details */}
+    
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
                   Bank Acc Number
                 </label>
                 <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
-                  value={formData?.employeeBankDetails?.accountNumber ?? ""}  
+                  value={isEditing ? formData?.employeeBankDetails?.accountNumber ?? "" : employee?.employeeBankDetails?.accountNumber ?? ""}  
                   readOnly={!isEditing}
                   onChange={(e) => handleBankChange("accountNumber", e.target.value)}
+                  />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
+                  Bank Acc Holder Name
+                </label>
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={isEditing ? formData?.employeeBankDetails?.accountHolderName ?? "" : employee?.employeeBankDetails?.accountHolderName ?? ""}  
+                  readOnly={!isEditing}
+                  onChange={(e) => handleBankChange("accountHolderName", e.target.value)}
+                  />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
+                  Bank Name
+                </label>
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={isEditing ? formData?.employeeBankDetails?.bankName ?? "" : employee?.employeeBankDetails?.bankName ?? ""}  
+                  readOnly={!isEditing}
+                  onChange={(e) => handleBankChange("bankName", e.target.value)}
+                  />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
+                  Branch Name
+                </label>
+                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" 
+                  value={isEditing ? formData?.employeeBankDetails?.branchName ?? "" : employee?.employeeBankDetails?.branchName ?? ""}  
+                  readOnly={!isEditing}
+                  onChange={(e) => handleBankChange("branchName", e.target.value)}
                   />
               </div>
             </div>
@@ -255,7 +293,7 @@ const handleUpdate = () => {
               if (isEditing) {
                 handleUpdate();
               } else {
-                setIsEditing(true);
+                startEdidting();
               }
             }}
           />
