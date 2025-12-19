@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from "@/constants/api.constants";
-import { apiClient } from "@/api/client";
+import { apiClient } from "@/lib/client";
 import type {
   Item,
   BackendItem,

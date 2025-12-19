@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { LoginInput } from "../types/types";
 import { API_ENDPOINTS } from "@/constants/api.constants";
-import { apiClient } from "@/api/client";
+import { apiClient } from "@/lib/client";
 
 export const loginService = {
   /**
