@@ -1,6 +1,4 @@
-// item-store.ts
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 
 interface Item {
   id: number;
@@ -24,7 +22,8 @@ interface ItemStore {
   items: Item[];
   isLoading: boolean;
   error: string | null;
-  
+
+  // Actions
   setItems: (items: Item[]) => void;
   addItem: (item: Item) => void;
   updateItem: (id: number, item: Item) => void;
@@ -33,52 +32,28 @@ interface ItemStore {
   setError: (error: string | null) => void;
 }
 
-export const useItemStore = create<ItemStore>()(
-  devtools(
-    (set) => ({
-      items: [],
-      isLoading: false,
-      error: null,
+export const useItemStore = create<ItemStore>((set) => ({
+  items: [],
+  isLoading: false,
+  error: null,
 
-      setItems: (items) => 
-        set({ items }, false, "setItems"),
-      
-      addItem: (item) => 
-        set(
-          (state) => ({ items: [...state.items, item] }), 
-          false, 
-          "addItem"
-        ),
-      
-      updateItem: (id, updatedItem) =>
-        set(
-          (state) => ({
-            items: state.items.map((item) =>
-              item.id === id ? updatedItem : item
-            ),
-          }),
-          false,
-          "updateItem"
-        ),
-      
-      deleteItem: (id) =>
-        set(
-          (state) => ({
-            items: state.items.filter((item) => item.id !== id),
-          }),
-          false,
-          "deleteItem"
-        ),
-      
-      setLoading: (loading) => 
-        set({ isLoading: loading }, false, "setLoading"),
-      
-      setError: (error) => 
-        set({ error }, false, "setError"),
-    }),
-    {
-      name: "ItemStore", // This name will appear in DevTools
-      enabled: import.meta.env.MODE === "development", // Only enable in development
-    }
-  )
-);
+  addItem: (item) =>
+    set((state) => ({
+      items: [...state.items, item],
+    })),
+
+  setItems: (items) => set({ items }),
+
+  updateItem: (id, updatedItem) =>
+    set((state) => ({
+      items: state.items.map((item) => (item.id === id ? updatedItem : item)),
+    })),
+  deleteItem: (id) =>
+    set((state) => ({
+      items: state.items.filter((item) => item.id !== id),
+    })),
+
+  setLoading: (loading) => set({ isLoading: loading }),
+
+  setError: (error) => set({ error }),
+}));
