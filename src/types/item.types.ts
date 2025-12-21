@@ -47,5 +47,7 @@ export interface BackendItem {
 }
 
 export interface AddItemResponse {
+  success: boolean;
+  message: string;
   value: Item;
 }

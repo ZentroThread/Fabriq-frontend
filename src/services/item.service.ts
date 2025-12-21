@@ -1,5 +1,7 @@
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
+import { useItemStore } from "@/store/item-store";
+
 import type {
   Item,
   BackendItem,
@@ -22,75 +24,163 @@ const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
 });
 
 export const itemService = {
-  addItem: async (data: AddItemPayload): Promise<AddItemResponse> => {
-    const formData = new FormData();
+  addItem: async (data: AddItemPayload): Promise<Item> => {
+    const { setLoading, setError, addItem } = useItemStore.getState();
+    try {
+      setLoading(true);
+      setError(null);
 
-    formData.append("attireCode", data.code);
-    formData.append("attireName", data.title);
-    formData.append("attireDescription", data.description);
-    formData.append("attireStatus", data.status);
-    formData.append("attirePrice", data.price.toString()); //always expect string or
-    formData.append("categoryId", data.category.toString());
-    formData.append("attireStock", data.stock.toString());
+      const formData = new FormData();
+      formData.append("attireCode", data.code);
+      formData.append("attireName", data.title);
+      formData.append("attireDescription", data.description);
+      formData.append("attireStatus", data.status);
+      formData.append("attirePrice", data.price.toString());
+      formData.append("categoryId", data.category.toString());
+      formData.append("attireStock", data.stock.toString());
 
-    if (data.image && data.image instanceof File) {
-      formData.append("image", data.image);
+      if (data.image && data.image instanceof File) {
+        formData.append("image", data.image);
+      }
+
+      const result = await apiClient.upload<BackendItem>(
+        API_ENDPOINTS.ATTIRE.ADD,
+        formData
+      );
+
+      // Map the response to Item and add to store
+      const newItem = mapBackendItemToItem(result);
+      addItem(newItem);
+
+      return newItem;
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to add item"
+        : "Failed to add item";
+      setError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
     }
-    console.log(formData);
-    const result = await apiClient.upload<AddItemResponse>(
-      API_ENDPOINTS.ATTIRE.ADD,
-      formData
-    );
-
-    return result;
   },
 
   getAllItems: async (): Promise<Item[]> => {
-    // Backend returns items directly as an array, not wrapped in {value: [...]}
-    const result = await apiClient.request<BackendItem[]>(
-      API_ENDPOINTS.ATTIRE.GET_ALL
-    );
-    console.log("🔍 API Response:", result);
-    // Map backend response to frontend Item structure
-    return Array.isArray(result) ? result.map(mapBackendItemToItem) : [];
+    const { setLoading, setError, setItems } = useItemStore.getState();
+    
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await apiClient.request<BackendItem[]>(
+        API_ENDPOINTS.ATTIRE.GET_ALL
+      );
+
+      const items = Array.isArray(result) 
+        ? result.map(mapBackendItemToItem) 
+        : [];
+      
+      // Update Zustand store
+      setItems(items);
+      
+      return items;
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch items"
+        : "Failed to fetch items";
+      setError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   },
 
   getItemById: async (id: string): Promise<Item> => {
-    const result = await apiClient.request<{ value: Item }>(
-      `${API_ENDPOINTS.ATTIRE.GET_ALL}/${id}`
-    );
-    return result.value;
-  },
+    const { setLoading, setError } = useItemStore.getState();
+    
+    try {
+      setLoading(true);
+      setError(null);
 
-  updateItem: async (
-    id: string,
-    data: AddItemPayload
-  ): Promise<AddItemResponse> => {
-    const formData = new FormData();
-
-    formData.append("attireCode", data.code);
-    formData.append("attireName", data.title);
-    formData.append("attireDescription", data.description);
-    formData.append("attireStatus", data.status);
-    formData.append("attirePrice", data.price.toString());
-    formData.append("categoryId", data.category.toString());
-    formData.append("attireStock", data.stock.toString());
-
-    if (data.image && data.image instanceof File) {
-      formData.append("image", data.image);
+      const result = await apiClient.request<BackendItem>(
+        `${API_ENDPOINTS.ATTIRE.GET_ALL}/${id}`
+      );
+      
+      return mapBackendItemToItem(result);
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch item"
+        : "Failed to fetch item";
+      setError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
     }
-
-    const result = await apiClient.uploadPut<AddItemResponse>(
-      API_ENDPOINTS.ATTIRE.UPDATE(Number(id)),
-      formData
-    );
-
-    return result;
   },
 
-  deleteItem: async (id: string): Promise<void> => {
-    await apiClient.request<void>(API_ENDPOINTS.ATTIRE.DELETE(Number(id)), {
-      method: "DELETE",
-    });
+  updateItem: async (id: string, data: AddItemPayload): Promise<Item> => {
+    const { setLoading, setError, updateItem } = useItemStore.getState();
+    
+    try {
+      setLoading(true);
+      setError(null);
+
+      const formData = new FormData();
+      formData.append("attireCode", data.code);
+      formData.append("attireName", data.title);
+      formData.append("attireDescription", data.description);
+      formData.append("attireStatus", data.status);
+      formData.append("attirePrice", data.price.toString());
+      formData.append("categoryId", data.category.toString());
+      formData.append("attireStock", data.stock.toString());
+
+      if (data.image && data.image instanceof File) {
+        formData.append("image", data.image);
+      }
+
+      const result = await apiClient.uploadPut<BackendItem>(
+        API_ENDPOINTS.ATTIRE.UPDATE(Number(id)),
+        formData
+      );
+
+      // Map and update in store
+      const updatedItem = mapBackendItemToItem(result);
+      updateItem(Number(id), updatedItem);
+
+      return updatedItem;
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch item"
+        : "Failed to fetch item";
+      setError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  },
+
+  deleteItem: async (id: number): Promise<void> => {
+    const { setLoading, setError, deleteItem } = useItemStore.getState();
+    
+    try {
+      setLoading(true);
+      setError(null);
+
+      await apiClient.request<void>(
+        API_ENDPOINTS.ATTIRE.DELETE(id),
+        { method: "DELETE" }
+      );
+
+      // Remove from Zustand store after successful deletion
+      deleteItem(id);
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch item"
+        : "Failed to fetch item";
+      setError(errorMsg);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   },
 };
+
