@@ -2,8 +2,6 @@ import { addItemFormSchema } from "@/schemas/user.schema";
 import type { AddItemFormValues } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useContext } from "react";
-import { ThemeProviderContext } from "../providers/theme-provider";
 import { useAuthStore } from "@/store/user-auth-store";
 import { useMutation } from "@tanstack/react-query";
 import type { User } from "../types/types";
@@ -28,14 +26,6 @@ export function useAddItemForm() {
   });
 }
 
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
-
-  if (context === undefined)
-    throw new Error("useTheme must be used within a ThemeProvider");
-
-  return context;
-};
 
 export const useLogin = () => {
   const setUser = useAuthStore((state) => state.setUser);
@@ -50,9 +40,7 @@ export const useLogin = () => {
     },
     onSuccess: async () => {
       try {
-        // 🔥 Clear localStorage FIRST to remove old tenant data
-        localStorage.removeItem("auth-storage");
-
+      
         // 🔥 Clear all React Query cache to prevent showing old tenant data
         await queryClient.cancelQueries(); // Cancel any in-flight queries
         queryClient.clear(); // Clear all cache

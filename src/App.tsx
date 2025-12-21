@@ -1,11 +1,17 @@
+import { useEffect } from "react";
 import Routes from "./routes/routes";
-import { ThemeProvider } from "./providers/theme-provider";
+import { useThemeStore } from "./store/theme-store";
 
 function App() {
+  const initializeTheme = useThemeStore((state) => state.initializeTheme);
+
+  // Initialize theme when app loads
+  useEffect(() => {
+    initializeTheme();
+  }, [initializeTheme]);
+
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Routes />
-    </ThemeProvider>
   );
 }
 
