@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { LoginInput } from "../types/types";
+import type { LoginInput, User } from "../types/types";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
 
@@ -21,12 +21,19 @@ export const loginService = {
       return { success: true, message: response };
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(error.response?.data || "Login failed");
+        throw new Error(error.response?.data || "Login failed. Try again.");
       }
       throw error;
     }
   },
-
+/* Get current user profile (validates JWT from HttpOnly cookie)
+   */
+  getUserProfile: async (): Promise<User> => {
+    const user = await apiClient.request<User>(API_ENDPOINTS.LOGIN.GETCURRENTUSER , {
+      method: "GET",
+    });
+    return user;
+  },
   /**
    * Logout user and clear HttpOnly cookie
    */

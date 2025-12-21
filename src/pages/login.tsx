@@ -3,7 +3,7 @@ import modelImg from "../assets/images/model.png";
 import { User, Lock, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/user-auth-store";
-import { useLogin } from "@/hooks/hooks";
+//import { useLogin } from "@/hooks/hooks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas/user.schema";
@@ -12,10 +12,11 @@ import { useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const authError = useAuthStore((state) => state.error);
+  // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // const authError = useAuthStore((state) => state.error);
 
-  const { mutate: login, isPending } = useLogin();
+  // const { mutate: login, isPending } = useLogin();
+const { login, isAuthenticated, isLoading, error: authError } = useAuthStore();
 
   // React Hook Form with Zod validation
   const {
@@ -37,12 +38,13 @@ function Login() {
     }
   }, [isAuthenticated, navigate]);
 
-  const onSubmit = (data: LoginInput) => {
-    login(data, {
-      onSuccess: () => {
-        navigate("/dashboard");
-      },
-    });
+  const onSubmit = async (data: LoginInput) => {
+    const result = await login(data);
+    
+    if (result.success) {
+      navigate("/dashboard");
+    }
+    // Error is automatically set in store, no need to handle here
   };
 
   return (
@@ -118,7 +120,7 @@ function Login() {
                     className="flex-1 p-2 bg-transparent outline-none"
                     placeholder="Enter your username"
                     {...register("username")}
-                    disabled={isPending}
+                    disabled={isLoading}
                   />
                 </div>
                 {errors.username && (
@@ -150,7 +152,7 @@ function Login() {
                     className="flex-1 p-2 bg-transparent outline-none"
                     placeholder="Enter your password"
                     {...register("password")}
-                    disabled={isPending}
+                    disabled={isLoading}
                   />
                 </div>
                 {errors.password && (
@@ -170,7 +172,7 @@ function Login() {
               {/* LOGIN BUTTON */}
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isLoading}
                 className="
                   w-full 
                   bg-light-brown-medium text-white 
@@ -183,7 +185,7 @@ function Login() {
                   flex items-center justify-center gap-2
                 "
               >
-                {isPending ? (
+                {isLoading ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
                     Logging in...
