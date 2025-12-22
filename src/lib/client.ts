@@ -1,12 +1,36 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosError,
+} from "axios";
 import { API_BASE_URL } from "@/constants/constdata";
-import { useAuthStore } from "@/store/user-auth-store";
+import { API_ENDPOINTS } from "@/constants/api.constants";
 
 /**
  * 🔒 API Client with Axios and HttpOnly Cookie Authentication
- * ✅ JWT token is in HttpOnly cookie - browser sends it automatically
+ * ✅ JWT tokens are in HttpOnly cookies - browser sends them automatically
+ * ✅ Automatic token refresh on 401 errors
  * ✅ No Authorization header needed
  */
+
+// Track if we're currently refreshing to avoid multiple refresh requests
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}> = [];
+
+const processQueue = (error: Error | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+
+  failedQueue = [];
+};
 
 // Create axios instance
 const axiosInstance: AxiosInstance = axios.create({
@@ -16,7 +40,6 @@ const axiosInstance: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -29,20 +52,84 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle errors
+// Response interceptor - Handle errors and automatic token refresh
 axiosInstance.interceptors.response.use(
   (response) => {
     console.log("📡 Response status:", response.status);
     console.log("✅ API Response data:", response.data);
     return response;
   },
-  (error) => {
+  async (error: AxiosError) => {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
     console.error("❌ API Error:", error.response?.data || error.message);
 
-    // Handle 401 - Unauthorized
-    if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-      window.location.href = "/login";
+    // Handle 401 - Unauthorized (token expired)
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry
+    ) {
+      // Don't retry refresh endpoint or login endpoint
+      if (
+        originalRequest.url?.includes(API_ENDPOINTS.LOGIN.REFRESH) ||
+        originalRequest.url?.includes(API_ENDPOINTS.LOGIN.LOGIN)
+      ) {
+        // Refresh token expired - redirect to login
+        console.error("🚫 Refresh token expired - redirecting to login");
+
+        // Dynamic import to avoid circular dependency
+        const { useAuthStore } = await import("@/store/user-auth-store");
+        useAuthStore.getState().logout();
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      if (isRefreshing) {
+        // If already refreshing, queue this request
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => {
+            return axiosInstance.request(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Attempt to refresh the token
+        await axiosInstance.post(API_ENDPOINTS.LOGIN.REFRESH);
+        console.log("✅ Token refreshed successfully");
+
+        processQueue(null);
+        isRefreshing = false;
+
+        // Retry the original request
+        return axiosInstance.request(originalRequest);
+      } catch (refreshError) {
+        console.error("❌ Token refresh failed");
+        processQueue(refreshError as Error);
+        isRefreshing = false;
+
+        // Refresh failed - clear auth and redirect to login
+        const { useAuthStore } = await import("@/store/user-auth-store");
+        useAuthStore.getState().logout();
+        window.location.href = "/login";
+
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // Handle other errors
+    if (error.response?.status === 403) {
+      console.error("🚫 Forbidden - insufficient permissions");
     }
 
     return Promise.reject(error);

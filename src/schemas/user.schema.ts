@@ -10,6 +10,15 @@ export const userSchema = z.object({
   tenantId: z.string(),
 });
 
+// Token response from backend
+export const tokenResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  tokenType: z.string(),
+  accessTokenExpiresIn: z.number(),
+  refreshTokenExpiresIn: z.number(),
+});
+
 // Backend returns just the JWT token as a string
 export const authResponseSchema = z.object({
   response: z.string(),
