@@ -41,9 +41,18 @@ const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
+// Request interceptor - add tenant header
 axiosInstance.interceptors.request.use(
   (config) => {
     console.log("🌐 API Request:", config.url);
+
+    // ✅ Get tenantId from localStorage (set it after login)
+    const tenantId = localStorage.getItem("tenantId");
+    if (tenantId) {
+      config.headers = config.headers || {};
+      config.headers["X-Tenant-ID"] = tenantId;
+    }
+
     return config;
   },
   (error) => {

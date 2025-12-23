@@ -33,14 +33,35 @@ interface AddItemPayload {
 }
 
 // Hook to fetch all items
+// export const useItems = () => {
+//   return useQuery({
+//     queryKey: QUERY_KEYS.ITEMS.ALL,
+//     queryFn: itemService.getAllItems,
+//     retry: 1, // Retry once on failure
+//     staleTime: 30000, // 30 seconds - balance between freshness and stability
+//     refetchOnWindowFocus: false, // Don't refetch when window regains focus
+//     refetchOnMount: true, // Always fetch fresh data when component mounts
+//   });
+// };
+
 export const useItems = () => {
   return useQuery({
     queryKey: QUERY_KEYS.ITEMS.ALL,
-    queryFn: itemService.getAllItems,
-    retry: 1, // Retry once on failure
-    staleTime: 30000, // 30 seconds - balance between freshness and stability
-    refetchOnWindowFocus: false, // Don't refetch when window regains focus
-    refetchOnMount: true, // Always fetch fresh data when component mounts
+    queryFn: async () => {
+      console.log("🔍 TanStack Query: Starting getAllItems fetch");
+      try {
+        const result = await itemService.getAllItems();
+        console.log("✅ TanStack Query: getAllItems success, items:", result.length);
+        return result;
+      } catch (error) {
+        console.error("❌ TanStack Query: getAllItems failed:", error);
+        throw error;
+      }
+    },
+    retry: 1,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 };
 
