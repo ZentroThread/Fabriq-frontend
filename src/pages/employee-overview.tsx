@@ -7,12 +7,14 @@ import { useNavigate } from "react-router-dom";
 import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/molecules/input/input";
 import { useEmployees } from "@/hooks/employee/useEmployess";
+import {useDeleteEmployee} from "@/hooks/employee/useDeleteEmployee";
 //import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
 
   const {data:employees,error,isLoading} = useEmployees();
+  const {mutate:deleteEmployee} = useDeleteEmployee();
   //const {searchText,setSearchText} = useEmployeeStore();
 
   if (isLoading) return <div>Loading...</div>;
@@ -35,6 +37,14 @@ export default function EmployeeOverview() {
     console.log("Clicked employee ID:", id);
     navigate(`/emp/${id}`);
   };
+
+  const handleDeleteEmp = (code: string | number) => {
+    console.log("Deleted employee ID:", code);
+    if (confirm("Are you sure you want to delete this employee?"+code)) {
+      deleteEmployee(code.toString());
+    }
+  };
+
   const getIcon = (status: string) => {
     switch (status) {
       case "Present":
@@ -60,7 +70,7 @@ export default function EmployeeOverview() {
       </div>
 
       <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
-        <Button text={"Add New Item"} width="w-45" icon={<Plus />} />
+        <Button text={"Add Employee"} width="w-45" icon={<Plus />} onClick={() => navigate("/add-employee")} />
       </div>
 
       {/* Stats Cards */}
@@ -103,11 +113,10 @@ export default function EmployeeOverview() {
           </thead>
 
           <tbody>
-            {employees?.map((emp, index) => (
+            {employees?.map((emp) => (
               <tr
-                key={index}
-                className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition cursor-pointer"
-                onClick={() => handleRowClick(emp.empCode)}
+                key={emp.empCode}
+                className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition "    
               >
                 <td className="py-4 flex items-center gap-3 text-(--color-text)">
                   <div className="w-10 h-10 rounded-full bg-avatar-bg border border-(--color-avatar-border) flex items-center justify-center font-semibold">
@@ -133,8 +142,8 @@ export default function EmployeeOverview() {
                 <td className="flex gap-4 text-xl">
                   <div className="flex items-center gap-4">
                     <CheckCircle className="text-[#d1a47c] w-5 h-5" />
-                    <Pencil className="text-[#d1a47c] w-5 h-5" />
-                    <Trash2 className="text-[#fa7f83] w-5 h-5" />
+                    <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" onClick={() => handleRowClick(emp.empCode)}/>
+                    <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer" onClick={() => handleDeleteEmp(emp.empCode)} />
                   </div>
                 </td>
               </tr>

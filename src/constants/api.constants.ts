@@ -16,7 +16,7 @@ export const API_ENDPOINTS = {
   EMPLOYEE: {
     ADD: "/v1/employees",
     GET_ALL: "/v1/employees",
-    DELETE: (id: number) => `/v1/employees/${id}`,
+    DELETE: (code: String) => `/v1/employees/${code}`,
     UPDATE: (code: string) => `/v1/employees/${code}`,
     GET_BY_CODE: (code: string ) => `/v1/employees/${code}`,
   },

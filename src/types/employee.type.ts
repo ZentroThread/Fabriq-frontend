@@ -3,3 +3,4 @@ import { EmployeeBankDetailsSchema,EmployeeSchema } from '@/schemas/employee.sch
 
 export type Employee = z.infer<typeof EmployeeSchema>;
 export type EmployeeBankDetails = z.infer<typeof EmployeeBankDetailsSchema>;
+export type EmployeeCreateInput = z.infer<typeof EmployeeSchema>;

@@ -7,6 +7,7 @@ import { RentsAndBill } from "@/pages/rentsandbills";
 import EmployeeOverview from "@/pages/employee-overview";
 import EmployeeProfile from "@/pages/employee-profile";
 import { SalaryHistory } from "@/pages/salary-history";
+import AddEmployee from "@/pages/add-employee";
 
 import Login from "../pages/login";
 
@@ -33,6 +34,7 @@ function AppRoutes() {
         <Route path="/emp/:id" element={<EmployeeProfile />} />
         <Route path="/salary-history/:id" element={<SalaryHistory />} />
         <Route path="/leave-history/:id" element={<LeaveHistory />} />
+        <Route path="/add-employee" element={<AddEmployee />} />
       </Route>
     </Routes>
   );
