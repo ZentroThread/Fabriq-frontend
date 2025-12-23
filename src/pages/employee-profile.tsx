@@ -4,13 +4,13 @@ import {  useNavigate, useParams } from "react-router-dom";
 import { useEmployee } from "@/hooks/employee/useEmployee";
 import { useUpdateEmployee } from "@/hooks/employee/useUpdateEmployee";
 import {  useState } from "react";
-import type { Employee,EmployeeBankDetails } from "@/types/employee.type";
+import type { Employee,EmployeeBankDetails } from "../types/employee.type";
 import useEmployeeStore from "@/store/employee-store";
 import EmployeeForm from "@/pages/employee-form";
 
 export default function EmployeeProfile() {
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const { id } = useParams();
   const empCode = String(id);
 
@@ -46,8 +46,7 @@ const handleUpdate = () => {
   if (formData) {
     updateEmployee(
       {
-        code: empCode,
-        data: formData,
+        code: empCode,data: formData,
       },
       {
         onSuccess: () => {
@@ -59,7 +58,7 @@ const handleUpdate = () => {
   }
 };
 
-const startEdidting = () => {
+const startEditing = () => {
   if (!employee) return;
   setFormData(employee);
   setSelectedEmployee(employee);
@@ -130,7 +129,7 @@ if (isLoading) return <div>Loading...</div>;
               if (isEditing) {
                 handleUpdate();
               } else {
-                startEdidting();
+                startEditing();
               }
             }}
           />
