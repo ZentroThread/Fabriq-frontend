@@ -22,7 +22,7 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { addItemFormSchema } from "@/schemas/user.schema";
-import { useAddItemForm } from "@/hooks/hooks";
+import { useAddItemForm } from "@/hooks/useAddItemForm";
 import { categories, status } from "@/constants/data";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUpdateItem } from "@/hooks/useItems";

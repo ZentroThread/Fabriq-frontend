@@ -37,12 +37,8 @@ export const registerSchema = z.object({
 
 //add items table
 export const addItemFormSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  description: z.string().min(5, {
-    message: "Description must be at least 5 characters.",
-  }),
+  title: z.string().optional(),
+  description: z.string().optional(),
   price: z.string().min(1, {
     message: "Price is required.",
   }),

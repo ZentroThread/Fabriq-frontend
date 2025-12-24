@@ -32,17 +32,7 @@ interface AddItemPayload {
   image?: File | string;
 }
 
-// Hook to fetch all items
-// export const useItems = () => {
-//   return useQuery({
-//     queryKey: QUERY_KEYS.ITEMS.ALL,
-//     queryFn: itemService.getAllItems,
-//     retry: 1, // Retry once on failure
-//     staleTime: 30000, // 30 seconds - balance between freshness and stability
-//     refetchOnWindowFocus: false, // Don't refetch when window regains focus
-//     refetchOnMount: true, // Always fetch fresh data when component mounts
-//   });
-// };
+
 
 export const useItems = () => {
   return useQuery({
