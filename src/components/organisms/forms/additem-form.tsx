@@ -79,8 +79,8 @@ export function AddItemForm({
     mutationFn: itemService.addItem,
     onSuccess: (data) => {
       // Update Zustand store
-      if (data.value) {
-        addItem(data.value);
+      if (data) {
+        addItem(data);
       }
 
       // Invalidate and refetch queries

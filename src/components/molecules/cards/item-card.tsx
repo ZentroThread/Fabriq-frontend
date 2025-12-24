@@ -45,7 +45,7 @@ export function ItemCard({
   const deleteItemMutation = useDeleteItem();
 
   const handleDelete = () => {
-    deleteItemMutation.mutate(String(id));
+    deleteItemMutation.mutate(Number(id));
   };
 
   return (
