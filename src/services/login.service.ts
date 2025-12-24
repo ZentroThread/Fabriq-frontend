@@ -33,7 +33,8 @@ export const loginService = {
   /**
    * Get current user profile (validates JWT from HttpOnly cookie)
    */
-  getUserProfile: async (): Promise<User> => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getUserProfile: async (p0: unknown): Promise<User> => {
     const user = await apiClient.request<User>(
       API_ENDPOINTS.LOGIN.GETCURRENTUSER,
       {

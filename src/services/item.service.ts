@@ -6,7 +6,6 @@ import type {
   Item,
   BackendItem,
   AddItemPayload,
-  AddItemResponse,
 } from "@/types/item.types";
 
 // Helper function to map backend response to frontend Item

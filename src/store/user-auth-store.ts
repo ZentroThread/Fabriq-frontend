@@ -7,21 +7,21 @@ interface AuthState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
-  tokenExpiryTime: number | null; // Store access token expiry time
-  isAuthChecked: boolean; // indicates initial session restoration attempt completed
+  tokenExpiryTime: number | null;
+  isAuthChecked: boolean;
   tenantId: string | null;
 
   setTenantId: (id: string | null) => void;
-
   login: (
     credentials: LoginInput
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   validateSession: () => Promise<boolean>;
+  initializeAuth: () => Promise<void>; // Add this
+  setAuthChecked: (checked: boolean) => void; // Add this
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
-
   isAuthenticated: () => boolean;
   hasRole: (role: UserRole | UserRole[]) => boolean;
   getTenantId: () => string | null;
@@ -35,17 +35,35 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthChecked: false,
   tenantId: null,
 
+  initializeAuth: async () => {
+    set({ isLoading: true });
+
+    try {
+      // Add flag to skip auto-redirect on this request
+    const user = await loginService.getUserProfile({ _skipAuthRedirect: true } as unknown);
+      set({
+        user,
+        isLoading: false,
+        isAuthChecked: true,
+        tenantId: user?.tenantId ?? null,
+      });
+    } catch {
+      // No valid session - this is fine on initial load
+      set({
+        user: null,
+        isLoading: false,
+        isAuthChecked: true,
+        tenantId: null,
+      });
+    }
+  },
+
   login: async (credentials) => {
     set({ isLoading: true, error: null });
 
     try {
-      // Step 1: Login (sets HttpOnly cookies and returns token info)
       const tokenResponse = await loginService.login(credentials);
-
-      // Step 2: Fetch user profile using the cookie
-      const user = await loginService.getUserProfile();
-
-      // Calculate and store token expiry time
+      const user = await loginService.getUserProfile({});
       const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
 
       set({
@@ -68,8 +86,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  //setUser: (user) => set({ user }),
-
   logout: async () => {
     try {
       await loginService.logout();
@@ -90,8 +106,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
 
     try {
-      // Use service instead of fetch
-      const freshUser = await loginService.getUserProfile();
+      const freshUser = await loginService.getUserProfile({});
       set({
         user: freshUser,
         isLoading: false,
@@ -104,7 +119,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // internal flag to indicate initial check completed
   setAuthChecked: (checked: boolean) => set({ isAuthChecked: checked }),
 
   setLoading: (loading) => set({ isLoading: loading }),
@@ -125,7 +139,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return role.includes(user.role);
     }
 
-    return Array.isArray(role) ? role.includes(user.role) : user.role === role;
+    return user.role === role;
   },
 
   getTenantId: () => {

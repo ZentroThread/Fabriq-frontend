@@ -41,16 +41,22 @@ const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor - add tenant header
+// Request interceptor - add tenant header (uses Zustand store)
 axiosInstance.interceptors.request.use(
-  (config) => {
+  // make interceptor async so we can dynamic-import the store (avoids circular deps)
+  async (config) => {
     console.log("🌐 API Request:", config.url);
 
-    // ✅ Get tenantId from localStorage (set it after login)
-    const tenantId = localStorage.getItem("tenantId");
-    if (tenantId) {
-      config.headers = config.headers || {};
-      config.headers["X-Tenant-ID"] = tenantId;
+    try {
+      const { useAuthStore } = await import("@/store/user-auth-store");
+      const tenantId = useAuthStore.getState().getTenantId();
+      if (tenantId) {
+        config.headers = config.headers || {};
+        config.headers["X-Tenant-ID"] = tenantId;
+      }
+    } catch (e) {
+      // If store import fails for any reason, continue without tenant header
+      console.warn("Could not load auth store for tenant header:", e);
     }
 
     return config;
@@ -64,20 +70,19 @@ axiosInstance.interceptors.request.use(
 // Response interceptor - Handle errors and automatic token refresh
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log("📡 Response status:", response.status);
-    console.log("✅ API Response data:", response.data);
     return response;
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & {
       _retry?: boolean;
+      _skipAuthRedirect?: boolean; // Add this flag
     };
 
     console.error("❌ API Error:", error.response?.data || error.message);
 
     // Handle 401 - Unauthorized (token expired)
     if (
-      error.response?.status === 401 &&
+      error.response?.status === 403 &&
       originalRequest &&
       !originalRequest._retry
     ) {
@@ -86,18 +91,19 @@ axiosInstance.interceptors.response.use(
         originalRequest.url?.includes(API_ENDPOINTS.LOGIN.REFRESH) ||
         originalRequest.url?.includes(API_ENDPOINTS.LOGIN.LOGIN)
       ) {
-        // Refresh token expired - redirect to login
-        console.error("🚫 Refresh token expired - redirecting to login");
+        // Refresh token expired - redirect to login ONLY if not already on login page
+        console.error("🚫 Refresh token expired");
 
-        // Dynamic import to avoid circular dependency
-        const { useAuthStore } = await import("@/store/user-auth-store");
-        useAuthStore.getState().logout();
-        window.location.href = "/login";
+        // Check if we should skip redirect (for initial auth check)
+        if (!originalRequest._skipAuthRedirect && !window.location.pathname.includes('/login')) {
+          const { useAuthStore } = await import("@/store/user-auth-store");
+          useAuthStore.getState().logout();
+          window.location.href = "/login";
+        }
         return Promise.reject(error);
       }
 
       if (isRefreshing) {
-        // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -113,30 +119,40 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Attempt to refresh the token
-        await axiosInstance.post(API_ENDPOINTS.LOGIN.REFRESH);
+        const refreshHeaders: Record<string, string> = {};
+        try {
+          const { useAuthStore } = await import("@/store/user-auth-store");
+          const tenantId = useAuthStore.getState().getTenantId();
+          if (tenantId) refreshHeaders["X-Tenant-ID"] = tenantId;
+        } catch (e) {
+          console.warn("Could not load auth store for refresh header:", e);
+        }
+
+        await axiosInstance.post(API_ENDPOINTS.LOGIN.REFRESH, undefined, {
+          headers: refreshHeaders,
+        });
         console.log("✅ Token refreshed successfully");
 
         processQueue(null);
         isRefreshing = false;
 
-        // Retry the original request
         return axiosInstance.request(originalRequest);
       } catch (refreshError) {
         console.error("❌ Token refresh failed");
         processQueue(refreshError as Error);
         isRefreshing = false;
 
-        // Refresh failed - clear auth and redirect to login
-        const { useAuthStore } = await import("@/store/user-auth-store");
-        useAuthStore.getState().logout();
-        window.location.href = "/login";
+        // Only redirect if not already on login page
+        if (!window.location.pathname.includes('/login')) {
+          const { useAuthStore } = await import("@/store/user-auth-store");
+          useAuthStore.getState().logout();
+          window.location.href = "/login";
+        }
 
         return Promise.reject(refreshError);
       }
     }
 
-    // Handle other errors
     if (error.response?.status === 403) {
       console.error("🚫 Forbidden - insufficient permissions");
     }
