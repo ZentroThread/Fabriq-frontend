@@ -6,11 +6,13 @@ import { useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
 import type { EmployeeProductionRequest } from "@/types/employee-product.type";
+import { useEmployeeProductionsByEmployee, useAddEmployeeProduction } from "@/hooks/employee/useEmployeeProduction";
 
 const ProductionOverview = () => {
 
   const [selectedMonth, setSelectedMonth] = useState<string>();
   const [selectedYear, setSelectedYear] = useState<string>();
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
@@ -18,31 +20,31 @@ const ProductionOverview = () => {
   const [formData, setFormData] = useState<Partial<EmployeeProductionRequest>>({});
   const total = (formData.quantity || 0) * (formData.ratePerProduct || 0);
 
-  const [productionDetails] = useState([{
-    productName: "Shirt",
-    date: "2024-06-01",
-    quantity: 100,
-    rate: 15,
-    total: 1500,
-  },
-  {
-    productName: "Pants",
-    date: "2024-06-02",
-    quantity: 80,
-    rate: 20,
-    total: 1600,
-  }]);
+  const { data: productionDetails } = useEmployeeProductionsByEmployee(selectedEmployee?.id || 0);
+
+  const formatDate = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
 
   const handleChange =<K extends keyof EmployeeProductionRequest> 
   (field: K,value: EmployeeProductionRequest[K]) => {
     setFormData((prev: Partial<EmployeeProductionRequest>) => ({
       ...prev,
+      date: selectedDay ? formatDate(selectedDay) : undefined,
       empId: selectedEmployee?.id,
       [field]: value,
     }));
   }
 
+  const { mutate: addProduction } = useAddEmployeeProduction();
 
+  const addProductionRecord = () => {
+    addProduction(formData);
+    setFormData({});
+    setSelectedDay(null);
+  }
+
+console.log(selectedDay);
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
@@ -116,7 +118,7 @@ const ProductionOverview = () => {
           </div>
 
           <div className="flex justify-end mt-auto pt-4">
-            <Button text="Save" width="w-32" />
+            <Button text="Save" width="w-32" onClick={addProductionRecord} />
           </div>
         </div>
 
@@ -126,6 +128,8 @@ const ProductionOverview = () => {
           <Calendar
             mode="single"
             className="w-full max-w-xs"
+            selected={selectedDay ? new Date(selectedDay) : undefined}
+            onSelect={(date) => setSelectedDay(date || null)}
             modifiersStyles={{
               leave: {
                 backgroundColor: "var(--color-light-pink)",
@@ -138,7 +142,7 @@ const ProductionOverview = () => {
                 color: "var(--color-accent-foreground)",
                 borderRadius: "6px",
                 fontWeight: "bold",
-              },
+              },        
             }}
           />
         </div>
@@ -173,16 +177,16 @@ const ProductionOverview = () => {
                       <tbody>
                         {productionDetails?.map((prod) => (
                           <tr
-                            key={prod.productName + prod.date}
+                            key={prod.productionName + prod.date}
                             className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition py-5"    
                           >
                             
             
-                            <td className="text-muted-foreground py-5">{prod.productName}</td>
+                            <td className="text-muted-foreground py-5">{prod.productionName}</td>
                             <td className="text-(--color-text)">{prod.date}</td>
                             <td className="text-(--color-text)">{prod.quantity}</td>
-                            <td className="text-(--color-text)">{prod.rate}</td>
-                            <td className="text-(--color-text)">{prod.total}</td>
+                            <td className="text-(--color-text)">{prod.ratePerProduct}</td>
+                            <td className="text-(--color-text)">{prod.quantity * prod.ratePerProduct}</td>
             
                             <td className="flex gap-4 text-xl">
                               <div className="flex items-center gap-4 py-5">
