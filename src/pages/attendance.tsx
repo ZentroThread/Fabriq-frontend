@@ -3,6 +3,7 @@ import Chart from "@/components/templates/Chart";
 import { Calendar28 } from "@/components/organisms/date-picker/calender";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import { TableDemo } from "@/components/organisms/tables/table-demo";
+import { AttendanceSkeleton } from "@/components/molecules/skeletons/attendance-skeleton";
 import {
   Calendar,
   CircleCheck,
@@ -10,8 +11,20 @@ import {
   Clock4,
   FingerprintPattern,
 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 function Attendance() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <AttendanceSkeleton />;
+  }
+
   return (
     <div className="p-5 flex flex-col ">
       <div className="text-style text-[30px] font-semibold">
@@ -95,7 +108,7 @@ function Attendance() {
 
             <div className="flex gap-2 items-center mb-2">
               <Calendar28 />
-              <NativeSelectDemo />
+              <NativeSelectDemo option={""} value1={""} value2={""} value3={""} string1={""} string2={""} string3={""} />
             </div>
           </div>
 

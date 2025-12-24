@@ -9,5 +9,12 @@ export const API_ENDPOINTS = {
     ADD: "/v1/customer/add-customer",
     GET_ALL: "/v1/customer/rea-customers",
   },
+  LOGIN: {
+    REGISTER: "/v1/user/register",
+    LOGIN: "/v1/user/login",
+    LOGOUT: "/v1/user/logout",
+    GETCURRENTUSER: "/v1/user/me",
+    REFRESH: "/v1/user/refresh",
+  },
   // Add more endpoints...
 };
