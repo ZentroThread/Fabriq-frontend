@@ -1,11 +1,12 @@
 import Button from "@/components/atoms/button/add-button";
-import { Calendar, Plus, XCircle } from "lucide-react";
+import { Calendar, Plus, Search, XCircle } from "lucide-react";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 //import { employees } from "@/constants/data";
 
 import EmployeeCard from "@/components/molecules/cards/employee-card";
-import { Input } from "@/components/molecules/input/input";
+import { Input } from "@/components/ui/input";
 import { useEmployees } from "@/hooks/employee/useEmployess";
 import {useDeleteEmployee} from "@/hooks/employee/useDeleteEmployee";
 //import {useEmployeeStore} from "@/store/employee-store";
@@ -16,6 +17,14 @@ export default function EmployeeOverview() {
   const {data:employees,error,isLoading} = useEmployees();
   const {mutate:deleteEmployee} = useDeleteEmployee();
   //const {searchText,setSearchText} = useEmployeeStore();
+
+  const [searchText, setSearchText] = useState("");
+
+  const filteredEmployees = employees?.filter((emp) =>
+    `${emp.empFirstName} ${emp.empLastName} ${emp.empCode}`
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -92,8 +101,15 @@ export default function EmployeeOverview() {
           </div>
 
           {/* Search */}
-          <div className="gap-2 flex pr-5 items-center">
-            <Input />
+          <div className="gap-2 flex pr-5 items-center relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-position-text pointer-events-none" />
+            <Input 
+              type="text"
+              placeholder="Search employees..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="pl-10"
+            />
           </div>
         </div>
 
@@ -113,7 +129,7 @@ export default function EmployeeOverview() {
           </thead>
 
           <tbody>
-            {employees?.map((emp) => (
+            {filteredEmployees?.map((emp) => (
               <tr
                 key={emp.empCode}
                 className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition "    
