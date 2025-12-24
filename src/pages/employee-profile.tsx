@@ -61,7 +61,11 @@ const handleUpdate = () => {
 const startEditing = () => {
   if (!employee) return;
   setFormData(employee);
-  setSelectedEmployee(employee);
+  setSelectedEmployee({
+    id: employee.id,
+    empCode: employee.empCode,
+    fullName: employee.empFirstName + " " + employee.empLastName,
+  });
   setIsEditing(true);
 }
 
