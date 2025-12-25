@@ -6,7 +6,10 @@ import { useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
 import type { EmployeeProductionRequest } from "@/types/employee-product.type";
-import { useEmployeeProductionsByEmployee, useAddEmployeeProduction,useUpdateEmployeeProduction } from "@/hooks/employee/useEmployeeProduction";
+import {useEmployeeProductionsByEmployee, 
+        useAddEmployeeProduction,
+        useUpdateEmployeeProduction, 
+        useDeleteEmployeeProduction } from "@/hooks/employee/useEmployeeProduction";
 
 const ProductionOverview = () => {
 
@@ -39,6 +42,7 @@ const ProductionOverview = () => {
   const { data: productionDetails } = useEmployeeProductionsByEmployee(selectedEmployee?.id || 0);
   const { mutate: addProduction } = useAddEmployeeProduction();
   const {mutate: updateProduction } = useUpdateEmployeeProduction();
+  const {mutate: deleteProduction } = useDeleteEmployeeProduction();
 
   const handleSetIsUpdateMode = (id: number) => {
     const recordToEdit = productionDetails?.find((prod) => prod.id === id);
@@ -62,6 +66,12 @@ const ProductionOverview = () => {
       setSelectedDay(null);
       setIsUpdateMode(false);
   }
+
+  const handleProductDelete = (id: number) => {
+    if (confirm("Are you sure you want to delete this production record?")) {
+      deleteProduction(id);
+    }
+  };
 
 console.log(selectedDay);
   return (
@@ -214,7 +224,9 @@ console.log(selectedDay);
                               <div className="flex items-center gap-4 py-5">
                                 <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" 
                                   onClick={() => handleSetIsUpdateMode(prod.id)} />
-                                <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer"  />
+                                <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer"  
+                                  onClick={() => handleProductDelete(prod.id)}
+                                />
                               </div>
                             </td>
                           </tr>

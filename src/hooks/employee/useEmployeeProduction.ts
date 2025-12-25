@@ -30,3 +30,14 @@ export const useUpdateEmployeeProduction = () => {
     }
   })
 };
+
+export const useDeleteEmployeeProduction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => employeeProductionService.deleteProductionRecord(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["employee-productions"]});
+      alert("Production record deleted successfully.");
+    }
+  })
+};
