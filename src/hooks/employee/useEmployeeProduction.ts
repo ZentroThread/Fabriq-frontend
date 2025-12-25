@@ -41,3 +41,14 @@ export const useDeleteEmployeeProduction = () => {
     }
   })
 };
+
+
+export const useEmployeeProdByEmpAndMonthYear = (employeeId: number, month: string, year: string) => {
+    return useQuery<EmployeeProductionResponse[]>({
+      queryKey: ["employee-productions", employeeId, month, year],
+      queryFn: () =>{ 
+        return employeeProductionService.getByDateRangeAndEmployee(employeeId, year, month);
+      },
+      enabled: !!employeeId && !!month && !!year,
+    });    
+  };

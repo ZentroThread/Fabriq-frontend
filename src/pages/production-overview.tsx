@@ -2,22 +2,29 @@ import { Input } from "@/components/ui/input";
 import Button from "@/components/atoms/button/add-button";
 import { Calendar } from "@/components/ui/calendar";
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import {useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
-import type { EmployeeProductionRequest } from "@/types/employee-product.type";
-import {useEmployeeProductionsByEmployee, 
-        useAddEmployeeProduction,
+import {type EmployeeProductionRequest } from "@/types/employee-product.type";
+import { useAddEmployeeProduction,
         useUpdateEmployeeProduction, 
-        useDeleteEmployeeProduction } from "@/hooks/employee/useEmployeeProduction";
+        useDeleteEmployeeProduction,
+        useEmployeeProdByEmpAndMonthYear
+      } from "@/hooks/employee/useEmployeeProduction";
+
+import {getMonthDateRange} from "@/utils/date";
 
 const ProductionOverview = () => {
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
 
-  const [selectedMonth, setSelectedMonth] = useState<string>();
-  const [selectedYear, setSelectedYear] = useState<string>();
+  const toDay = new Date();
+  const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0'); 
+  const currentYear = String(toDay.getFullYear()); 
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+  const [selectedYear, setSelectedYear] = useState<string>(currentYear);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
   const [prodId, setProdId] = useState<number>(0);
@@ -39,13 +46,17 @@ const ProductionOverview = () => {
     }));
   }
 
-  const { data: productionDetails } = useEmployeeProductionsByEmployee(selectedEmployee?.id || 0);
+  const { data: prodByDate } = useEmployeeProdByEmpAndMonthYear(
+    selectedEmployee?.id || 0,
+    selectedMonth || "",
+    selectedYear || ""
+  );
   const { mutate: addProduction } = useAddEmployeeProduction();
-  const {mutate: updateProduction } = useUpdateEmployeeProduction();
-  const {mutate: deleteProduction } = useDeleteEmployeeProduction();
+  const { mutate: updateProduction } = useUpdateEmployeeProduction();
+  const { mutate: deleteProduction } = useDeleteEmployeeProduction();
 
   const handleSetIsUpdateMode = (id: number) => {
-    const recordToEdit = productionDetails?.find((prod) => prod.id === id);
+    const recordToEdit = prodByDate?.find((prod) => prod.id === id);
     if (recordToEdit) {
       setFormData(recordToEdit);
       setProdId(id);
@@ -73,7 +84,12 @@ const ProductionOverview = () => {
     }
   };
 
-console.log(selectedDay);
+console.log("Selected Month:", selectedMonth);
+console.log("Selected Year:", selectedYear);
+console.log(getMonthDateRange(Number(selectedYear), Number(selectedMonth)).startDate);
+console.log(getMonthDateRange(Number(selectedYear), Number(selectedMonth)).endDate);
+console.log(prodByDate);
+
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
@@ -207,7 +223,7 @@ console.log(selectedDay);
                       </thead>
             
                       <tbody>
-                        {productionDetails?.map((prod) => (
+                        {(prodByDate)?.map((prod) => (
                           <tr
                             key={prod.productionName + prod.date}
                             className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition py-5"    
