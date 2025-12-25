@@ -6,21 +6,21 @@ import { useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
 import type { EmployeeProductionRequest } from "@/types/employee-product.type";
-import { useEmployeeProductionsByEmployee, useAddEmployeeProduction } from "@/hooks/employee/useEmployeeProduction";
+import { useEmployeeProductionsByEmployee, useAddEmployeeProduction,useUpdateEmployeeProduction } from "@/hooks/employee/useEmployeeProduction";
 
 const ProductionOverview = () => {
-
-  const [selectedMonth, setSelectedMonth] = useState<string>();
-  const [selectedYear, setSelectedYear] = useState<string>();
-  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
 
+  const [selectedMonth, setSelectedMonth] = useState<string>();
+  const [selectedYear, setSelectedYear] = useState<string>();
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
+  const [prodId, setProdId] = useState<number>(0);
+
   const [formData, setFormData] = useState<Partial<EmployeeProductionRequest>>({});
   const total = (formData.quantity || 0) * (formData.ratePerProduct || 0);
-
-  const { data: productionDetails } = useEmployeeProductionsByEmployee(selectedEmployee?.id || 0);
 
   const formatDate = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -36,12 +36,31 @@ const ProductionOverview = () => {
     }));
   }
 
+  const { data: productionDetails } = useEmployeeProductionsByEmployee(selectedEmployee?.id || 0);
   const { mutate: addProduction } = useAddEmployeeProduction();
+  const {mutate: updateProduction } = useUpdateEmployeeProduction();
+
+  const handleSetIsUpdateMode = (id: number) => {
+    const recordToEdit = productionDetails?.find((prod) => prod.id === id);
+    if (recordToEdit) {
+      setFormData(recordToEdit);
+      setProdId(id);
+      setSelectedDay(new Date(recordToEdit.date || ""));
+      setIsUpdateMode(true);
+    }
+  };
 
   const addProductionRecord = () => {
     addProduction(formData);
     setFormData({});
     setSelectedDay(null);
+  }
+
+  const updateProductionRecord = (id : number) => {
+      updateProduction({id:id, data: formData});
+      setFormData({});
+      setSelectedDay(null);
+      setIsUpdateMode(false);
   }
 
 console.log(selectedDay);
@@ -118,7 +137,10 @@ console.log(selectedDay);
           </div>
 
           <div className="flex justify-end mt-auto pt-4">
-            <Button text="Save" width="w-32" onClick={addProductionRecord} />
+            <Button 
+              text={isUpdateMode ? "Update" : "Add Record"} width="w-32" 
+              onClick={isUpdateMode ? () => updateProductionRecord(prodId) : addProductionRecord} 
+            />
           </div>
         </div>
 
@@ -190,7 +212,8 @@ console.log(selectedDay);
             
                             <td className="flex gap-4 text-xl">
                               <div className="flex items-center gap-4 py-5">
-                                <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" />
+                                <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" 
+                                  onClick={() => handleSetIsUpdateMode(prod.id)} />
                                 <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer"  />
                               </div>
                             </td>

@@ -19,3 +19,14 @@ export const useEmployeeProductionsByEmployee = (employeeId: number) => {
       }
     })
   };
+
+export const useUpdateEmployeeProduction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : ({id, data}: {id: number; data: Partial<EmployeeProductionRequest>}) => employeeProductionService.updateProductionRecord(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["employee-productions"]});
+      alert("Production record updated successfully.");
+    }
+  })
+};
