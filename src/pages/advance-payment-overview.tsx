@@ -6,6 +6,7 @@ import {useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
 import {type AdvancePaymentResponse , type AdvancePaymentRequest} from "@/types/advance-payment.type";
+import { useAddEmployeeAdvancePayment } from "@/hooks/employee/useEmployeeAdvance";
 
 export default function AdvancePaymentOverviewPage() {
 
@@ -23,6 +24,8 @@ export default function AdvancePaymentOverviewPage() {
   const [selectedYear, setSelectedYear] = useState<string>(currentYear);
   const [selectedDay, setSelectedDay] = useState<Date | null>();
   const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
+
+  const {mutate: addAdvancePayment} = useAddEmployeeAdvancePayment();
 
   const advancePaymentData: Array<AdvancePaymentResponse> = [
     {
@@ -43,7 +46,11 @@ export default function AdvancePaymentOverviewPage() {
     }
     setIsUpdateMode(true);
   }
-
+  const handleAddAdvancePayment = () =>{
+    addAdvancePayment(formData);
+    setFormData({});
+    setSelectedDay(null);
+  }
   const handleAdvancePaymentDelete = (id: number) => {
     console.log("Delete advance payment with ID:", id);
   }
@@ -116,7 +123,7 @@ export default function AdvancePaymentOverviewPage() {
               text={
                 isUpdateMode ? "Update" : "Add"
               } width="w-32" 
-              onClick={() => {}} 
+              onClick={handleAddAdvancePayment} 
             />
           </div>
         </div>

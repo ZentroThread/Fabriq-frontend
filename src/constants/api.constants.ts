@@ -32,4 +32,14 @@ export const API_ENDPOINTS = {
     DELETE: (id: number) => `/v1/production-records/${id}`,
     UPDATE: (id: number) => `/v1/production-records/${id}`,
   },
+
+  EMPLOYEE_ADVANCE_PAYMENT: {
+    ADD: "/v1/advance-payments",
+    GET_ALL: "/v1/advance-payments",
+    GET_BY_EMPLOYEE: (id: number) => `/v1/advance-payments/employee/${id}`,
+    GET_BY_DATE_RANGE_EMPLOYEE: (id: number, startDate: string, endDate: string) =>
+      `/v1/advance-payments/employee/${id}/date-range?startDate=${startDate}&endDate=${endDate}`,
+    DELETE: (id: number) => `/v1/advance-payments/${id}`,
+    UPDATE: (id: number) => `/v1/advance-payments/${id}`,
+  },
 };
