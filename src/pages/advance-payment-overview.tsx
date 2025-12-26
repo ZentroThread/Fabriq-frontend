@@ -5,8 +5,9 @@ import { Pencil, Trash2 } from "lucide-react";
 import {useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
-import {type AdvancePaymentResponse , type AdvancePaymentRequest} from "@/types/advance-payment.type";
-import { useAddEmployeeAdvancePayment } from "@/hooks/employee/useEmployeeAdvance";
+import {type AdvancePaymentRequest} from "@/types/advance-payment.type";
+import { useAddEmployeeAdvancePayment,
+        useGetAdvanceByEmpAndMonthYear } from "@/hooks/employee/useEmployeeAdvance";
 
 export default function AdvancePaymentOverviewPage() {
 
@@ -26,19 +27,14 @@ export default function AdvancePaymentOverviewPage() {
   const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
 
   const {mutate: addAdvancePayment} = useAddEmployeeAdvancePayment();
-
-  const advancePaymentData: Array<AdvancePaymentResponse> = [
-    {
-      id: 1,
-      empId: selectedEmployee ? selectedEmployee.id : 0,
-      reason: "Medical Emergency",
-      amount: 500.00,
-      date: "2024-06-05",
-    },
-  ];
+  const {data: advancePayments} = useGetAdvanceByEmpAndMonthYear(
+    selectedEmployee ? selectedEmployee.id : 0,
+    selectedYear,
+    selectedMonth
+  );
 
   const handleSetIsUpdateMode = (id: number) => {
-    const recordToEdit = advancePaymentData?.find((payment) => payment.id === id);
+    const recordToEdit = advancePayments?.find((payment) => payment.id === id);
     if (recordToEdit) {
       setFormData(recordToEdit);
       setSelectedDay(new Date(recordToEdit.date || ""));
@@ -64,12 +60,7 @@ export default function AdvancePaymentOverviewPage() {
       [field]: value,
     }));
   }
-
-  console.log(selectedMonth);
-  console.log(selectedYear);
-  console.log(selectedDay);
-  console.log(formData)
-
+  
   return (
      <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
@@ -178,7 +169,7 @@ export default function AdvancePaymentOverviewPage() {
               </thead>
     
               <tbody>
-                {(advancePaymentData)?.map((payment) => (
+                {(advancePayments)?.map((payment) => (
                   <tr
                     key={payment.id}
                     className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition py-5"    

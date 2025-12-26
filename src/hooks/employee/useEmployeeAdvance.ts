@@ -1,6 +1,6 @@
 import { employeeAdvanceService } from "@/services/employee-advance.service";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AdvancePaymentRequest } from "@/types/advance-payment.type";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { type AdvancePaymentResponse, type AdvancePaymentRequest } from "@/types/advance-payment.type";
 
 export const useAddEmployeeAdvancePayment = () => {
   const queryClient = useQueryClient();
@@ -12,3 +12,13 @@ export const useAddEmployeeAdvancePayment = () => {
     },
   });
 };
+
+export const useGetAdvanceByEmpAndMonthYear = (empId: number, year: string, month: string) => {
+  return useQuery<AdvancePaymentResponse[]>({
+    queryKey: ["employee-advance-payments", empId, month, year],
+    queryFn: () => {
+      return employeeAdvanceService.getByEmployeeDateRange(empId, year, month);
+    },
+    enabled: !!empId && !!month && !!year,
+  });
+}
