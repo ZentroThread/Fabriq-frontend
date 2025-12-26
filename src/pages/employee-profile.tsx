@@ -75,6 +75,10 @@ const showProductionRecords = (id: string) => {
     navigate(`/production-overview/${id}`);
   };
 
+  const showAdvancePaymentRecords = (id: string) => {
+    navigate(`/advance-payment-overview/${id}`);
+  };
+
   const showSalaryHistory = (id: string) => {
     navigate(`/salary-history/${id}`);
   };
@@ -116,6 +120,16 @@ const showProductionRecords = (id: string) => {
             text="Production Records"
             width="w-full sm:w-35"
             onClick={() => showProductionRecords(empCode)}
+          />
+          <Button
+            bordercolor="border-border-card2"
+            bgcolor="bg-bg-card2"
+            hovertext="hover:text-background"
+            hoverbg="hover:bg-light-brown"
+            textcolor="text-black"
+            text="Advance Payment"
+            width="w-full sm:w-35"
+            onClick={() => showAdvancePaymentRecords(empCode)}
           />
           <Button
             bordercolor="border-border-card3"

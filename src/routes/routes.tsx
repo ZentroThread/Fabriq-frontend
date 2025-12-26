@@ -14,6 +14,7 @@ import Login from "../pages/login";
 
 import Layout from "../components/organisms/layout/layout";
 import LeaveHistory from "@/pages/leave-history";
+import AdvancePaymentOverviewPage from "@/pages/advance-payment-overview";
 
 function AppRoutes() {
   return (
@@ -37,6 +38,7 @@ function AppRoutes() {
         <Route path="/leave-history/:id" element={<LeaveHistory />} />
         <Route path="/add-employee" element={<AddEmployee />} />
         <Route path="/production-overview/:id" element={<ProductionOverview />} />
+        <Route path="/advance-payment-overview/:id" element={<AdvancePaymentOverviewPage />} />
       </Route>
     </Routes>
   );
