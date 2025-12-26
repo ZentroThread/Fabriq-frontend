@@ -43,5 +43,19 @@ export const employeeAdvanceService = {
         "Content-Type": "application/json",
       },
     });
-  }
+  },
+
+  async updateAdvancePayment(id: number, data: Partial<AdvancePaymentRequest>): Promise<AdvancePaymentResponse> {
+    const response = await apiClient.request<AdvancePaymentRequest>(API_ENDPOINTS.EMPLOYEE_ADVANCE_PAYMENT.UPDATE(id), 
+    {
+      method: "PUT",
+      headers: {
+        "X-Tenant-ID": tenantId,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return AdvancePaymentResponseSchema.parse(response);
+  },
+  
 };

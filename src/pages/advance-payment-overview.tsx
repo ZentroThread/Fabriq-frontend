@@ -8,7 +8,8 @@ import useEmployeeStore from "@/store/employee-store";
 import {type AdvancePaymentRequest} from "@/types/advance-payment.type";
 import { useAddEmployeeAdvancePayment,
         useDeleteEmployeeAdvancePayment,
-        useGetAdvanceByEmpAndMonthYear } from "@/hooks/employee/useEmployeeAdvance";
+        useGetAdvanceByEmpAndMonthYear,
+        useUpdateEmployeeAdvancePayment } from "@/hooks/employee/useEmployeeAdvance";
 
 export default function AdvancePaymentOverviewPage() {
 
@@ -26,9 +27,11 @@ export default function AdvancePaymentOverviewPage() {
   const [selectedYear, setSelectedYear] = useState<string>(currentYear);
   const [selectedDay, setSelectedDay] = useState<Date | null>();
   const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
+  const [advancePaymentId, setAdvPaymentId] = useState<number | null>(null);  
 
   const {mutate: addAdvancePayment} = useAddEmployeeAdvancePayment();
   const {mutate: deleteAdvancePayment} = useDeleteEmployeeAdvancePayment();
+  const {mutate: updateAdvancePayment} = useUpdateEmployeeAdvancePayment();
   const {data: advancePayments} = useGetAdvanceByEmpAndMonthYear(
     selectedEmployee ? selectedEmployee.id : 0,
     selectedYear,
@@ -38,9 +41,9 @@ export default function AdvancePaymentOverviewPage() {
   const handleSetIsUpdateMode = (id: number) => {
     const recordToEdit = advancePayments?.find((payment) => payment.id === id);
     if (recordToEdit) {
+      setAdvPaymentId(id);
       setFormData(recordToEdit);
       setSelectedDay(new Date(recordToEdit.date || ""));
-      // setProdId(id);
     }
     setIsUpdateMode(true);
   }
@@ -52,6 +55,12 @@ export default function AdvancePaymentOverviewPage() {
   const handleAdvancePaymentDelete = (id: number) => {
     if(confirm("Are you sure you want to delete this advance payment record?"))
       deleteAdvancePayment(id);
+  }
+  const handleAdvancePaymentUpdate = (id: number) => {
+    updateAdvancePayment({id, data: formData});
+    setFormData({});
+    setSelectedDay(null);
+    setIsUpdateMode(false);
   }
 
   const handleChange =<K extends keyof AdvancePaymentRequest> 
@@ -117,7 +126,11 @@ export default function AdvancePaymentOverviewPage() {
               text={
                 isUpdateMode ? "Update" : "Add"
               } width="w-32" 
-              onClick={handleAddAdvancePayment} 
+              onClick={() => 
+                isUpdateMode ? 
+                handleAdvancePaymentUpdate(advancePaymentId || 0) : 
+                handleAddAdvancePayment()
+              } 
             />
           </div>
         </div>

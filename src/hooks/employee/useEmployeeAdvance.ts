@@ -21,7 +21,7 @@ export const useGetAdvanceByEmpAndMonthYear = (empId: number, year: string, mont
     },
     enabled: !!empId && !!month && !!year,
   });
-}
+};
 
 export const useDeleteEmployeeAdvancePayment = () => {
   const queryClient = useQueryClient();
@@ -34,3 +34,14 @@ export const useDeleteEmployeeAdvancePayment = () => {
   });
 };
 
+export const useUpdateEmployeeAdvancePayment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<AdvancePaymentRequest> }) =>
+      employeeAdvanceService.updateAdvancePayment(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employee-advance-payments"] });
+      alert("Advance payment updated successfully.");
+    },
+  });
+};
