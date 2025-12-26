@@ -7,6 +7,7 @@ import MonthYearSelect from "@/components/organisms/selection/month-years-select
 import useEmployeeStore from "@/store/employee-store";
 import {type AdvancePaymentRequest} from "@/types/advance-payment.type";
 import { useAddEmployeeAdvancePayment,
+        useDeleteEmployeeAdvancePayment,
         useGetAdvanceByEmpAndMonthYear } from "@/hooks/employee/useEmployeeAdvance";
 
 export default function AdvancePaymentOverviewPage() {
@@ -27,6 +28,7 @@ export default function AdvancePaymentOverviewPage() {
   const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
 
   const {mutate: addAdvancePayment} = useAddEmployeeAdvancePayment();
+  const {mutate: deleteAdvancePayment} = useDeleteEmployeeAdvancePayment();
   const {data: advancePayments} = useGetAdvanceByEmpAndMonthYear(
     selectedEmployee ? selectedEmployee.id : 0,
     selectedYear,
@@ -48,7 +50,8 @@ export default function AdvancePaymentOverviewPage() {
     setSelectedDay(null);
   }
   const handleAdvancePaymentDelete = (id: number) => {
-    console.log("Delete advance payment with ID:", id);
+    if(confirm("Are you sure you want to delete this advance payment record?"))
+      deleteAdvancePayment(id);
   }
 
   const handleChange =<K extends keyof AdvancePaymentRequest> 
@@ -60,7 +63,7 @@ export default function AdvancePaymentOverviewPage() {
       [field]: value,
     }));
   }
-  
+
   return (
      <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 

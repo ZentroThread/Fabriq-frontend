@@ -22,3 +22,15 @@ export const useGetAdvanceByEmpAndMonthYear = (empId: number, year: string, mont
     enabled: !!empId && !!month && !!year,
   });
 }
+
+export const useDeleteEmployeeAdvancePayment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => employeeAdvanceService.deleteAdvancePayment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employee-advance-payments"] });
+      alert("Advance payment deleted successfully.");
+    },
+  });
+};
+

@@ -32,5 +32,16 @@ export const employeeAdvanceService = {
       },
     });
     return response.map(item => AdvancePaymentResponseSchema.parse(item));
+  },
+
+  async deleteAdvancePayment(id: number): Promise<void> {
+    await apiClient.request<void>(API_ENDPOINTS.EMPLOYEE_ADVANCE_PAYMENT.DELETE(id), 
+    {
+      method: "DELETE",
+      headers: {
+        "X-Tenant-ID": tenantId,
+        "Content-Type": "application/json",
+      },
+    });
   }
 };
