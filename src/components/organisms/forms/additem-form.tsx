@@ -105,9 +105,13 @@ export function AddItemForm({
   function onSubmit(values: z.infer<typeof addItemFormSchema>) {
     const payload = {
       ...values,
+      // ensure numeric types
       price: parseFloat(values.price) || 0,
       stock: parseInt(values.stock, 10) || 0,
       category: Number(values.categoryId),
+      // ensure required string fields are always strings
+      title: values.title ?? "",
+      description: values.description ?? "",
     };
 
     if (editMode && itemData) {

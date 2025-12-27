@@ -14,7 +14,7 @@ interface AddButtonProps {
   onClick?: () => void;
 }
 
-function Button({
+function CustomButton({
   text,
   icon,
   width = "w-35",
@@ -40,4 +40,4 @@ function Button({
   );
 }
 
-export default Button;
+export default CustomButton;

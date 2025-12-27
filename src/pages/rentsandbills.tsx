@@ -1,12 +1,22 @@
 import RentalSummary from "@/components/templates/rents/rental-summary";
-import CustomerInformation from "@/components/templates/rents/customer-information";
 import RentalBillingLayout from "@/components/organisms/layout/rental-billing-layout";
 import AddItemsSection from "@/components/templates/rents/add-item-section";
 import RentalItemsSection from "@/components/templates/rents/rental-item-section";
 import { RentsAndBillsSkeleton } from "@/components/molecules/skeletons/rents-bills-skeleton";
 import { useState, useEffect } from "react";
+import CustomButton from "@/components/atoms/button/add-button";
+import { Eye, Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
 
 export const RentsAndBill = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -26,9 +36,31 @@ export const RentsAndBill = () => {
       <div className="text-position-text ">
         Create rental agreements and process payments
       </div>
+      <div className="flex flex-2 gap-6 lg:mr-5 lg:ml-auto justify-end">
+        <CustomButton
+          text={"Register Customer"}
+          width="w-auto"
+          icon={<Plus />}
+          onClick={() => setIsDialogOpen(true)}
+        />
+        <CustomButton text={"View All Orders"} width="w-auto" icon={<Eye />} />
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-xl max-h-[90vh] bg-card ">
+          <DialogHeader className="flex items-center">
+            <DialogTitle className="text-style font-extrabold text-xl">
+              Register Customer
+            </DialogTitle>
+            <DialogDescription className="text-position-text font-light">
+              Enter customer details for the rental
+            </DialogDescription>
+          </DialogHeader>
+          <AddCustomerForm />
+        </DialogContent>
+      </Dialog>
       <RentalBillingLayout
-        customerInfo={<CustomerInformation />}
-        //duration={<RentalDuration />}
+        //customerInfo={<CustomerInformation />}
         items={<AddItemsSection />}
         summary={<RentalSummary />}
         rentList={<RentalItemsSection />}

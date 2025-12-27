@@ -50,3 +50,21 @@ export const addItemFormSchema = z.object({
   }),
   image: z.instanceof(File, { message: "Image is required." }).optional(),
 });
+
+// Add customer schema
+export const addCustomerSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  address: z.string().min(1, "Address is required"),
+  mobileNumber: z
+    .string()
+    .min(10, "Mobile number is required")
+    .regex(/^07\\d{8}$/, "Mobile number must be in the format 07xxxxxxxx"),
+  landline: z.string().optional(),
+  whatsapp: z
+    .string()
+    .min(10, "WhatsApp number is required")
+    .regex(/^07\\d{8}$/, "WhatsApp number must be in the format 07xxxxxxxx"),
+  email: z
+    .union([z.string().email("Invalid email address"), z.literal("")])
+    .optional(),
+});

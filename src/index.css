@@ -193,3 +193,9 @@ body {
   color: var(--color-position-text);
   font-weight: 500;
 }
+
+/* Form error text using theme error color */
+.form-error {
+  color: var(--color-error);
+  font-size: 0.75rem;
+}
