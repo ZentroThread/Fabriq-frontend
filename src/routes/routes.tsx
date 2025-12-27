@@ -9,6 +9,7 @@ import EmployeeProfile from "@/pages/employee-profile";
 import { SalaryHistory } from "@/pages/salary-history";
 import AddEmployee from "@/pages/add-employee";
 import ProductionOverview from "@/pages/production-overview";
+import MonthlySalary from "@/pages/monthly-salary";
 
 import Login from "../pages/login";
 
@@ -39,6 +40,7 @@ function AppRoutes() {
         <Route path="/add-employee" element={<AddEmployee />} />
         <Route path="/production-overview/:id" element={<ProductionOverview />} />
         <Route path="/advance-payment-overview/:id" element={<AdvancePaymentOverviewPage />} />
+        <Route path="/monthly-salary/:id/:year/:month" element={<MonthlySalary />} />
       </Route>
     </Routes>
   );
