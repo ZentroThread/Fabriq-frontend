@@ -16,7 +16,12 @@ function Login() {
   // const authError = useAuthStore((state) => state.error);
 
   // const { mutate: login, isPending } = useLogin();
-const { login, isAuthenticated, isLoading, error: authError } = useAuthStore();
+  const {
+    login,
+    isAuthenticated,
+    isLoading,
+    error: authError,
+  } = useAuthStore();
 
   // React Hook Form with Zod validation
   const {
@@ -40,7 +45,7 @@ const { login, isAuthenticated, isLoading, error: authError } = useAuthStore();
 
   const onSubmit = async (data: LoginInput) => {
     const result = await login(data);
-    
+
     if (result.success) {
       navigate("/dashboard");
     }

@@ -32,8 +32,6 @@ interface AddItemPayload {
   image?: File | string;
 }
 
-
-
 export const useItems = () => {
   return useQuery({
     queryKey: QUERY_KEYS.ITEMS.ALL,
@@ -41,7 +39,10 @@ export const useItems = () => {
       console.log("🔍 TanStack Query: Starting getAllItems fetch");
       try {
         const result = await itemService.getAllItems();
-        console.log("✅ TanStack Query: getAllItems success, items:", result.length);
+        console.log(
+          "✅ TanStack Query: getAllItems success, items:",
+          result.length
+        );
         return result;
       } catch (error) {
         console.error("❌ TanStack Query: getAllItems failed:", error);

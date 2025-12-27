@@ -5,6 +5,7 @@ import RentalItemsSection from "@/components/templates/rents/rental-item-section
 import { RentsAndBillsSkeleton } from "@/components/molecules/skeletons/rents-bills-skeleton";
 import { useState, useEffect } from "react";
 import CustomButton from "@/components/atoms/button/add-button";
+import { useNavigate } from "react-router-dom";
 import { Eye, Plus, Users } from "lucide-react";
 import {
   Dialog,
@@ -18,6 +19,7 @@ import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
 export const RentsAndBill = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -42,9 +44,13 @@ export const RentsAndBill = () => {
           width="w-auto"
           icon={<Plus />}
           onClick={() => setIsDialogOpen(true)}
-
         />
-        <CustomButton text={"View All Customers"} width="w-auto" icon={<Users />} />
+        <CustomButton
+          text={"View All Customers"}
+          width="w-auto"
+          icon={<Users />}
+          onClick={() => navigate("/customers")}
+        />
         <CustomButton text={"View All Orders"} width="w-auto" icon={<Eye />} />
       </div>
 
@@ -58,7 +64,7 @@ export const RentsAndBill = () => {
               Enter customer details for the rental
             </DialogDescription>
           </DialogHeader>
-          <AddCustomerForm onClose={() => setIsDialogOpen(false)}/>
+          <AddCustomerForm onClose={() => setIsDialogOpen(false)} />
         </DialogContent>
       </Dialog>
       <RentalBillingLayout

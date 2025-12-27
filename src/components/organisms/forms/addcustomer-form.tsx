@@ -93,8 +93,8 @@ function AddCustomerForm({
           timer: 2000,
           showConfirmButton: false,
         });
-         reset(); // Reset form
-    onClose?.(); // Close the form
+        reset(); // Reset form
+        onClose?.(); // Close the form
       } else {
         Swal.fire({
           icon: "error",

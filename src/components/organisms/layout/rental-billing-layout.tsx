@@ -15,7 +15,7 @@ export default function RentalBillingLayout({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* LEFT SIDE (customer + duration + items + rentList) */}
       <div className="flex flex-col gap-6 md:col-span-2">
-       {/* // {customerInfo} */}
+        {/* // {customerInfo} */}
         {items}
         {rentList}
       </div>

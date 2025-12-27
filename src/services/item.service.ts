@@ -2,11 +2,7 @@ import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
 import { useItemStore } from "@/store/item-store";
 
-import type {
-  Item,
-  BackendItem,
-  AddItemPayload,
-} from "@/types/item.types";
+import type { Item, BackendItem, AddItemPayload } from "@/types/item.types";
 
 // Helper function to map backend response to frontend Item
 const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
@@ -53,9 +49,11 @@ export const itemService = {
 
       return newItem;
     } catch (error: unknown) {
-      const errorMsg = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to add item"
-        : "Failed to add item";
+      const errorMsg =
+        error instanceof Error && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message || "Failed to add item"
+          : "Failed to add item";
       setError(errorMsg);
       throw error;
     } finally {
@@ -65,7 +63,7 @@ export const itemService = {
 
   getAllItems: async (): Promise<Item[]> => {
     const { setLoading, setError, setItems } = useItemStore.getState();
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -74,18 +72,20 @@ export const itemService = {
         API_ENDPOINTS.ATTIRE.GET_ALL
       );
 
-      const items = Array.isArray(result) 
-        ? result.map(mapBackendItemToItem) 
+      const items = Array.isArray(result)
+        ? result.map(mapBackendItemToItem)
         : [];
-      
+
       // Update Zustand store
       setItems(items);
-      
+
       return items;
     } catch (error: unknown) {
-      const errorMsg = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch items"
-        : "Failed to fetch items";
+      const errorMsg =
+        error instanceof Error && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message || "Failed to fetch items"
+          : "Failed to fetch items";
       setError(errorMsg);
       throw error;
     } finally {
@@ -95,7 +95,7 @@ export const itemService = {
 
   getItemById: async (id: string): Promise<Item> => {
     const { setLoading, setError } = useItemStore.getState();
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -103,12 +103,14 @@ export const itemService = {
       const result = await apiClient.request<BackendItem>(
         `${API_ENDPOINTS.ATTIRE.GET_ALL}/${id}`
       );
-      
+
       return mapBackendItemToItem(result);
     } catch (error: unknown) {
-      const errorMsg = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch item"
-        : "Failed to fetch item";
+      const errorMsg =
+        error instanceof Error && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message || "Failed to fetch item"
+          : "Failed to fetch item";
       setError(errorMsg);
       throw error;
     } finally {
@@ -118,7 +120,7 @@ export const itemService = {
 
   updateItem: async (id: string, data: AddItemPayload): Promise<Item> => {
     const { setLoading, setError, updateItem } = useItemStore.getState();
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -147,9 +149,11 @@ export const itemService = {
 
       return updatedItem;
     } catch (error: unknown) {
-      const errorMsg = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch item"
-        : "Failed to fetch item";
+      const errorMsg =
+        error instanceof Error && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message || "Failed to fetch item"
+          : "Failed to fetch item";
       setError(errorMsg);
       throw error;
     } finally {
@@ -159,22 +163,23 @@ export const itemService = {
 
   deleteItem: async (id: number): Promise<void> => {
     const { setLoading, setError, deleteItem } = useItemStore.getState();
-    
+
     try {
       setLoading(true);
       setError(null);
 
-      await apiClient.request<void>(
-        API_ENDPOINTS.ATTIRE.DELETE(id),
-        { method: "DELETE" }
-      );
+      await apiClient.request<void>(API_ENDPOINTS.ATTIRE.DELETE(id), {
+        method: "DELETE",
+      });
 
       // Remove from Zustand store after successful deletion
       deleteItem(id);
     } catch (error: unknown) {
-      const errorMsg = error instanceof Error && 'response' in error 
-        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to fetch item"
-        : "Failed to fetch item";
+      const errorMsg =
+        error instanceof Error && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message || "Failed to fetch item"
+          : "Failed to fetch item";
       setError(errorMsg);
       throw error;
     } finally {
@@ -182,4 +187,3 @@ export const itemService = {
     }
   },
 };
-
