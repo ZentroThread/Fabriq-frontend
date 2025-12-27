@@ -15,7 +15,7 @@ interface AddCustomerFormProps {
   onClose?: () => void;
   onSubmit?: (data: {
     fullName?: string;
-    address ?: string;
+    address?: string;
     mobileNumber?: string;
     landline?: string;
     whatsapp?: string;
@@ -59,7 +59,7 @@ function AddCustomerForm({
     if (editMode && customerData) {
       reset({
         fullName: customerData.fullName ?? "",
-        address : customerData.address ?? " ",
+        address: customerData.address ?? " ",
         mobileNumber: customerData.mobileNumber ?? "",
         landline: customerData.landline ?? "",
         whatsapp: customerData.whatsapp ?? "",
@@ -86,14 +86,15 @@ function AddCustomerForm({
     try {
       const created = await useBillingStore.getState().addCustomer(apiPayload);
       if (created) {
-        Swal.fire({
+        await Swal.fire({
           icon: "success",
           title: "Customer added",
           text: `${created.custName} has been added successfully.`,
           timer: 2000,
           showConfirmButton: false,
         });
-        if (onClose) onClose();
+         reset(); // Reset form
+    onClose?.(); // Close the form
       } else {
         Swal.fire({
           icon: "error",
@@ -136,9 +137,7 @@ function AddCustomerForm({
               {...register("address")}
             />
             {errors.address && (
-              <div className="text-xs form-error">
-                {errors.address.message}
-              </div>
+              <div className="text-xs form-error">{errors.address.message}</div>
             )}
 
             <InputField
@@ -153,7 +152,7 @@ function AddCustomerForm({
               </div>
             )}
 
-<InputField
+            <InputField
               label="WhatsApp Number"
               icon={<FaWhatsapp />}
               placeholder="077xxxxxxx"
@@ -175,7 +174,7 @@ function AddCustomerForm({
                 {errors.landline.message}
               </div>
             )}
-            
+
             <InputField
               label="Email (Optional)"
               icon={<Mail />}

@@ -5,7 +5,7 @@ import RentalItemsSection from "@/components/templates/rents/rental-item-section
 import { RentsAndBillsSkeleton } from "@/components/molecules/skeletons/rents-bills-skeleton";
 import { useState, useEffect } from "react";
 import CustomButton from "@/components/atoms/button/add-button";
-import { Eye, Plus } from "lucide-react";
+import { Eye, Plus, Users } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -42,7 +42,9 @@ export const RentsAndBill = () => {
           width="w-auto"
           icon={<Plus />}
           onClick={() => setIsDialogOpen(true)}
+
         />
+        <CustomButton text={"View All Customers"} width="w-auto" icon={<Users />} />
         <CustomButton text={"View All Orders"} width="w-auto" icon={<Eye />} />
       </div>
 
@@ -56,7 +58,7 @@ export const RentsAndBill = () => {
               Enter customer details for the rental
             </DialogDescription>
           </DialogHeader>
-          <AddCustomerForm />
+          <AddCustomerForm onClose={() => setIsDialogOpen(false)}/>
         </DialogContent>
       </Dialog>
       <RentalBillingLayout

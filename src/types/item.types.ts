@@ -62,6 +62,7 @@ export interface BackendCustomerPayload {
   custWhatsappNumber: string;
   custEmail: string;
   custAddress: string;
+  custRegistrationDate : Date;
 }
 export interface AddCustomerResponse {
   success: boolean;
