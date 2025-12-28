@@ -55,6 +55,7 @@ export interface AddCustomerPayload {
 }
 
 export interface BackendCustomerPayload {
+  custId?: number;
   custCode: string;
   custName: string;
   custMobileNumber: string;

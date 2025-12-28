@@ -25,4 +25,11 @@ export const billingService = {
     );
     return resp;
   },
+
+  async deleteCustomer(custId: number): Promise<boolean> {
+    await apiClient.request<void>(API_ENDPOINTS.CUSTOMER.DELETE(custId), {
+      method: "DELETE",
+    });
+    return true;
+  },
 };

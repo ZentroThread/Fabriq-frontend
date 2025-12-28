@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
 import { useState } from "react";
-import useBillingStore from "@/store/billing-store";
+import useBillingStore from "@/store/customer-store";
 import Swal from "sweetalert2";
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
 
@@ -62,7 +62,7 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
       custWhatsappNumber: data.whatsapp ?? "",
       custEmail: data.email ?? "",
       custAddress: data.address ?? "",
-    } as Partial<any>;
+    } as Partial<unknown>;
 
     await useBillingStore.getState().updateCustomer(customer.custCode, payload);
     setOpen(false);

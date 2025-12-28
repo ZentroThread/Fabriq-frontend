@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
   CUSTOMER: {
     ADD: "/v1/customer/add-customer",
     GET_ALL: "/v1/customer/rea-customers",
+    DELETE: (id: number) => `/v1/customer/delete-customer/${id}`,
   },
   LOGIN: {
     REGISTER: "/v1/user/register",

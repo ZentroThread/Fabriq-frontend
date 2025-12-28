@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useBillingStore from "@/store/billing-store";
+import useBillingStore from "@/store/customer-store";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import CustomerCard from "@/components/molecules/cards/customer-card";

@@ -15,6 +15,7 @@ export default function AddItemsSection() {
         description={"Select items to add to the rental"}
         height="h-auto"
       >
+        <InputField label="Customer Code" placeholder="Enter customer code" />
         <InputField label="Selet Item" placeholder="Enter item code" />
         <InputField
           label="Days"

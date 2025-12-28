@@ -19,6 +19,7 @@ interface BillingState {
     custCode: string,
     payload: Partial<BackendCustomerPayload>
   ) => Promise<BackendCustomerPayload | null>;
+  deleteCustomer: (custCode: string) => Promise<null>;
   setError: (err: string | null) => void;
 }
 
@@ -95,13 +96,30 @@ export const useBillingStore = create<BillingState>((set, get) => ({
   deleteCustomer: async (custCode: string) => {
     set({ isLoading: true, error: null });
     try {
-      // Remove locally (no backend delete endpoint available)
-      set((state) => {
-        const customers = state.customers.filter(
-          (c) => c.custCode !== custCode
-        );
-        return { customers };
-      });
+      // Find the customer to obtain custId and call backend delete
+      const state = get();
+      const target = state.customers.find((c) => c.custCode === custCode);
+      if (target && typeof target.custId === "number") {
+        await billingService.deleteCustomer(target.custId);
+        set((s) => ({
+          customers: s.customers.filter((c) => c.custCode !== custCode),
+        }));
+        // Persist deletion so it survives reloads (in case backend still lists briefly)
+        const deletedRaw = localStorage.getItem("deleted_customers");
+        const deleted: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
+        if (!deleted.includes(custCode)) {
+          deleted.push(custCode);
+          localStorage.setItem("deleted_customers", JSON.stringify(deleted));
+        }
+        await queryClient.invalidateQueries({ queryKey: ["customers"] });
+        set({ isLoading: false });
+        return null;
+      }
+
+      // Fallback: if no custId is present, fall back to local-only deletion
+      set((s) => ({
+        customers: s.customers.filter((c) => c.custCode !== custCode),
+      }));
       // Persist deletion so it survives reloads
       const deletedRaw = localStorage.getItem("deleted_customers");
       const deleted: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
