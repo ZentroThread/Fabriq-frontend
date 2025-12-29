@@ -1,36 +1,33 @@
 import { Trash2, Ruler } from "lucide-react";
-
-/* type RentalItem = {
-  name: string;
-  price: number;
-  days: number;
-}; */
+import useBillingStore from "@/store/billing-store";
+import type { BillingState } from "@/store/billing-store";
 
 export default function RentalItemsSection() {
-  const items = [
-    { name: "Saree A", price: 2000, days: 3 },
-    { name: "Saree B", price: 2500, days: 2 },
-    { name: "Saree C", price: 1800, days: 5 },
-  ];
+  const items = useBillingStore((s: BillingState) => s.items);
+  const removeItem = useBillingStore((s: BillingState) => s.removeItem);
+  const confirmOrder = useBillingStore((s: BillingState) => s.confirmOrder);
 
   function onDelete(index: number): void {
-    console.log("Deleted item at index:", index);
+    removeItem(index);
   }
 
   function ChangeMeasurementPopup(index: number): void {
     console.log("Change measurement for item at index:", index);
   }
 
+  const totalAmount = items.reduce(
+    (acc, it) => acc + (it.price || 0) * (it.days || 0),
+    0
+  );
+
   return (
     <div className="p-6 rounded-3xl shadow bg-card  w-full ">
-      {/* Title */}
       <div className="text-[28px] text-style mb-4">Rental Items</div>
 
       {items.length === 0 ? (
-        <p className="text-muted-foreground">No items added to the rental.</p>
+        <p className="text-muted-foreground">Not found rental items.</p>
       ) : (
         <>
-          {/* DESKTOP TABLE */}
           <table className="hidden md:table w-full text-left">
             <thead>
               <tr className="border-b text-gray-600 font-semibold text-sm">
@@ -52,13 +49,16 @@ export default function RentalItemsSection() {
                   key={index}
                   className="border-b last:border-none text-gray-800"
                 >
-                  <td className="py-3">{item.name}</td>
-                  <td className="py-3">LKR {item.price.toLocaleString()}</td>
+                  <td className="py-3">{item.itemCode}</td>
+                  <td className="py-3">
+                    LKR {(item.price || 0).toLocaleString()}
+                  </td>
                   <td className="py-3 font-semibold">{item.days}</td>
                   <td className="py-3 font-bold">
-                    LKR {(item.price * item.days).toLocaleString()}
+                    LKR{" "}
+                    {/* {((item.price || 0) * (item.days || 0)).toLocaleString()} */}
+                    LKR {(item.price || 0).toLocaleString()}
                   </td>
-
                   <td className="py-3 text-center">
                     <div className="flex justify-center gap-3">
                       <Trash2
@@ -78,7 +78,6 @@ export default function RentalItemsSection() {
             </tbody>
           </table>
 
-          {/* MOBILE CARDS */}
           <div className="md:hidden space-y-4">
             {items.map((item, index) => (
               <div
@@ -102,16 +101,29 @@ export default function RentalItemsSection() {
                 </div>
 
                 <div className="text-sm text-gray-600">
-                  Price/Day: LKR {item.price.toLocaleString()}
+                  Price/Day: LKR {(item.price || 0).toLocaleString()}
                 </div>
 
                 <div className="text-sm text-gray-600">Days: {item.days}</div>
 
                 <div className="font-bold text-gray-800">
-                  Total: LKR {(item.price * item.days).toLocaleString()}
+                  Total: LKR{" "}
+                  {((item.price || 0) * (item.days || 0)).toLocaleString()}
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-4 flex justify-end items-center gap-4">
+            <div className="font-semibold">
+              Total: LKR {totalAmount.toLocaleString()}
+            </div>
+            <button
+              className="btn-primary px-4 py-2 rounded"
+              onClick={() => confirmOrder()}
+            >
+              Confirm Order
+            </button>
           </div>
         </>
       )}

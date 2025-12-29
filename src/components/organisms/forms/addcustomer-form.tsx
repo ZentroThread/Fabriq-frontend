@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { House, Mail, Phone, User } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useBillingStore from "@/store/customer-store";
+import billingStore from "@/store/billing-store";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,6 +55,7 @@ function AddCustomerForm({
       email: "",
     },
   });
+  const fetchCustomers = useBillingStore((s) => s.fetchCustomers);
 
   useEffect(() => {
     if (editMode && customerData) {
@@ -93,6 +95,23 @@ function AddCustomerForm({
           timer: 2000,
           showConfirmButton: false,
         });
+        // Refresh customers list and close/reset form
+        await fetchCustomers();
+        // Set the created customer as the selected customer for billing flow
+        try {
+          billingStore.getState().setSelectedCustomer({
+            ...created,
+            cust_id:
+              (created as any).custId ?? (created as any).cust_id ?? undefined,
+            custCode:
+              (created as any).custCode ??
+              (created as any).cust_code ??
+              (created as any).custCode ??
+              undefined,
+          });
+        } catch (e) {
+          console.warn("Failed to set selected customer:", e);
+        }
         reset(); // Reset form
         onClose?.(); // Close the form
       } else {

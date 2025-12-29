@@ -12,6 +12,7 @@ interface AddButtonProps {
   hovertext?: string;
   padding?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 function CustomButton({
@@ -26,10 +27,12 @@ function CustomButton({
   bordercolor,
   padding = "p-5",
   onClick,
+  disabled = false,
 }: AddButtonProps) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={`${width} ${height} ${bgcolor}
   ${hoverbg} ${textcolor} ${bordercolor} ${padding}  ${hovertext} 
   font-semibold rounded-xl border-1 mt-4 mb-4 flex items-center justify-center gap-2 text-[14px]`}

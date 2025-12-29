@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useBillingStore from "@/store/customer-store";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
@@ -14,8 +13,9 @@ import {
 import Chart from "@/components/templates/Chart";
 
 function Customers() {
-  const navigate = useNavigate();
-  const { customers, isLoading, error, fetchCustomers } = useBillingStore();
+  const customers = useBillingStore((s) => s.customers);
+  const isLoading = useBillingStore((s) => s.isLoading);
+  const fetchCustomers = useBillingStore((s) => s.fetchCustomers);
   const [searchQuery, setSearchQuery] = useState("");
   const [range, setRange] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -52,8 +52,6 @@ function Customers() {
     });
 
     if (range) {
-      // eslint-disable-next-line react-hooks/purity
-      const now = Date.now();
       let months = 0;
       if (range === "1") months = 1;
       if (range === "3") months = 3;
