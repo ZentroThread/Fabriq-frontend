@@ -10,14 +10,18 @@ export default function SalarySummary({data}:props) {
 
   const rows = [
     ["Basic Salary", data.basicSalary],
-    ["Allowances", data.totalAllowances],
+    ["Single OT", data.singleOTAmount],
+    ["Double OT", data.doubleOTAmount],
+    ["Attendance Allowances", data.totalAllowances],
     ["Production Income", data.productPay],
     ["Sales Commission", data.commission],
     ["Gross Salary", data.grossSalary],
-    ["EPF (Employee)", data.epfEmployee],
-    ["ETF", data.etf],
-    ["Deductions", data.totalDeductions],
+    ["EPF (8%)", data.epfEmployee],
+    ["Salary Advance", data.salaryAdvance],
     ["Net Salary", data.netSalary],
+    ["ETF", data.etf],
+    ["Employer EPF (12%)", data.epfEmployer],
+    ["Net Benefit",data.netSalary+ data.etf + data.epfEmployer],
   ];
 
   return (
@@ -27,8 +31,14 @@ export default function SalarySummary({data}:props) {
       <div className="space-y-2">
         {rows.map(([label, value]) => (
           <div key={label} className="flex justify-between">
-            <Label className="text-position-text">{label}</Label>
-            <span className=" text-position-text">Rs. {value}</span>
+           {label === "Gross Salary" || label === "Net Salary" || label === "Net Benefit" ? (
+              <Label className="text-md font-medium ">{label}</Label>
+            ) : (
+              <span className="text-position-text">{label}</span>
+            )}
+            <span className={label === "Gross Salary" || label === "Net Salary" || label === "Net Benefit" ? "text-md font-medium underline underline-offset-4" : "text-position-text"}>
+              Rs.{value}
+            </span>
           </div>
         ))}
       </div>

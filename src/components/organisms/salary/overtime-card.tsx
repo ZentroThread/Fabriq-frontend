@@ -17,26 +17,26 @@ export default function OvertimeCard({ data, className }: Props) {
               <div className="space-y-3 ">
                 <h4 className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">Double OT</h4>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <ReadOnlyField label="Double OT Hours" value={`0`} readonly={false} />
+                <ReadOnlyField label="Double OT Hours" value={`${data.doubleOTHours}`}  />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <ReadOnlyField label="Double OT Amount (per hour)" value={`Rs.${0}`} />
+                  <ReadOnlyField label="Double OT Amount (per hour)" value={`Rs.${data.doubleOTRate}`} />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <ReadOnlyField label="Total Double OT" value={`Rs.${0}`} />
+                  <ReadOnlyField label="Total Double OT" value={`Rs.${data.doubleOTAmount}`} />
                 </div>
               </div>
 
               <div className="space-y-3 ">
                 <h4 className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">Single OT</h4>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <ReadOnlyField label="Single OT Hours" value={`0`} readonly={false} />
+                <ReadOnlyField label="Single OT Hours" value={`${data.singleOTHours}`}  />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <ReadOnlyField label="Single OT Amount (per hour)" value={`Rs.0`} />
+                  <ReadOnlyField label="Single OT Amount (per hour)" value={`Rs.${data.singleOTRate}`} />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <ReadOnlyField label="Total Single OT" value={`Rs.${data.overtimePay}`} />
+                  <ReadOnlyField label="Total Single OT" value={`Rs.${data.singleOTAmount}`} />
                 </div>
                 </div>
             </div>

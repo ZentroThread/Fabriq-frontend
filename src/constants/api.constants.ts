@@ -42,4 +42,10 @@ export const API_ENDPOINTS = {
     DELETE: (id: number) => `/v1/advance-payments/${id}`,
     UPDATE: (id: number) => `/v1/advance-payments/${id}`,
   },
+
+  PAYROLL:{
+    GENERATE: (empId:number,month:number,year:number) => `/v1/payroll/calculate/${empId}/${month}/${year}`,
+  },
+
+
 };
