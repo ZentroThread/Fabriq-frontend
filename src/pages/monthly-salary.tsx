@@ -7,6 +7,7 @@ import DeductionsCard from "@/components/organisms/salary/deductions-card";
 import AllowancesCard from "@/components/organisms/salary/allowances-card";
 import ExtraHolidayCard from "@/components/organisms/salary/extra-holiday-card";
 import OvertimeCard from "@/components/organisms/salary/overtime-card";
+import { useParams } from "react-router-dom";
 
 export default function MonthlySalary() {
 
@@ -30,6 +31,8 @@ export default function MonthlySalary() {
     netSalary: 59000,
     calculatedAt: "2024-06-15T10:00:00Z",
   };
+  const {id,year,month} = useParams();
+
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
@@ -66,11 +69,11 @@ export default function MonthlySalary() {
     
 
       {/* Production Summary */}
-      <EmpProductionSummary empId={1} month={6} year={2024} />
+      <EmpProductionSummary empId={Number(id)} month={Number(month)} year={Number(year)} />
   
 
       {/* Advance Payment Summary */}
-      <EmpAdvancePaymentSummary empId={1} month={6} year={2024} />
+      <EmpAdvancePaymentSummary empId={Number(id)} month={Number(month)} year={Number(year)} />
 
     </div>
   );

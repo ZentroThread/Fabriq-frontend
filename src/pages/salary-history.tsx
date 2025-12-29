@@ -1,16 +1,18 @@
 import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
 import { useNavigate,  } from "react-router-dom";
+import useEmployeeStore from "@/store/employee-store";
 
 export function SalaryHistory() {
 
   const navigator = useNavigate();
-  const employeeId = "123"; 
+  const {selectedEmployee} = useEmployeeStore();
+  const employeeId = selectedEmployee?.id || 0;
 
   const salaryData = [
-    { year: "2025", month: "November", total: null, status: "add" },
-    { year: "2025", month: "October", total: "LKR 60,000", status: "paid" },
-    { year: "2025", month: "September", total: "LKR 60,000", status: "paid" },
+    { year: "2025", month: "November", total: null, status: "add",monthNumber:"11" },
+    { year: "2025", month: "October", total: "LKR 60,000", status: "paid", monthNumber:"10" },
+    { year: "2025", month: "September", total: "LKR 60,000", status: "paid", monthNumber:"9" },
   ];
 
   const handleRowClick = (month: string, year: string) => {
@@ -66,7 +68,7 @@ export function SalaryHistory() {
               <tr
                 key={salary.month}
                 className="bg- border-b border-(--color-border) text-position-text hover:bg-main-bg transition"
-                onClick={() => handleRowClick(salary.month, salary.year)}
+                onClick={() => handleRowClick(salary.monthNumber, salary.year)}
               >
                 <td className="py-4 px-4 font-extralight  text-(--color-text)">
                   {salary.month}

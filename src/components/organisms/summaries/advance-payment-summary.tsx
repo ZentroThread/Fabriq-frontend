@@ -1,14 +1,8 @@
-import {type AdvancePaymentResponse} from '@/types/advance-payment.type';
-export default function EmpAdvancePaymentSummary(props:{empId:number, month:number, year:number}) {
+import {useGetAdvanceByEmpAndMonthYear} from '@/hooks/employee/useEmployeeAdvance';
 
-  const advancePayments: AdvancePaymentResponse[] = [{
-    id: 1,
-    amount: 5000,
-    reason: "Medical Emergency",
-    date: "2024-06-05",
-    empId: props.empId
-  }
-];
+export default function EmpAdvancePaymentSummary(props:{empId:number, year:number, month:number}) {
+
+const {data: fetchedAdvancePayments} = useGetAdvanceByEmpAndMonthYear(props.empId, props.year.toString(), props.month.toString());
 
   return(
     <div className="space-y-6 p-6 bg-card rounded-2xl shadow-md lg:col-span-2 flex flex-col">
@@ -24,7 +18,7 @@ export default function EmpAdvancePaymentSummary(props:{empId:number, month:numb
           </thead>
 
           <tbody>
-            {(advancePayments)?.map((payment) => (
+            {(fetchedAdvancePayments)?.map((payment) => (
               <tr
                 key={payment.id}
                 className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition py-5"    
@@ -37,7 +31,8 @@ export default function EmpAdvancePaymentSummary(props:{empId:number, month:numb
             ))}
           </tbody>
         </table>
-        <h2 className="text-position-text">Total Advance Payments: Rs.{advancePayments.reduce((total, payment) => total + payment.amount, 0)}</h2>
+        <h2 className="text-position-text">Total Advance Payments: 
+          Rs.{(fetchedAdvancePayments?.reduce((total, payment) => total + payment.amount, 0) || 0)}</h2>
       </div>
     </div>
   )

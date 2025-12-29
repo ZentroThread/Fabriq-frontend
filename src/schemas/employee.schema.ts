@@ -60,6 +60,9 @@ export const EmployeeCreateSchema = z.object({
 
   basicSalary: z.number().optional(),
 
+  commissionEligible: z.boolean().optional(),
+  performancePoints: z.number().optional(),
+
   employeeBankDetails: EmployeeBankDetailsSchema.optional(),
 });
 
