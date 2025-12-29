@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { apiClient } from "@/lib/client";
+import { billingService } from "@/services/billing.service";
 
 type RentalItem = {
   itemCode: string;
@@ -12,7 +12,15 @@ type RentalItem = {
 
 type Customer = {
   cust_id?: number | string;
-  [key: string]: any;
+  custCode?: string;
+  cust_code?: string;
+};
+
+type AttireRentAddDto = {
+  customerCode?: string;
+  attireCode: string;
+  rentDate?: string;
+  returnDate?: string;
 };
 
 export type BillingState = {
@@ -22,7 +30,7 @@ export type BillingState = {
   addItem: (item: Partial<RentalItem>) => void;
   removeItem: (index: number) => void;
   clearItems: () => void;
-  confirmOrder: () => Promise<any>;
+  confirmOrder: () => Promise<unknown>;
 };
 
 const useBillingStore = create<BillingState>((set, get) => ({
@@ -56,27 +64,24 @@ const useBillingStore = create<BillingState>((set, get) => ({
     if (!selectedCustomer) throw new Error("No selected customer");
     if (!items || items.length === 0) throw new Error("No items to confirm");
 
-    const payload = {
-      customerId: selectedCustomer.cust_id,
-      items: items.map((it) => ({
-        itemCode: it.itemCode,
-        pricePerDay: it.price,
-        days: it.days,
-        startDate: it.startDate,
-        endDate: it.endDate,
-      })),
+    // Build payload matching backend's AttireRentAddDto
+    const first = items[0];
+    const sc = selectedCustomer;
+    const customerCode =
+      sc.custCode ||
+      sc.cust_code ||
+      (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : undefined);
+
+    const payload: AttireRentAddDto = {
+      customerCode,
+      attireCode: first.itemCode,
+      rentDate: first.startDate,
+      returnDate: first.endDate,
     };
 
-    try {
-      const resp = await apiClient.request<any>(`/v1/attire-rent/add`, {
-        method: "POST",
-        data: payload,
-      });
-      set({ items: [] });
-      return resp;
-    } catch (err) {
-      throw err;
-    }
+    const resp = await billingService.addAttireRent(payload);
+    set({ items: [] });
+    return resp;
   },
 }));
 

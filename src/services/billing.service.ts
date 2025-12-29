@@ -6,6 +6,13 @@ import type {
 import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 
+type AttireRentAddDto = {
+  customerCode?: string;
+  attireCode: string;
+  rentDate?: string;
+  returnDate?: string;
+};
+
 export const billingService = {
   async addCustomer(data: AddCustomerPayload): Promise<AddCustomerResponse> {
     const resp = await apiClient.request<BackendCustomerPayload>(
@@ -31,5 +38,16 @@ export const billingService = {
       method: "DELETE",
     });
     return true;
+  },
+
+  async addAttireRent(payload: AttireRentAddDto): Promise<unknown> {
+    const resp = await apiClient.request<unknown>(
+      API_ENDPOINTS.ATTIRE_RENT.ADD,
+      {
+        method: "POST",
+        data: payload,
+      }
+    );
+    return resp;
   },
 };

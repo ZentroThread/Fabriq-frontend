@@ -1,22 +1,46 @@
 import InputField from "@/components/molecules/input/input-feild";
 import { useEffect, useState } from "react";
+import { useItems } from "@/hooks/useItems";
 import { useItemStore } from "@/store/item-store";
+import type { Item } from "@/types/item.types";
 import Chart from "../Chart";
 import Button from "@/components/atoms/button/add-button";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
 
+// Extended type to handle both custCode and cust_id
+interface CustomerData {
+  custCode?: string;
+  cust_id?: number | string;
+  [key: string]: unknown;
+}
+
+// Type for items that might have different stock field names
+interface ItemWithStock
+  extends Omit<
+    Partial<Item>,
+    "stock" | "quantity" | "availableQty" | "attire_stock"
+  > {
+  stock?: number | string;
+  quantity?: number | string;
+  availableQty?: number | string;
+  attire_stock?: number | string;
+}
+
 export default function AddItemsSection() {
+  // ensure items are fetched into the local zustand store for suggestions
+  useItems();
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
-  );
+  ) as CustomerData | null;
+
   const addItem = useBillingStore((s: BillingState) => s.addItem);
   const setSelectedCustomer = useBillingStore(
     (s: BillingState) => s.setSelectedCustomer
   );
 
-  const [itemCode, setItemCode] = useState("");
+  const [itemCode, setItemCode] = useState<string | null>("");
   const [customerCode, setCustomerCode] = useState<string>("");
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
@@ -30,7 +54,7 @@ export default function AddItemsSection() {
 
   // debounced search term so we don't spam the API while typing
   useEffect(() => {
-    const t = setTimeout(() => setSearchTerm(itemCode.trim()), 150);
+    const t = setTimeout(() => setSearchTerm((itemCode ?? "").trim()), 150);
     return () => clearTimeout(t);
   }, [itemCode]);
 
@@ -42,17 +66,21 @@ export default function AddItemsSection() {
           return Boolean(it.code && it.code.toUpperCase().startsWith(q));
         })
       : []
-  ) as unknown[];
+  ) as Item[];
 
-  const getSuggestionCode = (s?: any) => s?.code || (s?.id ? String(s.id) : "");
+  const getSuggestionCode = (item: Item): string => {
+    return item.code || (item.id ? String(item.id) : "");
+  };
 
   // Derived state from local store lookup
   const localItem =
-    allItems.find(
-      (it) =>
-        (it.code && it.code.toUpperCase() === itemCode.trim().toUpperCase()) ||
-        String(it.id) === itemCode.trim()
-    ) || null;
+    allItems.find((it) => {
+      const q = (itemCode ?? "").trim();
+      return (
+        (it.code && it.code.toUpperCase() === q.toUpperCase()) ||
+        String(it.id) === q
+      );
+    }) || null;
 
   const itemName = localItem?.title || "";
   const price = Number(localItem?.price ?? 0);
@@ -60,30 +88,58 @@ export default function AddItemsSection() {
   const [displayedStock, setDisplayedStock] = useState<number | null>(null);
 
   // normalize stock from different backend field names
-  const normalizeStock = (d?: any) => {
-    if (!d) return null;
-    return (d.stock ||
-      d.quantity ||
-      d.availableQty ||
-      d.attire_stock ||
-      null) as number | null;
+  const normalizeStock = (item: ItemWithStock | null): number | null => {
+    if (!item) return null;
+
+    const toNumber = (value: unknown): number | null => {
+      if (typeof value === "number" && Number.isFinite(value)) return value;
+      if (typeof value === "string" && value.trim() !== "") {
+        const num = Number(value);
+        return Number.isFinite(num) ? num : null;
+      }
+      return null;
+    };
+
+    const keys: (keyof ItemWithStock)[] = [
+      "stock",
+      "quantity",
+      "availableQty",
+      "attire_stock",
+    ];
+
+    for (const key of keys) {
+      if (key in item) {
+        const value = item[key];
+        const num = toNumber(value);
+        if (num !== null) return num;
+      }
+    }
+
+    return null;
   };
 
   // update displayed stock whenever local item changes
   useEffect(() => {
-    setDisplayedStock(normalizeStock(localItem as any));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDisplayedStock(normalizeStock(localItem as ItemWithStock | null));
   }, [localItem]);
 
   // keep local customerCode in sync with selectedCustomer and allow edits
   useEffect(() => {
+    if (!selectedCustomer) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCustomerCode("");
+      return;
+    }
+
     const code =
-      (selectedCustomer?.custCode as string | undefined) ||
-      (selectedCustomer?.cust_id ? String(selectedCustomer.cust_id) : "") ||
-      "";
+      selectedCustomer.custCode ||
+      (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : "");
     setCustomerCode(code);
   }, [selectedCustomer]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!startDate || !endDate) return setDays(0);
     const s = new Date(startDate);
     const e = new Date(endDate);
@@ -92,21 +148,41 @@ export default function AddItemsSection() {
   }, [startDate, endDate]);
 
   function onAdd() {
-    if (!itemCode || !itemName) return;
+    const code = (itemCode ?? "").trim();
+    const name = localItem?.title || itemName || "";
+    if (!code || !name) return;
     addItem({
-      itemCode,
-      name: itemName,
+      itemCode: code,
+      name,
       price: price || 0,
       days,
       startDate: startDate || undefined,
       endDate: endDate || undefined,
     });
     // Decrease local displayed stock by 1 (UI only). Persist happens on confirm.
-    setDisplayedStock((s) => (s && s > 0 ? s - 1 : s));
+    setDisplayedStock((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
     setStartDate(null);
     setEndDate(null);
+    setItemCode("");
     setDays(0);
   }
+
+  const handleCustomerCodeChange = (value: string) => {
+    setCustomerCode(value);
+    try {
+      if (selectedCustomer) {
+        setSelectedCustomer({
+          ...selectedCustomer,
+          custCode: value,
+        } as CustomerData);
+      } else {
+        setSelectedCustomer({ custCode: value } as CustomerData);
+      }
+    } catch (err) {
+      // swallow; keep local value at least
+      console.warn("Failed to update selected customer code", err);
+    }
+  };
 
   return (
     <div>
@@ -119,27 +195,14 @@ export default function AddItemsSection() {
           label="Customer Code"
           placeholder="Enter customer code"
           value={customerCode}
-          onChange={(e) => {
-            const v = e.target.value;
-            setCustomerCode(v);
-            try {
-              if (selectedCustomer) {
-                setSelectedCustomer({ ...selectedCustomer, custCode: v });
-              } else {
-                setSelectedCustomer({ custCode: v });
-              }
-            } catch (err) {
-              // swallow; keep local value at least
-              console.warn("Failed to update selected customer code", err);
-            }
-          }}
+          onChange={(e) => handleCustomerCodeChange(e.target.value)}
         />
 
         <div className="relative">
           <InputField
             label="Item Code"
             placeholder="Enter item code"
-            value={itemCode}
+            value={itemCode ?? ""}
             onChange={(e) => setItemCode(e.target.value)}
           />
           {isLoading && (
@@ -148,12 +211,12 @@ export default function AddItemsSection() {
             </div>
           )}
           {/* Suggestions dropdown */}
-          {suggestions && suggestions.length > 0 && itemCode && (
+          {suggestions.length > 0 && itemCode && (
             <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
-              {suggestions.map((s, idx) => {
-                const code = getSuggestionCode(s);
-                const name = s.title || s.name || "-";
-                const stk = normalizeStock(s as any);
+              {suggestions.map((suggestion, idx) => {
+                const code = getSuggestionCode(suggestion);
+                const name = suggestion.title || suggestion.name || "-";
+                const stock = normalizeStock(suggestion as ItemWithStock);
                 return (
                   <li
                     key={`${code}-${idx}`}
@@ -162,7 +225,9 @@ export default function AddItemsSection() {
                       if (!code) return;
                       setItemCode(code);
                       // set displayed stock immediately for snappy UI
-                      setDisplayedStock(normalizeStock(s as any));
+                      setDisplayedStock(
+                        normalizeStock(suggestion as ItemWithStock)
+                      );
                     }}
                   >
                     <div className="text-sm">
@@ -173,15 +238,15 @@ export default function AddItemsSection() {
                     </div>
                     <div className="text-sm text-right">
                       <div className="font-medium">
-                        Rs. {Number(s.price ?? 0).toFixed(2)}
+                        Rs. {Number(suggestion.price ?? 0).toFixed(2)}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {stk === null ? (
+                        {stock === null ? (
                           <span className="italic text-muted-foreground">
                             N/A
                           </span>
-                        ) : stk > 0 ? (
-                          <span>{stk}</span>
+                        ) : stock > 0 ? (
+                          <span>{stock}</span>
                         ) : (
                           <span className="text-destructive">0</span>
                         )}

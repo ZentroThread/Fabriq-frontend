@@ -10,6 +10,7 @@ export interface AddItemPayload {
 }
 
 export interface Item {
+  name: string;
   id: number;
   code: string;
   title: string;

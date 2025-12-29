@@ -17,5 +17,8 @@ export const API_ENDPOINTS = {
     GETCURRENTUSER: "/v1/user/me",
     REFRESH: "/v1/user/refresh",
   },
+  ATTIRE_RENT: {
+    ADD : "/v1/attire-rent/add",
+  }
   // Add more endpoints...
 };

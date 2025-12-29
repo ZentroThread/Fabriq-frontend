@@ -1,6 +1,8 @@
 import { Trash2, Ruler } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
+import { Button } from "@/components/ui/button";
+import CustomButton from "@/components/atoms/button/add-button";
 
 export default function RentalItemsSection() {
   const items = useBillingStore((s: BillingState) => s.items);
@@ -16,7 +18,7 @@ export default function RentalItemsSection() {
   }
 
   const totalAmount = items.reduce(
-    (acc, it) => acc + (it.price || 0) * (it.days || 0),
+    (acc, it) => acc + (it.price || 0),
     0
   );
 
@@ -108,7 +110,7 @@ export default function RentalItemsSection() {
 
                 <div className="font-bold text-gray-800">
                   Total: LKR{" "}
-                  {((item.price || 0) * (item.days || 0)).toLocaleString()}
+                  {(item.price || 0).toLocaleString()}
                 </div>
               </div>
             ))}
@@ -118,13 +120,9 @@ export default function RentalItemsSection() {
             <div className="font-semibold">
               Total: LKR {totalAmount.toLocaleString()}
             </div>
-            <button
-              className="btn-primary px-4 py-2 rounded"
-              onClick={() => confirmOrder()}
-            >
-              Confirm Order
-            </button>
+            
           </div>
+          <CustomButton text={"Confirm Order"} onClick={confirmOrder}/>
         </>
       )}
     </div>
