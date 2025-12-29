@@ -27,19 +27,19 @@ export default function RentalItemsSection() {
       <div className="text-[28px] text-style mb-4">Rental Items</div>
 
       {items.length === 0 ? (
-        <p className="text-muted-foreground">Not found rental items.</p>
+        <p className="text-position-text">Not found rental items.</p>
       ) : (
         <>
           <table className="hidden md:table w-full text-left">
             <thead>
               <tr className="border-b text-gray-600 font-semibold text-sm">
-                <th className="py-2 w-[40%] text-muted-foreground">Item</th>
-                <th className="py-2 w-[20%] text-muted-foreground">
+                <th className="py-2 w-[40%] text-position-text">Item</th>
+                <th className="py-2 w-[20%] text-position-text">
                   Price/Day
                 </th>
-                <th className="py-2 w-[10%] text-muted-foreground">Days</th>
-                <th className="py-2 w-[20%] text-muted-foreground">Total</th>
-                <th className="py-2 w-[10%] text-center text-muted-foreground">
+                <th className="py-2 w-[10%] text-position-text">Days</th>
+                <th className="py-2 w-[20%] text-position-text">Total</th>
+                <th className="py-2 w-[10%] text-center text-position-text">
                   Action
                 </th>
               </tr>

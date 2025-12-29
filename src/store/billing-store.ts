@@ -59,29 +59,61 @@ const useBillingStore = create<BillingState>((set, get) => ({
 
   clearItems: () => set({ items: [] }),
 
+  // confirmOrder: async () => {
+  //   const { selectedCustomer, items } = get();
+  //   if (!selectedCustomer) throw new Error("No selected customer");
+  //   if (!items || items.length === 0) throw new Error("No items to confirm");
+
+  //   // Build payload matching backend's AttireRentAddDto
+  //   const first = items[0];
+  //   const sc = selectedCustomer;
+  //   const customerCode =
+  //     sc.custCode ||
+  //     sc.cust_code ||
+  //     (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : undefined);
+
+  //   const payload: AttireRentAddDto = {
+  //     customerCode,
+  //     attireCode: first.itemCode,
+  //     rentDate: first.startDate,
+  //     returnDate: first.endDate,
+  //   };
+
+  //   const resp = await billingService.addAttireRent(payload);
+  //   set({ items: [] });
+  //   return resp;
+  // },
+
   confirmOrder: async () => {
-    const { selectedCustomer, items } = get();
-    if (!selectedCustomer) throw new Error("No selected customer");
-    if (!items || items.length === 0) throw new Error("No items to confirm");
+    const items = get().items;
+    const customer = get().selectedCustomer;
 
-    // Build payload matching backend's AttireRentAddDto
-    const first = items[0];
-    const sc = selectedCustomer;
+     console.log("🔍 Customer:", customer);  // ← ADD THIS
+  console.log("🔍 Items:", items);         // ← ADD THIS
+  
+
+    if (!items.length || !customer) return;
+
     const customerCode =
-      sc.custCode ||
-      sc.cust_code ||
-      (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : undefined);
+      customer.custCode ||
+      customer.cust_code ||
+      (customer.cust_id !== undefined && customer.cust_id !== null
+        ? String(customer.cust_id)
+        : undefined);
 
-    const payload: AttireRentAddDto = {
+    if (!customerCode) throw new Error("Customer code is required");
+
+    // Send all items + customer in ONE request
+    const payload = {
       customerCode,
-      attireCode: first.itemCode,
-      rentDate: first.startDate,
-      returnDate: first.endDate,
+      items: items.map((item) => ({
+        attireCode: item.itemCode,
+        rentDate: item.startDate,
+        returnDate: item.endDate,
+      })),
     };
-
-    const resp = await billingService.addAttireRent(payload);
-    set({ items: [] });
-    return resp;
+ console.log("📤 Sending payload:", payload);  // ← ADD THIS
+    await billingService.createBillingWithRentals(payload);
   },
 }));
 
