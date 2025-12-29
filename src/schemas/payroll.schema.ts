@@ -37,3 +37,10 @@ export const payRollResponseSchema = z.object({
 
   calculatedAt: z.string().nullable(),
 });
+
+export const payrollRecordResponseSchema = z.object({
+  month: z.number(),
+  year: z.number(),
+  netSalary: z.number(),
+  confirmed: z.boolean(),
+})

@@ -45,7 +45,8 @@ export const API_ENDPOINTS = {
 
   PAYROLL:{
     GENERATE: (empId:number,month:number,year:number) => `/v1/payroll/calculate/${empId}/${month}/${year}`,
+    GET_RECORD: (empId:number,year:number) => `/v1/payroll/${empId}/${year}`,
+    CONFIRM: (empId:number,month:number,year:number) => `/v1/payroll/confirm/${empId}/${month}/${year}`,
   },
-
 
 };
