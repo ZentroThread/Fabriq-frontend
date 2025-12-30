@@ -52,12 +52,26 @@ export const billingService = {
   },
 
   async createBillingWithRentals(payload: {
-  customerCode: string;
-  items: Array<{attireCode: string; rentDate?: string; returnDate?: string}>
-}): Promise<unknown> {
-  return await apiClient.request<unknown>(
-    "/v1/billing/create-with-rentals", // or whatever endpoint
-    { method: "POST", data: payload }
-  );
-}
+    customerCode: string;
+    items: Array<{
+      attireCode: string;
+      rentDate?: string;
+      returnDate?: string;
+    }>;
+  }): Promise<unknown> {
+    return await apiClient.request<unknown>(
+      "/v1/billing/create-with-rentals", // or whatever endpoint
+      { method: "POST", data: payload }
+    );
+  },
+  async payBilling(payload: {
+    billingCode: string;
+    discountPercentage?: number;
+    paymentMethod?: string;
+  }): Promise<unknown> {
+    return await apiClient.request<unknown>("/v1/billing/pay", {
+      method: "POST",
+      data: payload,
+    });
+  },
 };
