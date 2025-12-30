@@ -3,10 +3,21 @@ import Chart from "@/components/templates/Chart";
 import { Calendar } from "@/components/ui/calendar";
 import { leaveRecords } from "@/constants/data";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { LeaveHistorySkeleton } from "@/components/molecules/skeletons/leave-history-skeleton";
 
 export default function LeaveHistory() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LeaveHistorySkeleton />;
+  }
 
   const leaveDates = leaveRecords.map((item) => new Date(item.date));
 

@@ -35,6 +35,9 @@ export const EmployeeSchema = z.object({
   basicSalary: z.number().nullable(),
   age: z.number().nullable(),
 
+  commissionEligible: z.boolean().optional(),
+  performancePoints: z.number().nullable(),
+
   employeeBankDetails: EmployeeBankDetailsSchema.nullable(),
 });
 
@@ -59,6 +62,9 @@ export const EmployeeCreateSchema = z.object({
   epfNumber: z.string().optional(),
 
   basicSalary: z.number().optional(),
+
+  commissionEligible: z.boolean().optional(),
+  performancePoints: z.number().optional(),
 
   employeeBankDetails: EmployeeBankDetailsSchema.optional(),
 });
