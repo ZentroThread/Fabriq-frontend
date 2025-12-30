@@ -17,13 +17,6 @@ type Customer = {
   cust_code?: string;
 };
 
-type AttireRentAddDto = {
-  customerCode?: string;
-  attireCode: string;
-  rentDate?: string;
-  returnDate?: string;
-};
-
 type Billing = {
   billingCode?: string;
   [key: string]: unknown;
