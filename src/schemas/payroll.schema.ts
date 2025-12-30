@@ -1,28 +1,4 @@
-// private Integer empId;
-//     private String empCode;
-//     private String employeeName;
-
-//     private Integer month;
-//     private Integer year;
-
-//     private Double basicSalary;
-//     private Double totalAllowances;
-//     private Double totalDeductions;
-//     private Double commission;
-//     private Double overtimePay;
-//     private Double salaryAdvance;
-//     private Double productPay;
-
-//     private Double epfEmployee;
-//     private Double epfEmployer;
-//     private Double etf;
-
-//     private Double grossSalary;
-//     private Double netSalary;
-
-//     private LocalDateTime calculatedAt;
 import { z } from "zod";
-
 export const payRollResponseSchema = z.object({
   empId: z.number(),
   empCode: z.string(),
@@ -32,10 +8,23 @@ export const payRollResponseSchema = z.object({
   year: z.number(),
 
   basicSalary: z.number(),
+
   totalAllowances: z.number(),
   totalDeductions: z.number(),
   commission: z.number(),
+
+
+  doubleOTRate: z.number(),
+  doubleOTAmount: z.number(),
+  doubleOTHours: z.number(),
+
+  singleOTRate: z.number(),
+  singleOTHours: z.number(),
+  singleOTAmount: z.number(),
+
   overtimePay: z.number(),
+  extraHolidaysTaken: z.number(),
+
   salaryAdvance: z.number(),
   productPay: z.number(),
 
@@ -48,3 +37,10 @@ export const payRollResponseSchema = z.object({
 
   calculatedAt: z.string().nullable(),
 });
+
+export const payrollRecordResponseSchema = z.object({
+  month: z.number(),
+  year: z.number(),
+  netSalary: z.number(),
+  confirmed: z.boolean(),
+})

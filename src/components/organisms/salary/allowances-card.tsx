@@ -11,7 +11,7 @@ export default function AllowancesCard({ data, className }: Props) {
     <div className={`space-y-6 p-6 bg-card rounded-2xl shadow-md flex flex-col ${className}`}>
           <h2 className="text-position-text">Allowances</h2>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <ReadOnlyField label="Housing Allowance" value={`Rs.${data.totalAllowances}`} />
+            <ReadOnlyField label="Attendance Allowance" value={`Rs.${data.totalAllowances}`} />
           </div>
         </div>
   );
