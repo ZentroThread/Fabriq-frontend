@@ -97,7 +97,17 @@ export default function EmployeeForm({ employee, isEditing, formData, handleChan
               readonly={!isEditing} onChange={(value) => handleChange("joinedDate", value)} placeholder="xxxx-xx-xx" />
 
               <BaseInputField label="Commission Rate Point (out of 10)" value={isEditing ? formData?.performancePoints ?? "" : employee?.performancePoints ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("performancePoints", parseFloat(value) || 0)} placeholder="0-10" />
+              readonly={!isEditing}
+              onChange={(value) => {
+                          const num = Number(value);
+
+                          handleChange(
+                            "performancePoints",
+                            isNaN(num) ? 0 : num
+                          )
+                        }
+                      }
+              />
 
               <BaseCheckboxField label="Commission Eligible" value={isEditing ? formData?.commissionEligible ?? false : employee?.commissionEligible ?? false} 
               disabled={!isEditing} onChange={(value?: boolean) => handleChange("commissionEligible", value ?? false)} />

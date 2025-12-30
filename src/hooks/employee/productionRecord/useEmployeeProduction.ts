@@ -1,6 +1,7 @@
 import {employeeProductionService} from "@/services/employee-production.service";
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import type {EmployeeProductionRequest, EmployeeProductionResponse} from "@/types/employee-product.type";
+import { toast } from "sonner";
 
 export const useEmployeeProductionsByEmployee = (employeeId: number) => {
   return useQuery<EmployeeProductionResponse[]>({
@@ -15,7 +16,7 @@ export const useEmployeeProductionsByEmployee = (employeeId: number) => {
       mutationFn: (data: Partial<EmployeeProductionRequest>) => employeeProductionService.addProductionRecord(data),
       onSuccess: () =>{
         queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
-        alert("Production record added successfully.");
+        toast.success("Production record added successfully.");
       }
     })
   };
@@ -26,7 +27,7 @@ export const useUpdateEmployeeProduction = (employeeId: number, month: string, y
     mutationFn : ({id, data}: {id: number; data: Partial<EmployeeProductionRequest>}) => employeeProductionService.updateProductionRecord(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
-      alert("Production record updated successfully.");
+      toast.success("Production record updated successfully.");
     }
   })
 };
@@ -37,7 +38,7 @@ export const useDeleteEmployeeProduction = (employeeId: number, month: string, y
     mutationFn: (id: number) => employeeProductionService.deleteProductionRecord(id),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
-      alert("Production record deleted successfully.");
+      toast.success("Production record deleted successfully.");
     }
   })
 };

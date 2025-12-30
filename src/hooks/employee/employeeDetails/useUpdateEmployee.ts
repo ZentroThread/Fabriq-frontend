@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Employee } from "@/types/employee.type";
 import { employeeService } from "@/services/employee.service";
+import { toast } from "sonner";
 
 export const useUpdateEmployee = () => {
   const queryClient = useQueryClient();
@@ -21,6 +22,7 @@ export const useUpdateEmployee = () => {
       queryClient.invalidateQueries({
         queryKey: ["employees"],
       });
+      toast.success("Employee updated successfully.");
     },
   });
 };

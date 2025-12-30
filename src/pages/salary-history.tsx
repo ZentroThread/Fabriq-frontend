@@ -1,15 +1,13 @@
 import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
-import { useNavigate,  } from "react-router-dom";
 import useEmployeeStore from "@/store/employee-store";
 import {useGetPayrollRecord} from "@/hooks/employee/payroll/usePayroll";
-import { useState } from "react";
 import Button from "@/components/atoms/button/add-button";
 import {getMonthAsString,getYearsForRange} from "@/utils/date";
 import SectionHeader from "@/components/molecules/header/section-header";
-import { useNavigate,useParams  } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export function SalaryHistory() {
 
@@ -21,18 +19,12 @@ export function SalaryHistory() {
   const {selectedEmployee} = useEmployeeStore();
   const employeeId = selectedEmployee?.id || 0;
   const empName = selectedEmployee?.fullName || "Employee Name";
-  const {id: employeeId} = useParams();
 
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return <SalaryHistorySkeleton />;
-  }
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setIsLoading(false), 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
@@ -46,7 +38,7 @@ export function SalaryHistory() {
     navigator(`/monthly-salary/${employeeId}/${year}/${currentMonth -1 }`);
   }
 
-  const {data: payrollRecords, isLoading, isError} = useGetPayrollRecord(employeeId,year);
+  const {data: payrollRecords, isLoading, isError} = useGetPayrollRecord(Number(employeeId),year);
 
   const handleDisableBtn = () => {
     if(year < currentYear){
@@ -63,7 +55,7 @@ export function SalaryHistory() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SalaryHistorySkeleton />;
   }
 
 

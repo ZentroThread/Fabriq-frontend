@@ -1,6 +1,7 @@
 import { employeeAdvanceService } from "@/services/employee-advance.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type AdvancePaymentResponse, type AdvancePaymentRequest } from "@/types/advance-payment.type";
+import { toast } from "sonner";
 
 export const useAddEmployeeAdvancePayment = (empId: number, year: string, month: string) => {
   const queryClient = useQueryClient();
@@ -8,7 +9,7 @@ export const useAddEmployeeAdvancePayment = (empId: number, year: string, month:
     mutationFn: (data: Partial<AdvancePaymentRequest>) => employeeAdvanceService.addAdvancePayment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
-      alert("Advance payment added successfully.");
+      toast.success("Advance payment added successfully.");
     },
   });
 };
@@ -29,7 +30,7 @@ export const useDeleteEmployeeAdvancePayment = (empId: number, year: string, mon
     mutationFn: (id: number) => employeeAdvanceService.deleteAdvancePayment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
-      alert("Advance payment deleted successfully.");
+      toast.success("Advance payment deleted successfully.");
     },
   });
 };
@@ -41,7 +42,7 @@ export const useUpdateEmployeeAdvancePayment = (empId: number, year: string, mon
       employeeAdvanceService.updateAdvancePayment(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
-      alert("Advance payment updated successfully.");
+      toast.success("Advance payment updated successfully.");
     },
   });
 };
