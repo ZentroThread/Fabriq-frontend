@@ -7,7 +7,7 @@ import AllowancesCard from "@/components/organisms/salary/allowances-card";
 import ExtraHolidayCard from "@/components/organisms/salary/extra-holiday-card";
 import OvertimeCard from "@/components/organisms/salary/overtime-card";
 import { useParams } from "react-router-dom";
-import {useGetPayroll} from "@/hooks/employee/usePayroll";
+import {useGetPayroll} from "@/hooks/employee/payroll/usePayroll";
 
 export default function MonthlySalary() {
 

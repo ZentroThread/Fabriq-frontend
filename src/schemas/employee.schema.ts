@@ -35,6 +35,9 @@ export const EmployeeSchema = z.object({
   basicSalary: z.number().nullable(),
   age: z.number().nullable(),
 
+  commissionEligible: z.boolean().optional(),
+  performancePoints: z.number().nullable(),
+
   employeeBankDetails: EmployeeBankDetailsSchema.nullable(),
 });
 

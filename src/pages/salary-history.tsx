@@ -2,10 +2,11 @@ import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
 import { useNavigate,  } from "react-router-dom";
 import useEmployeeStore from "@/store/employee-store";
-import {useGetPayrollRecord} from "@/hooks/employee/usePayroll";
+import {useGetPayrollRecord} from "@/hooks/employee/payroll/usePayroll";
 import { useState } from "react";
 import Button from "@/components/atoms/button/add-button";
 import {getMonthAsString,getYearsForRange} from "@/utils/date";
+import SectionHeader from "@/components/molecules/header/section-header";
 
 export function SalaryHistory() {
 
@@ -53,12 +54,13 @@ export function SalaryHistory() {
 
   return (
     <Chart>
-      <div>
-        <h1 className="text-2xl  text-style font-bold">Salary History</h1>
-        <p className="text-position-text text-sm mt-1">
-          View and manage your salary records.
-        </p>
-      </div>
+      
+      {/* Header */}
+      <SectionHeader 
+        title="Salary History" 
+        description="View and manage the salary history of the selected employee" 
+      />
+
       <div>
         <div className="flex flex-col items-center mb-6 md:flex-row md:items-start md:gap-4 mt-5">
           <div className="w-20 h-20 rounded-full bg-avatar-bg border-2 border-(--color-avatar-border)" />
