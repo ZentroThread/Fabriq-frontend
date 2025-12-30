@@ -33,6 +33,7 @@ export type BillingState = {
   selectedCustomer?: Customer | null;
   items: RentalItem[];
   currentBilling?: Billing | null;
+  billings?: Billing[];
   setSelectedCustomer: (c: Customer | null) => void;
   addItem: (item: Partial<RentalItem>) => void;
   removeItem: (index: number) => void;
@@ -42,6 +43,7 @@ export type BillingState = {
     discountPercentage?: number;
     paymentMethod?: string;
   }) => Promise<void>;
+  fetchBillings?: () => Promise<void>;
 };
 
 const useBillingStore = create<BillingState>((set, get) => ({
@@ -69,6 +71,19 @@ const useBillingStore = create<BillingState>((set, get) => ({
     set((state) => ({ items: state.items.filter((_, i) => i !== index) })),
 
   clearItems: () => set({ items: [] }),
+
+  billings: [],
+
+  fetchBillings: async () => {
+    try {
+      const resp = await billingService.getAllBillings();
+      const list = (resp as Billing[]) || [];
+      set({ billings: list });
+    } catch (e) {
+      console.warn("fetchBillings failed", e);
+      set({ billings: [] });
+    }
+  },
 
   // confirmOrder: async () => {
   //   const { selectedCustomer, items } = get();

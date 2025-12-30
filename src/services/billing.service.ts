@@ -51,6 +51,27 @@ export const billingService = {
     return resp;
   },
 
+  async getAllBillings(): Promise<unknown[]> {
+    const resp = await apiClient.request<unknown[]>(
+      API_ENDPOINTS.BILLING.GET_ALL
+    );
+    return resp;
+  },
+
+  async getAllAttireRents(): Promise<unknown[]> {
+    const resp = await apiClient.request<unknown[]>(
+      API_ENDPOINTS.ATTIRE_RENT.GET_ALL
+    );
+    return resp;
+  },
+
+  async getAttireRentsByBillingCode(billingCode: string): Promise<unknown[]> {
+    const resp = await apiClient.request<unknown[]>(
+      `/v1/attire-rent/by-billing/${encodeURIComponent(billingCode)}`
+    );
+    return resp;
+  },
+
   async createBillingWithRentals(payload: {
     customerCode: string;
     items: Array<{

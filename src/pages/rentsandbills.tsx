@@ -51,7 +51,12 @@ export const RentsAndBill = () => {
           icon={<Users />}
           onClick={() => navigate("/customers")}
         />
-        <CustomButton text={"View All Orders"} width="w-auto" icon={<Eye />} />
+        <CustomButton
+          text={"View All Orders"}
+          width="w-auto"
+          icon={<Eye />}
+          onClick={() => navigate("/bills")}
+        />
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
