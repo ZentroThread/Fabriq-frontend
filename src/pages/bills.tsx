@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { billingService } from "@/services/billing.service";
 import { DollarSign, FileText } from "lucide-react";
+import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import {
   Dialog,
   DialogContent,
@@ -13,18 +14,42 @@ import { NativeSelectDemo } from "@/components/organisms/selection/native-select
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useBillingStore from "@/store/billing-store";
 
+type Customer = {
+  custName?: string;
+  custMobileNumber?: string;
+};
+
+type Billing = {
+  billingCode?: string;
+  billingDate?: string;
+  billingTotal?: string;
+  billingType?: string;
+  customer?: Customer;
+};
+
+type RentItem = {
+  id?: string | number;
+  attireCode?: string;
+  attire?: { attireCode?: string };
+  rentDuration?: number | null;
+  rentDate?: string | null;
+  returnDate?: string | null;
+};
+
 const Bills = () => {
-  const storeBillings = useBillingStore((s) => s.billings);
+  const storeBillings = useBillingStore((s) => s.billings) as
+    | Billing[]
+    | undefined;
   const fetchBillings = useBillingStore((s) => s.fetchBillings);
-  const [billings, setBillings] = useState<any[]>([]);
-  const [rents, setRents] = useState<any[]>([]);
+  const [billings, setBillings] = useState<Billing[]>([]);
+  const [rents, setRents] = useState<RentItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [filterQuery, setFilterQuery] = useState("");
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
 
-  const [selected, setSelected] = useState<any | null>(null);
+  const [selected, setSelected] = useState<Billing | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -42,7 +67,7 @@ const Bills = () => {
   }, [fetchBillings]);
 
   useEffect(() => {
-    setBillings((storeBillings as any[]) || []);
+    setBillings(storeBillings || []);
   }, [storeBillings]);
 
   const filtered = useMemo(() => {
@@ -73,7 +98,7 @@ const Bills = () => {
     });
 
     // sort descending by billingDate
-    list.sort((a: any, b: any) => {
+    list.sort((a: Billing, b: Billing) => {
       const da = a.billingDate ? new Date(a.billingDate).getTime() : 0;
       const db = b.billingDate ? new Date(b.billingDate).getTime() : 0;
       return db - da;
@@ -88,15 +113,19 @@ const Bills = () => {
     0
   );
 
-  function openDetails(bill: any) {
+  function openDetails(bill: Billing) {
     setSelected(bill);
     setDialogOpen(true);
     (async () => {
       try {
+        if (!bill.billingCode) {
+          setRents([]);
+          return;
+        }
         const items = await billingService.getAttireRentsByBillingCode(
           bill.billingCode
         );
-        setRents((items as any[]) || []);
+        setRents((items as RentItem[]) || []);
       } catch (e) {
         console.error(e);
         setRents([]);
@@ -114,6 +143,23 @@ const Bills = () => {
       <div className="text-style text-[30px] font-semibold">All Billings</div>
       <div className="text-position-text mb-4">
         View and search billing records
+      </div>
+      <div className="mt-3 mb-4 gap-6 flex items-center gap-4">
+        <DashboardCard
+          lable="Count"
+          lable1={String(countInRange)}
+          icon={FileText}
+          iconbg="var(--color-pie-1)"
+          width="w-full"
+        />
+
+        <DashboardCard
+          lable="Total"
+          lable1={totalInRange.toFixed(2)}
+          icon={DollarSign}
+          iconbg="var(--color-pie-2)"
+          width="w-full"
+        />
       </div>
 
       <Chart height="h-20" padding="p-2 pl-6">
@@ -164,16 +210,6 @@ const Bills = () => {
           </div>
         </div>
       </Chart>
-
-      <div className="mt-3 mb-4 flex items-center gap-4">
-        <div className="text-position-text">
-          Count: <span className="font-semibold">{countInRange}</span>
-        </div>
-        <div className="text-position-text">
-          Total:{" "}
-          <span className="font-semibold">{totalInRange.toFixed(2)}</span>
-        </div>
-      </div>
 
       <div className="pt-5 flex-1 flex flex-col">
         {loading ? (
@@ -338,9 +374,7 @@ const Bills = () => {
                       {rentItemsForSelected.map((r) => (
                         <tr className="text-center" key={r.id}>
                           <td>{r.attireCode || r.attire?.attireCode || "-"}</td>
-                          <td>
-                            {r.rentDuration ?? (r.rentDuration === 0 ? 0 : "-")}
-                          </td>
+                          <td>{r.rentDuration ?? "-"}</td>
                           <td>
                             {r.rentDate
                               ? new Date(r.rentDate).toLocaleString()
