@@ -9,34 +9,34 @@ export const useEmployeeProductionsByEmployee = (employeeId: number) => {
     enabled: !!employeeId,
   });
 };
-  export const useAddEmployeeProduction = () =>{
+  export const useAddEmployeeProduction = (employeeId: number, month: string, year: string) =>{
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: (data: Partial<EmployeeProductionRequest>) => employeeProductionService.addProductionRecord(data),
       onSuccess: () =>{
-        queryClient.invalidateQueries({queryKey: ["employee-productions"]});
+        queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
         alert("Production record added successfully.");
       }
     })
   };
 
-export const useUpdateEmployeeProduction = () => {
+export const useUpdateEmployeeProduction = (employeeId: number, month: string, year: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn : ({id, data}: {id: number; data: Partial<EmployeeProductionRequest>}) => employeeProductionService.updateProductionRecord(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["employee-productions"]});
+      queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
       alert("Production record updated successfully.");
     }
   })
 };
 
-export const useDeleteEmployeeProduction = () => {
+export const useDeleteEmployeeProduction = (employeeId: number, month: string, year: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => employeeProductionService.deleteProductionRecord(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["employee-productions"]});
+      queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
       alert("Production record deleted successfully.");
     }
   })
