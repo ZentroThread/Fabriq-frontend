@@ -24,9 +24,10 @@ export default function RentalSummary() {
   const payBilling = useBillingStore((s) => s.payBilling);
 
   // If backend returned billing with items, prefer that, otherwise show local items
-  const displayItems = useMemo(() => {
-    if (currentBilling && currentBilling.items) return currentBilling.items;
-    return items;
+  const displayItems = useMemo((): BillingItem[] => {
+    if (currentBilling && Array.isArray(currentBilling.items))
+      return currentBilling.items as BillingItem[];
+    return items as BillingItem[];
   }, [currentBilling, items]);
 
   const subtotal = useMemo(() => {
@@ -66,7 +67,7 @@ export default function RentalSummary() {
                   "-";
                 //const days = it.rentDuration || it.days || 1;
                 const price = it.attire?.attirePrice ?? it.price ?? 0;
-                const line = price ;
+                const line = price;
                 return (
                   <div key={idx} className="flex justify-between text-sm">
                     <span className="text-position-text">{code}</span>

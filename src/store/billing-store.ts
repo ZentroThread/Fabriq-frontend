@@ -24,10 +24,15 @@ type AttireRentAddDto = {
   returnDate?: string;
 };
 
+type Billing = {
+  billingCode?: string;
+  [key: string]: unknown;
+};
+
 export type BillingState = {
   selectedCustomer?: Customer | null;
   items: RentalItem[];
-  currentBilling?: any | null;
+  currentBilling?: Billing | null;
   setSelectedCustomer: (c: Customer | null) => void;
   addItem: (item: Partial<RentalItem>) => void;
   removeItem: (index: number) => void;
@@ -121,7 +126,8 @@ const useBillingStore = create<BillingState>((set, get) => ({
     // backend returns created billing; store it so summary can display
     try {
       // resp may be the billing object
-      set({ currentBilling: resp });
+      const createdBilling = resp as Billing;
+      set({ currentBilling: createdBilling });
     } catch (e) {
       console.warn("could not store billing response", e);
     }
@@ -153,21 +159,26 @@ const useBillingStore = create<BillingState>((set, get) => ({
       };
 
       const created = await billingService.createBillingWithRentals(payload);
-      billing = created;
-      set({ currentBilling: created });
+      const createdBilling = created as Billing;
+      billing = createdBilling;
+      set({ currentBilling: createdBilling });
     }
 
     const resp = await billingService.payBilling({
-      billingCode: billing.billingCode,
+      billingCode: billing.billingCode!,
       discountPercentage,
       paymentMethod,
     });
 
+    const respTyped = resp as
+      | { billHtml?: string; billing?: Billing }
+      | undefined;
+
     // resp expected to contain billHtml and updated billing
-    if (resp && resp.billHtml) {
+    if (respTyped && respTyped.billHtml) {
       const w = window.open("");
       if (w) {
-        w.document.write(resp.billHtml);
+        w.document.write(respTyped.billHtml);
         w.document.close();
         w.focus();
         setTimeout(() => {
@@ -180,8 +191,16 @@ const useBillingStore = create<BillingState>((set, get) => ({
     // Update local state: clear items and currentBilling
     set({
       items: [],
-      currentBilling: resp && resp.billing ? resp.billing : null,
+      currentBilling: respTyped && respTyped.billing ? respTyped.billing : null,
     });
+    // Reload the whole app to ensure all stores reset
+    setTimeout(() => {
+      try {
+        window.location.reload();
+      } catch (e) {
+        console.warn("reload failed", e);
+      }
+    }, 1000);
   },
 }));
 

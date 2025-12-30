@@ -63,14 +63,12 @@ export default function RentalItemsSection() {
                         onClick={() => onDelete(index)}
                       >
                         <Trash2 size={16} className="text-position-text" />
-                      
                       </button>
                       <button
                         className="flex items-center gap-2 text-position-text font-normal cursor-pointer"
                         onClick={() => ChangeMeasurementPopup(index)}
                       >
                         <Ruler size={16} className="text-text-active" />
-                        
                       </button>
                     </div>
                   </td>

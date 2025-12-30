@@ -18,7 +18,7 @@ export const API_ENDPOINTS = {
     REFRESH: "/v1/user/refresh",
   },
   ATTIRE_RENT: {
-    ADD : "/v1/attire-rent/add",
-  }
+    ADD: "/v1/attire-rent/add",
+  },
   // Add more endpoints...
 };
