@@ -10,6 +10,8 @@ import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/ui/input";
 import { useEmployees } from "@/hooks/employee/useEmployess";
 import {useDeleteEmployee} from "@/hooks/employee/useDeleteEmployee";
+import useEmployeeStore from "@/store/employee-store";
+import type { Employee } from "@/types/employee.type";
 //import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
@@ -26,6 +28,7 @@ export default function EmployeeOverview() {
   
  
   //const {searchText,setSearchText} = useEmployeeStore();
+  const {setSelectedEmployee} = useEmployeeStore();
 
   const [searchText, setSearchText] = useState("");
 
@@ -56,8 +59,13 @@ export default function EmployeeOverview() {
     }
   };
 
-  const handleRowClick = (id: string | number) => {
+  const handleRowClick = (id: string | number,emp:Employee) => {
     console.log("Clicked employee ID:", id);
+    setSelectedEmployee({
+      id: emp.id,
+      empCode: emp.empCode,
+      fullName: emp.empFirstName + " " + emp.empLastName,
+    });
     navigate(`/emp/${id}`);
   };
 
@@ -95,7 +103,6 @@ export default function EmployeeOverview() {
       <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
         <Button text={"Add Employee"} width="w-45" icon={<Plus />} onClick={() => navigate("/add-employee")} />
       </div>
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5 mb-5">
         <EmployeeCard lable={"Total Revenue"} lable1={"LKR 3.28M"} />
@@ -172,7 +179,7 @@ export default function EmployeeOverview() {
                 <td className="flex gap-4 text-xl">
                   <div className="flex items-center gap-4">
                     <CheckCircle className="text-[#d1a47c] w-5 h-5" />
-                    <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" onClick={() => handleRowClick(emp.empCode)}/>
+                    <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" onClick={() => handleRowClick(emp.empCode, emp)}/>
                     <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer" onClick={() => handleDeleteEmp(emp.empCode)} />
                   </div>
                 </td>

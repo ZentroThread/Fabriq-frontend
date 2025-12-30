@@ -61,11 +61,19 @@ const handleUpdate = () => {
 const startEditing = () => {
   if (!employee) return;
   setFormData(employee);
-  setSelectedEmployee(employee);
+  setSelectedEmployee({
+    id: employee.id,
+    empCode: employee.empCode,
+    fullName: employee.empFirstName + " " + employee.empLastName,
+  });
   setIsEditing(true);
 }
 
 if (isLoading) return <div>Loading...</div>;
+
+const showProductionRecords = (id: string) => {
+    navigate(`/production-overview/${id}`);
+  };
 
   const showSalaryHistory = (id: string) => {
     navigate(`/salary-history/${id}`);
@@ -100,6 +108,16 @@ if (isLoading) return <div>Loading...</div>;
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-center lg:justify-end mt-6 gap-1 sm:gap-2 lg:pr-10">
           <Button
+            bordercolor="border-border-card2"
+            bgcolor="bg-bg-card2"
+            hovertext="hover:text-background"
+            hoverbg="hover:bg-light-brown"
+            textcolor="text-black"
+            text="Production Records"
+            width="w-full sm:w-35"
+            onClick={() => showProductionRecords(empCode)}
+          />
+          <Button
             bordercolor="border-border-card3"
             bgcolor="bg-bg-card3"
             textcolor="text-black"
@@ -107,7 +125,7 @@ if (isLoading) return <div>Loading...</div>;
             hovertext="hover:text-background"
             text="Salary History"
             width="w-full sm:w-35"
-            onClick={() => showSalaryHistory("1")}
+            onClick={() => showSalaryHistory(empCode)}
           />
           <Button
             bordercolor="border-border-card2"
@@ -117,7 +135,7 @@ if (isLoading) return <div>Loading...</div>;
             textcolor="text-black"
             text="Leave History"
             width="w-full sm:w-35"
-            onClick={() => showLeaveHistory("1")}
+            onClick={() => showLeaveHistory(empCode)}
           />
          <Button
             bordercolor="border-border-add"
