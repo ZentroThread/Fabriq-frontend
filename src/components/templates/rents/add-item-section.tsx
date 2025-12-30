@@ -158,6 +158,7 @@ export default function AddItemsSection() {
       days,
       startDate: startDate || undefined,
       endDate: endDate || undefined,
+      customerCode: customerCode, // ← ADD THIS
     });
     // Decrease local displayed stock by 1 (UI only). Persist happens on confirm.
     setDisplayedStock((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));

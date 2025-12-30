@@ -16,7 +16,7 @@ export default function RentalSummary({
       <Chart
         label={"Rental Summary"}
         description={"Select items to add to the rental"}
-        height="min-h-[550px] max-h-screen"
+        height=" max-h-screen"
       >
         {/* Subtotal */}
         <div className="flex justify-between text-sm mb-2">
@@ -46,7 +46,7 @@ export default function RentalSummary({
         </div>
 
         {/* Security Deposit Box */}
-        <div className="rounded-2xl p-4 mb-6  bg-(--color-security-deposit-bg) border border-(--color-border)">
+        {/* <div className="rounded-2xl p-4 mb-6  bg-(--color-security-deposit-bg) border border-(--color-border)">
           <div className="flex font-medium justify-between mb-1">
             <span className="text-text-active">Security Deposit</span>
             <span className="text-style-white font-bold">
@@ -56,7 +56,7 @@ export default function RentalSummary({
           <p className="text-xs text-(--color-security-deposit-text) font-light">
             Refundable upon return of items in good condition
           </p>
-        </div>
+        </div> */}
 
         {/* Payment Method */}
         <p className="text-sm font-medium mb-2 text-position-text">

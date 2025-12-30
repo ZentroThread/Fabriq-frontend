@@ -8,6 +8,7 @@ type RentalItem = {
   days: number;
   startDate?: string;
   endDate?: string;
+  customerCode?: string; // ← ADD THIS
 };
 
 type Customer = {
@@ -88,9 +89,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
     const items = get().items;
     const customer = get().selectedCustomer;
 
-     console.log("🔍 Customer:", customer);  // ← ADD THIS
-  console.log("🔍 Items:", items);         // ← ADD THIS
-  
+    
 
     if (!items.length || !customer) return;
 
@@ -108,12 +107,15 @@ const useBillingStore = create<BillingState>((set, get) => ({
       customerCode,
       items: items.map((item) => ({
         attireCode: item.itemCode,
-        rentDate: item.startDate,
-        returnDate: item.endDate,
+        rentDate: new Date()
+          .toLocaleString("sv", { timeZone: "Asia/Colombo", hour12: false })
+          .replace(" ", "T"),
+        returnDate: item.endDate ? `${item.endDate}T23:59:59` : undefined,
       })),
     };
- console.log("📤 Sending payload:", payload);  // ← ADD THIS
+    console.log("📤 Sending payload:", payload); // ← ADD THIS
     await billingService.createBillingWithRentals(payload);
+   
   },
 }));
 
