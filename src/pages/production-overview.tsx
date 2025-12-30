@@ -11,6 +11,7 @@ import { useAddEmployeeProduction,
         useDeleteEmployeeProduction,
         useEmployeeProdByEmpAndMonthYear
       } from "@/hooks/employee/useEmployeeProduction";
+import SectionHeader from "@/components/molecules/header/section-header";
 
 const ProductionOverview = () => {
 
@@ -86,12 +87,10 @@ const ProductionOverview = () => {
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold text-style mb-4">Monthly Production Overview</h1>
-        <p className="text-position-text">
-          This page provides insights into the monthly production metrics.
-        </p>
-      </div>
+      <SectionHeader 
+        title="Production Overview" 
+        description="Manage employee production records and monthly overview" 
+      />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">

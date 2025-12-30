@@ -11,6 +11,7 @@ import { useEmployees } from "@/hooks/employee/useEmployess";
 import {useDeleteEmployee} from "@/hooks/employee/useDeleteEmployee";
 import useEmployeeStore from "@/store/employee-store";
 import type { Employee } from "@/types/employee.type";
+import SectionHeader from "@/components/molecules/header/section-header";
 //import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
@@ -78,13 +79,10 @@ export default function EmployeeOverview() {
   return (
     <div className="p-5 flex flex-col">
       {/* Header */}
-
-      <div className="text-style text-[30px] font-semibold">
-        Employee Management
-      </div>
-      <div className="text-position-text ">
-        Manage staff, attendance, and payroll
-      </div>
+      <SectionHeader 
+        title="Employee Management" 
+        description="Manage staff, attendance, and payroll" 
+      />
 
       <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
         <Button text={"Add Employee"} width="w-45" icon={<Plus />} onClick={() => navigate("/add-employee")} />

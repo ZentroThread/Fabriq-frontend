@@ -10,6 +10,7 @@ import { useAddEmployeeAdvancePayment,
         useDeleteEmployeeAdvancePayment,
         useGetAdvanceByEmpAndMonthYear,
         useUpdateEmployeeAdvancePayment } from "@/hooks/employee/useEmployeeAdvance";
+import SectionHeader from "@/components/molecules/header/section-header";
 
 export default function AdvancePaymentOverviewPage() {
 
@@ -77,12 +78,10 @@ export default function AdvancePaymentOverviewPage() {
      <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold text-style mb-4">Monthly Advance Payment Overview</h1>
-        <p className="text-position-text">
-          This page provides insights into the monthly advance payment metrics.
-        </p>
-      </div>
+      <SectionHeader 
+        title="Advance Payment Overview" 
+        description="Manage employee advance payments and monthly overview" 
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* Form Section */}
