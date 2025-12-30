@@ -24,3 +24,4 @@ export default function BaseInputField({ label, value, readonly, onChange, place
     </div>
   );
 }
+

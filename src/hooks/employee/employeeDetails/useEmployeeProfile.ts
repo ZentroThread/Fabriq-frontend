@@ -3,7 +3,6 @@ import { useEmployee } from "@/hooks/employee/employeeDetails/useEmployee";
 import { useUpdateEmployee } from "@/hooks/employee/employeeDetails/useUpdateEmployee";
 import {  useState } from "react";
 import type { Employee,EmployeeBankDetails } from "@/types/employee.type";
-import useEmployeeStore from "@/store/employee-store";
 
 export default function useEmployeeProfile() {
 
@@ -14,7 +13,6 @@ export default function useEmployeeProfile() {
 
   const {data: employee,isLoading,isError} = useEmployee(empCode);
   const { mutate: updateEmployee } = useUpdateEmployee();
-  const {setSelectedEmployee} = useEmployeeStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<Employee>>({});
@@ -60,28 +58,23 @@ const handleUpdate = () => {
 const startEditing = () => {
   if (!employee) return;
   setFormData(employee);
-  setSelectedEmployee({
-    id: employee.id,
-    empCode: employee.empCode,
-    fullName: employee.empFirstName + " " + employee.empLastName,
-  });
   setIsEditing(true);
 }
 
-const showProductionRecords = (id: string) => {
-    navigate(`/production-overview/${id}`);
+const showProductionRecords = () => {
+    navigate(`/production-overview/${empCode}`);
   };
 
-  const showAdvancePaymentRecords = (id: string) => {
-    navigate(`/advance-payment-overview/${id}`);
+  const showAdvancePaymentRecords = () => {
+    navigate(`/advance-payment-overview/${empCode}`);
   };
 
-  const showSalaryHistory = (id: string) => {
-    navigate(`/salary-history/${id}`);
+  const showSalaryHistory = () => {
+    navigate(`/salary-history/${empCode}`);
   };
 
-  const showLeaveHistory = (id: string) => {
-    navigate(`/leave-history/${id}`);
+  const showLeaveHistory = () => {
+    navigate(`/leave-history/${empCode}`);
   };
 
   return({

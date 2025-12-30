@@ -1,5 +1,6 @@
 import Button from "@/components/atoms/button/add-button";
 import BaseInputField from "@/components/molecules/input/base-input-field"; 
+import BaseCheckboxField from "@/components/molecules/input/base-check-box-field";
 import type { Employee, EmployeeBankDetails } from "@/types/employee.type";
 
 interface EmployeeFormProps {
@@ -70,7 +71,7 @@ export default function EmployeeForm({ employee, isEditing, formData, handleChan
               readonly={!isEditing} onChange={(value) => handleChange("address", value)} />
 
               <BaseInputField label="Date of Birth" value={isEditing ? formData?.dateOfBirth ?? "" : employee?.dateOfBirth ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("dateOfBirth", value)} placeholder="xxxx-xx-xx" /> 
+              readonly={!isEditing} onChange={(value) => handleChange("dateOfBirth", value)} placeholder="xxxx-xx-xx" />
 
               <BaseInputField
                 label="Gender"
@@ -95,6 +96,11 @@ export default function EmployeeForm({ employee, isEditing, formData, handleChan
               <BaseInputField label="Joined Date" value={isEditing ? formData?.joinedDate ?? "" : employee?.joinedDate ?? ""} 
               readonly={!isEditing} onChange={(value) => handleChange("joinedDate", value)} placeholder="xxxx-xx-xx" />
 
+              <BaseInputField label="Commission Rate Point (out of 10)" value={isEditing ? formData?.performancePoints ?? "" : employee?.performancePoints ?? ""} 
+              readonly={!isEditing} onChange={(value) => handleChange("performancePoints", parseFloat(value) || 0)} placeholder="0-10" />
+
+              <BaseCheckboxField label="Commission Eligible" value={isEditing ? formData?.commissionEligible ?? false : employee?.commissionEligible ?? false} 
+              disabled={!isEditing} onChange={(value?: boolean) => handleChange("commissionEligible", value ?? false)} />
 
               {/* Bank Details */}
               <h2 className="text-lg sm:text-xl  mt-6">Bank Details</h2>

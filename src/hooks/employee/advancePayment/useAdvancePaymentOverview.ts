@@ -21,13 +21,14 @@ export default function useAdvancePaymentOverview() {
   const [formData, setFormData] = useState<Partial<AdvancePaymentRequest>>({});
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
   const [selectedYear, setSelectedYear] = useState<string>(currentYear);
-  const [selectedDay, setSelectedDay] = useState<Date | null>();
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
   const [advancePaymentId, setAdvPaymentId] = useState<number | null>(null);  
+  const params = { empId: selectedEmployee ? selectedEmployee.id : 0, year: selectedYear, month: selectedMonth };
 
-  const {mutate: addAdvancePayment} = useAddEmployeeAdvancePayment();
-  const {mutate: deleteAdvancePayment} = useDeleteEmployeeAdvancePayment();
-  const {mutate: updateAdvancePayment} = useUpdateEmployeeAdvancePayment();
+  const {mutate: addAdvancePayment} = useAddEmployeeAdvancePayment(params.empId, params.year, params.month);
+  const {mutate: deleteAdvancePayment} = useDeleteEmployeeAdvancePayment(params.empId, params.year, params.month);
+  const {mutate: updateAdvancePayment} = useUpdateEmployeeAdvancePayment(params.empId, params.year, params.month);
   const {data: advancePayments} = useGetAdvanceByEmpAndMonthYear(
     selectedEmployee ? selectedEmployee.id : 0,
     selectedYear,
@@ -43,11 +44,19 @@ export default function useAdvancePaymentOverview() {
     }
     setIsUpdateMode(true);
   }
-  const handleAddAdvancePayment = () =>{
-    addAdvancePayment(formData);
-    setFormData({});
-    setSelectedDay(null);
-  }
+const handleAddAdvancePayment = () => {
+  if (!selectedEmployee) return;
+
+  addAdvancePayment({
+    ...formData,
+    empId: selectedEmployee.id,
+    date: selectedDay ? formatDate(selectedDay) : formatDate(toDay),
+  });
+
+  setFormData({});
+  setSelectedDay(null);
+};
+
   const handleAdvancePaymentDelete = (id: number) => {
     if(confirm("Are you sure you want to delete this advance payment record?"))
       deleteAdvancePayment(id);
@@ -70,24 +79,28 @@ export default function useAdvancePaymentOverview() {
   }
 
   return {
-    empName,
+
+   state: {empName,
     formData,
-    setFormData,
     selectedMonth,
-    setSelectedMonth,
     selectedYear,
-    setSelectedYear,
     selectedDay,
-    setSelectedDay,
     isUpdateMode,
-    setIsUpdateMode,
     advancePaymentId,
+    advancePayments
+  },
+
+    actions: {setFormData,
+    setSelectedMonth,
+    setSelectedYear,
+    setSelectedDay,
+    setIsUpdateMode,
     setAdvPaymentId,
-    advancePayments,
     handleSetIsUpdateMode,
     handleAddAdvancePayment,
     handleAdvancePaymentDelete,
     handleAdvancePaymentUpdate,
     handleChange,
+  }
   };
 }

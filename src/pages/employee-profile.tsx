@@ -46,7 +46,7 @@ export default function EmployeeProfile() {
             textcolor="text-black"
             text="Production Records"
             width="w-full sm:w-35"
-            onClick={() => actions.showProductionRecords(states.employee?.empCode ?? "")}
+            onClick={actions.showProductionRecords}
           />
           <Button
             bordercolor="border-border-card2"
@@ -56,7 +56,7 @@ export default function EmployeeProfile() {
             textcolor="text-black"
             text="Advance Payment"
             width="w-full sm:w-35"
-            onClick={() => actions.showAdvancePaymentRecords(states.employee?.empCode ?? "")}
+            onClick={actions.showAdvancePaymentRecords}
           />
           <Button
             bordercolor="border-border-card3"
@@ -66,7 +66,7 @@ export default function EmployeeProfile() {
             hovertext="hover:text-background"
             text="Salary History"
             width="w-full sm:w-35"
-            onClick={() => actions.showSalaryHistory(states.employee?.empCode ?? "")}
+            onClick={actions.showSalaryHistory}
           />
           <Button
             bordercolor="border-border-card2"
@@ -76,7 +76,7 @@ export default function EmployeeProfile() {
             textcolor="text-black"
             text="Leave History"
             width="w-full sm:w-35"
-            onClick={() => actions.showLeaveHistory(states.employee?.empCode ?? "")}
+            onClick={actions.showLeaveHistory}
           />
          <Button
             bordercolor="border-border-add"

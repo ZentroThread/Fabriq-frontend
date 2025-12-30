@@ -5,7 +5,7 @@ import useAdvancePaymentOverview from "@/hooks/employee/advancePayment/useAdvanc
 
 export default function AdvancePaymentOverviewPage() {
 
-  const data = useAdvancePaymentOverview();
+  const { state, actions } = useAdvancePaymentOverview();
 
   return (
     <EmployeeMonthlyPageTemplate
@@ -15,33 +15,33 @@ export default function AdvancePaymentOverviewPage() {
 
       form={
         <AdvancePaymentForm
-          empName={data.empName}
-          formData={data.formData}
-          onchange={data.handleChange}
-          advancePaymentId={data.advancePaymentId ? data.advancePaymentId : undefined}
-          handleAddAdvancePayment={data.handleAddAdvancePayment}
-          handleAdvancePaymentUpdate={data.handleAdvancePaymentUpdate}
-          isUpdateMode={data.isUpdateMode}
+          empName={state.empName}
+          formData={state.formData}
+          onchange={actions.handleChange}
+          advancePaymentId={state.advancePaymentId ? state.advancePaymentId : undefined}
+          handleAddAdvancePayment={actions.handleAddAdvancePayment}
+          handleAdvancePaymentUpdate={actions.handleAdvancePaymentUpdate}
+          isUpdateMode={state.isUpdateMode}
         />
       }
       table={
         <AdvancePaymentsTable 
-          data={data.advancePayments || []}
-          handleAdvancePaymentDelete={data.handleAdvancePaymentDelete}
-          handleSetIsUpdateMode={data.handleSetIsUpdateMode}
+          data={state.advancePayments || []}
+          handleAdvancePaymentDelete={actions.handleAdvancePaymentDelete}
+          handleSetIsUpdateMode={actions.handleSetIsUpdateMode}
         />
       }
-      selectedDay={data.selectedDay ?? null}
-      onDaySelect={data.setSelectedDay}
-      selectedMonth={data.selectedMonth}
-      selectedYear={data.selectedYear}
+      selectedDay={state.selectedDay ?? null}
+      onDaySelect={actions.setSelectedDay}
+      selectedMonth={state.selectedMonth}
+      selectedYear={state.selectedYear}
       onMonthChange={(month) => {
-        data.setSelectedMonth(month);
-        data.setSelectedDay(null);
+        actions.setSelectedMonth(month);
+        actions.setSelectedDay(null);
       }}
       onYearChange={(year) => {
-        data.setSelectedYear(year);
-        data.setSelectedDay(null);
+        actions.setSelectedYear(year);
+        actions.setSelectedDay(null);
       }}
     />
 

@@ -11,7 +11,7 @@ export const useEmployeeProductionOverview = () => {
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
-
+  
   const toDay = new Date();
   const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0'); 
   const currentYear = String(toDay.getFullYear()); 
@@ -43,9 +43,11 @@ export const useEmployeeProductionOverview = () => {
     selectedMonth || "",
     selectedYear || ""
   );
-  const { mutate: addProduction } = useAddEmployeeProduction();
-  const { mutate: updateProduction } = useUpdateEmployeeProduction();
-  const { mutate: deleteProduction } = useDeleteEmployeeProduction();
+  
+  const params = {empId: selectedEmployee ? selectedEmployee.id : 0, year: selectedYear, month: selectedMonth};
+  const { mutate: addProduction } = useAddEmployeeProduction(params.empId, params.month, params.year);
+  const { mutate: updateProduction } = useUpdateEmployeeProduction(params.empId, params.month, params.year);
+  const { mutate: deleteProduction } = useDeleteEmployeeProduction(params.empId, params.month, params.year);
 
   const handleSetIsUpdateMode = (id: number) => {
     const recordToEdit = prodByDate?.find((prod) => prod.id === id);

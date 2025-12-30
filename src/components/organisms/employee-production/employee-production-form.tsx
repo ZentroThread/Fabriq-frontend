@@ -1,5 +1,4 @@
-import ReadOnlyField from "@/components/molecules/input/read-only-field";
-import EditableField from "@/components/molecules/input/editable-field";
+import BaseInputField from "@/components/molecules/input/base-input-field";
 import Button from "@/components/atoms/button/add-button";
 import { type EmployeeProductionRequest } from "@/types/employee-product.type";
 
@@ -17,36 +16,38 @@ export default function EmployeeProductionForm(props: EmployeeProductionFormProp
   return (
     <div className="space-y-6 p-6 bg-card rounded-2xl shadow-md ">
   
-      <ReadOnlyField
+      <BaseInputField
         label="Employee Name"
         value={props.empName || "N/A"}
+        readonly={true}
       />
 
-      <EditableField
+      <BaseInputField
         label="Production Name"
         value={props.formData.productionName || " "}
-        onChange={(e) => props.onChange("productionName", e.target.value)}
+        onChange={(e) => props.onChange("productionName", e)}
       />
 
-      <EditableField
+      <BaseInputField
         label="Quantity"
         value={props.formData.quantity !== undefined ? 
         props.formData.quantity : "0"}
-        onChange={(e) => props.onChange("quantity", Number(e.target.value))}
+        onChange={(e) => props.onChange("quantity", Number(e))}
       />
 
-      <EditableField
+      <BaseInputField
         label="Rate Per Product"
         value={props.formData.ratePerProduct !== undefined ? 
         props.formData.ratePerProduct : "0"}
-        onChange={(e) => props.onChange("ratePerProduct", Number(e.target.value))}
+        onChange={(e) => props.onChange("ratePerProduct", Number(e))}
       />
 
-      <ReadOnlyField
+      <BaseInputField
         label="Total"
         value={props.formData.ratePerProduct && props.formData.quantity ? 
           (props.formData.ratePerProduct * props.formData.quantity).toString() : "0"
         }
+        readonly={true}
       />
       <div className="flex justify-end mt-auto pt-4">
         <Button 
