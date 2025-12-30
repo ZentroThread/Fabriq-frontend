@@ -10,6 +10,7 @@ export interface AddItemPayload {
 }
 
 export interface Item {
+  name: string;
   id: number;
   code: string;
   title: string;
@@ -46,6 +47,40 @@ export interface BackendItem {
   imageUrl?: string;
 }
 
+export interface AddCustomerPayload {
+  custName: string;
+  custMobileNumber: string;
+  custLandLine: string;
+  custWhatsappNumber: string;
+  custEmail: string;
+}
+
+export interface BackendCustomerPayload {
+  custId?: number;
+  custCode: string;
+  custName: string;
+  custMobileNumber: string;
+  custLandLine: string;
+  custWhatsappNumber: string;
+  custEmail: string;
+  custAddress: string;
+  custRegistrationDate: Date;
+}
+export interface AddCustomerResponse {
+  success: boolean;
+  message?: string;
+  value?: BackendCustomerPayload;
+}
+
+export interface Customer {
+  custCode?: string;
+  custName: string;
+  custMobileNumber: string;
+  custLandLine?: string;
+  custWhatsappNumber?: string;
+  custEmail?: string;
+  custAddress?: string;
+}
 export interface AddItemResponse {
   success: boolean;
   message: string;

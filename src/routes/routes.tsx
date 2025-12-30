@@ -4,6 +4,8 @@ import Reports from "../pages/reports";
 import Attendance from "@/pages/attendance";
 import Items from "@/pages/items";
 import { RentsAndBill } from "@/pages/rentsandbills";
+import Customers from "@/pages/customers";
+import Bills from "@/pages/bills";
 import EmployeeOverview from "@/pages/employee-overview";
 import EmployeeProfile from "@/pages/employee-profile";
 import { SalaryHistory } from "@/pages/salary-history";
@@ -43,6 +45,8 @@ function AppRoutes() {
             element={<ProtectedRoute allowedRoles={["owner", "cashier"]} />}
           >
             <Route path="/rent" element={<RentsAndBill />} />
+            <Route path="/bills" element={<Bills />} />
+            <Route path="/customers" element={<Customers />} />
           </Route>
 
           {/* Items - Owner and Sales Assistant */}

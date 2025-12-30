@@ -40,7 +40,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       // Add flag to skip auto-redirect on this request
-    const user = await loginService.getUserProfile({ _skipAuthRedirect: true } as unknown);
+      const user = await loginService.getUserProfile({
+        _skipAuthRedirect: true,
+      } as unknown);
       set({
         user,
         isLoading: false,

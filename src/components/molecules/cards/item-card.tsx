@@ -32,7 +32,7 @@ interface ItemCardProps {
 
 export function ItemCard({
   id,
-  title,
+  title = "NO title",
   description,
   price,
   stock,

@@ -95,7 +95,10 @@ axiosInstance.interceptors.response.use(
         console.error("🚫 Refresh token expired");
 
         // Check if we should skip redirect (for initial auth check)
-        if (!originalRequest._skipAuthRedirect && !window.location.pathname.includes('/login')) {
+        if (
+          !originalRequest._skipAuthRedirect &&
+          !window.location.pathname.includes("/login")
+        ) {
           const { useAuthStore } = await import("@/store/user-auth-store");
           useAuthStore.getState().logout();
           window.location.href = "/login";
@@ -143,7 +146,7 @@ axiosInstance.interceptors.response.use(
         isRefreshing = false;
 
         // Only redirect if not already on login page
-        if (!window.location.pathname.includes('/login')) {
+        if (!window.location.pathname.includes("/login")) {
           const { useAuthStore } = await import("@/store/user-auth-store");
           useAuthStore.getState().logout();
           window.location.href = "/login";
