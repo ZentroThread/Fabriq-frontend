@@ -1,5 +1,10 @@
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "@/components/ui/select";
 
+
+const toDay = new Date();
+const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0');
+const currentYear = String(toDay.getFullYear());
+
 type MonthYearSelectProps = {
   month?: string;
   year?: string;
@@ -24,8 +29,8 @@ const months = [
 ];
 
 const MonthYearSelect = ({
-  month,
-  year,
+  month=currentMonth,
+  year=currentYear,
   onMonthChange,
   onYearChange,
   yearRange = 5,

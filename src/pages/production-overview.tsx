@@ -2,46 +2,93 @@ import { Input } from "@/components/ui/input";
 import Button from "@/components/atoms/button/add-button";
 import { Calendar } from "@/components/ui/calendar";
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import {useState } from "react";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import useEmployeeStore from "@/store/employee-store";
-import type { EmployeeProductionRequest } from "@/types/employee-product.type";
+import {type EmployeeProductionRequest } from "@/types/employee-product.type";
+import { useAddEmployeeProduction,
+        useUpdateEmployeeProduction, 
+        useDeleteEmployeeProduction,
+        useEmployeeProdByEmpAndMonthYear
+      } from "@/hooks/employee/useEmployeeProduction";
+
+import {getMonthDateRange} from "@/utils/date";
 
 const ProductionOverview = () => {
-
-  const [selectedMonth, setSelectedMonth] = useState<string>();
-  const [selectedYear, setSelectedYear] = useState<string>();
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
 
+  const toDay = new Date();
+  const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0'); 
+  const currentYear = String(toDay.getFullYear()); 
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+  const [selectedYear, setSelectedYear] = useState<string>(currentYear);
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [isUpdateMode, setIsUpdateMode] = useState<boolean>(false);
+  const [prodId, setProdId] = useState<number>(0);
+
   const [formData, setFormData] = useState<Partial<EmployeeProductionRequest>>({});
   const total = (formData.quantity || 0) * (formData.ratePerProduct || 0);
 
-  const [productionDetails] = useState([{
-    productName: "Shirt",
-    date: "2024-06-01",
-    quantity: 100,
-    rate: 15,
-    total: 1500,
-  },
-  {
-    productName: "Pants",
-    date: "2024-06-02",
-    quantity: 80,
-    rate: 20,
-    total: 1600,
-  }]);
+  const formatDate = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
 
   const handleChange =<K extends keyof EmployeeProductionRequest> 
   (field: K,value: EmployeeProductionRequest[K]) => {
     setFormData((prev: Partial<EmployeeProductionRequest>) => ({
       ...prev,
+      date: selectedDay ? formatDate(selectedDay) : undefined,
       empId: selectedEmployee?.id,
       [field]: value,
     }));
   }
 
+  const { data: prodByDate } = useEmployeeProdByEmpAndMonthYear(
+    selectedEmployee?.id || 0,
+    selectedMonth || "",
+    selectedYear || ""
+  );
+  const { mutate: addProduction } = useAddEmployeeProduction();
+  const { mutate: updateProduction } = useUpdateEmployeeProduction();
+  const { mutate: deleteProduction } = useDeleteEmployeeProduction();
+
+  const handleSetIsUpdateMode = (id: number) => {
+    const recordToEdit = prodByDate?.find((prod) => prod.id === id);
+    if (recordToEdit) {
+      setFormData(recordToEdit);
+      setProdId(id);
+      setSelectedDay(new Date(recordToEdit.date || ""));
+      setIsUpdateMode(true);
+    }
+  };
+
+  const addProductionRecord = () => {
+    addProduction(formData);
+    setFormData({});
+    setSelectedDay(null);
+  }
+
+  const updateProductionRecord = (id : number) => {
+      updateProduction({id:id, data: formData});
+      setFormData({});
+      setSelectedDay(null);
+      setIsUpdateMode(false);
+  }
+
+  const handleProductDelete = (id: number) => {
+    if (confirm("Are you sure you want to delete this production record?")) {
+      deleteProduction(id);
+    }
+  };
+
+console.log("Selected Month:", selectedMonth);
+console.log("Selected Year:", selectedYear);
+console.log(getMonthDateRange(Number(selectedYear), Number(selectedMonth)).startDate);
+console.log(getMonthDateRange(Number(selectedYear), Number(selectedMonth)).endDate);
+console.log(prodByDate);
 
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
@@ -116,7 +163,10 @@ const ProductionOverview = () => {
           </div>
 
           <div className="flex justify-end mt-auto pt-4">
-            <Button text="Save" width="w-32" />
+            <Button 
+              text={isUpdateMode ? "Update" : "Add Record"} width="w-32" 
+              onClick={isUpdateMode ? () => updateProductionRecord(prodId) : addProductionRecord} 
+            />
           </div>
         </div>
 
@@ -126,6 +176,8 @@ const ProductionOverview = () => {
           <Calendar
             mode="single"
             className="w-full max-w-xs"
+            selected={selectedDay ? new Date(selectedDay) : undefined}
+            onSelect={(date) => setSelectedDay(date || null)}
             modifiersStyles={{
               leave: {
                 backgroundColor: "var(--color-light-pink)",
@@ -138,7 +190,7 @@ const ProductionOverview = () => {
                 color: "var(--color-accent-foreground)",
                 borderRadius: "6px",
                 fontWeight: "bold",
-              },
+              },        
             }}
           />
         </div>
@@ -171,23 +223,26 @@ const ProductionOverview = () => {
                       </thead>
             
                       <tbody>
-                        {productionDetails?.map((prod) => (
+                        {(prodByDate)?.map((prod) => (
                           <tr
-                            key={prod.productName + prod.date}
+                            key={prod.productionName + prod.date}
                             className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition py-5"    
                           >
                             
             
-                            <td className="text-muted-foreground py-5">{prod.productName}</td>
+                            <td className="text-muted-foreground py-5">{prod.productionName}</td>
                             <td className="text-(--color-text)">{prod.date}</td>
                             <td className="text-(--color-text)">{prod.quantity}</td>
-                            <td className="text-(--color-text)">{prod.rate}</td>
-                            <td className="text-(--color-text)">{prod.total}</td>
+                            <td className="text-(--color-text)">{prod.ratePerProduct}</td>
+                            <td className="text-(--color-text)">{prod.quantity * prod.ratePerProduct}</td>
             
                             <td className="flex gap-4 text-xl">
                               <div className="flex items-center gap-4 py-5">
-                                <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" />
-                                <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer"  />
+                                <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" 
+                                  onClick={() => handleSetIsUpdateMode(prod.id)} />
+                                <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer"  
+                                  onClick={() => handleProductDelete(prod.id)}
+                                />
                               </div>
                             </td>
                           </tr>
