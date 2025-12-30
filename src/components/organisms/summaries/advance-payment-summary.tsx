@@ -1,4 +1,4 @@
-import {useGetAdvanceByEmpAndMonthYear} from '@/hooks/employee/useEmployeeAdvance';
+import {useGetAdvanceByEmpAndMonthYear} from '@/hooks/employee/advancePayment/useEmployeeAdvance';
 
 export default function EmpAdvancePaymentSummary(props:{empId:number, year:number, month:number}) {
 
