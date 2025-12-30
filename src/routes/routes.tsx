@@ -15,6 +15,7 @@ import LeaveHistory from "@/pages/leave-history";
 import AdvancePaymentOverviewPage from "@/pages/advance-payment-overview";
 import ProductionOverview from "@/pages/production-overview";
 import { ProtectedRoute } from "@/routes/protected-route";
+import MonthlySalary from "@/pages/monthly-salary";
 
 function AppRoutes() {
   return (
@@ -37,6 +38,7 @@ function AppRoutes() {
             <Route path="/leave-history/:id" element={<LeaveHistory />} />
             <Route path="/production-overview/:id" element={<ProductionOverview />} />
             <Route path="/advance-payment-overview/:id" element={<AdvancePaymentOverviewPage />} />
+            <Route path="/monthly-salary/:id/:year/:month" element={<MonthlySalary />} />
           </Route>
 
           {/* Attendance - Owner only */}

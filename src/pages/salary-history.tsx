@@ -1,15 +1,14 @@
 import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
-import { useNavigate,  } from "react-router-dom";
-
-export function SalaryHistory() {
-
-  const navigator = useNavigate();
-  const employeeId = "123"; 
+import { useNavigate,useParams  } from "react-router-dom";
 import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
 import { useState, useEffect } from "react";
 
 export function SalaryHistory() {
+
+  const navigator = useNavigate();
+  const {id: employeeId} = useParams();
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -109,3 +108,4 @@ export function SalaryHistory() {
     </Chart>
   );
 }
+
