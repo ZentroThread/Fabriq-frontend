@@ -1,6 +1,20 @@
 import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
+import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
+import { useState, useEffect } from "react";
+
 export function SalaryHistory() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <SalaryHistorySkeleton />;
+  }
+
   const salaryData = [
     { month: "November", total: null, status: "add" },
     { month: "October", total: "LKR 60,000", status: "paid" },

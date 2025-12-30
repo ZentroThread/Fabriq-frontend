@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useLocation, Outlet } from "react-router-dom";
 import Nav from "../../molecules/navigationbar/nav";
 import Sidebar from "../../molecules/sidebar/Sidebar";
+import { useAuthStore } from "@/store/user-auth-store";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const user = useAuthStore((state) => state.user);
 
   const noLayoutPages = ["/", "/login"];
   const hideLayout = noLayoutPages.includes(location.pathname);
@@ -14,13 +16,21 @@ function Layout() {
     return <Outlet />; // <-- Login page will render here
   }
 
+  // Format role for display
+  const formatRole = (role: string) => {
+    return role
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <div className="flex h-screen overflow-hidden flex-col bg-layout-bg">
       {/* Navbar */}
       <div className="relative z-40">
         <Nav
-          username="John Doe"
-          position="Administrator"
+          username={user?.username || "User"}
+          position={user ? formatRole(user.role) : ""}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
