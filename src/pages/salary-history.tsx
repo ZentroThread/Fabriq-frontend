@@ -6,6 +6,20 @@ export function SalaryHistory() {
 
   const navigator = useNavigate();
   const employeeId = "123"; 
+import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
+import { useState, useEffect } from "react";
+
+export function SalaryHistory() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <SalaryHistorySkeleton />;
+  }
 
   const salaryData = [
     { year: "2025", month: "November", total: null, status: "add" },

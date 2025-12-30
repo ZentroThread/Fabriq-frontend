@@ -3,6 +3,7 @@ import { Calendar, Plus, Search, XCircle } from "lucide-react";
 import { CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {EmployeeOverviewSkeleton} from "@/components/molecules/skeletons/employee-overview-skeleton";
 //import { employees } from "@/constants/data";
 
 import EmployeeCard from "@/components/molecules/cards/employee-card";
@@ -15,9 +16,17 @@ import type { Employee } from "@/types/employee.type";
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
+  // const [isLoading, setIsLoading] = useState(true);
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setIsLoading(false), 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const {data:employees,error,isLoading} = useEmployees();
   const {mutate:deleteEmployee} = useDeleteEmployee();
+  
+ 
   //const {searchText,setSearchText} = useEmployeeStore();
   const {setSelectedEmployee} = useEmployeeStore();
 
@@ -29,8 +38,13 @@ export default function EmployeeOverview() {
       .includes(searchText.toLowerCase())
   );
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+ if (isLoading) {
+    return <EmployeeOverviewSkeleton />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   const getStatusStyle = (status: string) => {
     switch (status) {

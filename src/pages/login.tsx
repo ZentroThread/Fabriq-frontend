@@ -1,24 +1,55 @@
 import logo from "../assets/images/logo.jpg";
 import modelImg from "../assets/images/model.png";
-import { useState } from "react";
-import { User, Lock } from "lucide-react";
+import { User, Lock, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/user-auth-store";
+//import { useLogin } from "@/hooks/hooks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/schemas/user.schema";
+import type { LoginInput } from "@/types/types";
+import { useEffect } from "react";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
   const navigate = useNavigate();
+  // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // const authError = useAuthStore((state) => state.error);
 
-  const handleLogin = () => {
-    if (!username.trim() || !password.trim()) {
-      setError("Please fill in both username and password.");
-      return;
+  // const { mutate: login, isPending } = useLogin();
+  const {
+    login,
+    isAuthenticated,
+    isLoading,
+    error: authError,
+  } = useAuthStore();
+
+  // React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/dashboard");
     }
+  }, [isAuthenticated, navigate]);
 
-    setError("");
-    navigate("/dashboard");
+  const onSubmit = async (data: LoginInput) => {
+    const result = await login(data);
+
+    if (result.success) {
+      navigate("/dashboard");
+    }
+    // Error is automatically set in store, no need to handle here
   };
 
   return (
@@ -71,82 +102,104 @@ function Login() {
               Login to continue
             </p>
 
-            {/* USERNAME */}
-            <div className="mb-4">
-              <label className="text-sm font-medium text-gray-700">
-                Username
-              </label>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* USERNAME */}
+              <div className="mb-4">
+                <label className="text-sm font-medium text-gray-700">
+                  Username
+                </label>
 
-              <div
+                <div
+                  className="
+                    flex items-center 
+                    border-[1.5px] border-[#f8dce3]
+                    rounded-lg px-3 mt-1 
+                    transition-shadow duration-300
+                    focus-within:shadow-[0px_0px_8px_2px_rgba(243,190,205,0.8)]
+                  "
+                >
+                  <User size={18} className="text-gray-500" />
+
+                  <input
+                    type="text"
+                    className="flex-1 p-2 bg-transparent outline-none"
+                    placeholder="Enter your username"
+                    {...register("username")}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.username && (
+                  <p className="text-[#d46a7e] text-xs mt-1">
+                    {errors.username.message}
+                  </p>
+                )}
+              </div>
+
+              {/* PASSWORD */}
+              <div className="mb-6">
+                <label className="text-sm font-medium text-gray-700">
+                  Password
+                </label>
+
+                <div
+                  className="
+                    flex items-center 
+                    border-[1.5px] border-[#f8dce3]
+                    rounded-lg px-3 mt-1 
+                    transition-shadow duration-300
+                    focus-within:shadow-[0px_0px_8px_2px_rgba(243,190,205,0.8)]
+                  "
+                >
+                  <Lock size={18} className="text-gray-500" />
+
+                  <input
+                    type="password"
+                    className="flex-1 p-2 bg-transparent outline-none"
+                    placeholder="Enter your password"
+                    {...register("password")}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="text-[#d46a7e] text-xs mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {/* ERROR MESSAGE */}
+              {authError && (
+                <div className="text-[#d46a7e] text-sm mb-3 bg-[#fde7ec] border border-[#f3b5c2] rounded-md p-2">
+                  {authError}
+                </div>
+              )}
+
+              {/* LOGIN BUTTON */}
+              <button
+                type="submit"
+                disabled={isLoading}
                 className="
-                  flex items-center 
-                  border-[1.5px] border-[#f8dce3]
-                  rounded-lg px-3 mt-1 
-                  transition-shadow duration-300
-                  focus-within:shadow-[0px_0px_8px_2px_rgba(243,190,205,0.8)]
+                  w-full 
+                  bg-light-brown-medium text-white 
+                  py-3 rounded-lg shadow-md
+                  text-light-white font-semibold
+                  transition-all duration-300
+                  hover:bg-light-brown hover:scale-105 hover:shadow-xl
+                  active:scale-95
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  flex items-center justify-center gap-2
                 "
               >
-                <User size={18} className="text-gray-500" />
-
-                <input
-                  type="text"
-                  className="flex-1 p-2 bg-transparent outline-none"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* PASSWORD */}
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700">
-                Password
-              </label>
-
-              <div
-                className="
-                  flex items-center 
-                  border-[1.5px] border-[#f8dce3]
-                  rounded-lg px-3 mt-1 
-                  transition-shadow duration-300
-                  focus-within:shadow-[0px_0px_8px_2px_rgba(243,190,205,0.8)]
-                "
-              >
-                <Lock size={18} className="text-gray-500" />
-
-                <input
-                  type="password"
-                  className="flex-1 p-2 bg-transparent outline-none"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* ERROR MESSAGE */}
-            {error && (
-              <div className="text-[#d46a7e] text-sm mb-3 bg-[#fde7ec] border border-[#f3b5c2] rounded-md p-2">
-                {error}
-              </div>
-            )}
-
-            {/* LOGIN BUTTON */}
-            <button
-              onClick={handleLogin}
-              className="
-                w-full 
-                bg-light-brown-medium text-white 
-                py-3 rounded-lg shadow-md
-text-light-white font-semibold
-                transition-all duration-300
-                hover:bg-light-brown hover:scale-105 hover:shadow-xl
-                active:scale-95
-              "
-            >
-              Login
-            </button>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </button>
+            </form>
 
             <p className="text-center text-light-brown-medium text-sm mt-4 cursor-pointer hover:underline">
               Forgot password?

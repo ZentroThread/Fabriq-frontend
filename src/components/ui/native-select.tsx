@@ -32,7 +32,7 @@ function NativeSelectOption({ ...props }: React.ComponentProps<"option">) {
   return (
     <option
       data-slot="native-select-option"
-      className="rounded-2xl"
+      className="rounded-2xl bg-card"
       {...props}
     />
   );
