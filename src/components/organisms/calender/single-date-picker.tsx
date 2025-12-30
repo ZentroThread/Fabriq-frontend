@@ -17,7 +17,7 @@ export default function SingleDatePicker({
         mode="single"
         className="w-full max-w-xs"
         selected={selectedDay ? new Date(selectedDay) : undefined}
-        onSelect={(date) => onDaySelect(date || null)}
+        onSelect={(date) => onDaySelect(date ?? null)}
         modifiersStyles={calenderStyles}
       />
     </div>

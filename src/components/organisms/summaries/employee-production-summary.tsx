@@ -1,4 +1,4 @@
-import {useEmployeeProdByEmpAndMonthYear} from '@/hooks/employee/useEmployeeProduction';
+import {useEmployeeProdByEmpAndMonthYear} from '@/hooks/employee/productionRecord/useEmployeeProduction';
 
 export default function EmpProductionSummary(props:{empId:number, month:number, year:number}) {
  
