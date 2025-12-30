@@ -13,6 +13,16 @@ import {useDeleteEmployee} from "@/hooks/employee/useDeleteEmployee";
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <EmployeeOverviewSkeleton />;
+  }
 
   const {data:employees,error,isLoading} = useEmployees();
   const {mutate:deleteEmployee} = useDeleteEmployee();

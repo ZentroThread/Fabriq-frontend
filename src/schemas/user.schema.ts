@@ -1,20 +1,32 @@
 import { z } from "zod";
 
+// User role enum
+export const userRoleSchema = z.enum(["owner", "cashier", "sales_assistant"]);
+
 export const userSchema = z.object({
   id: z.number(),
-  name: z.string(),
-  email: z.string().email(),
-  tenantId: z.string().optional(),
+  username: z.string(),
+  role: userRoleSchema,
+  tenantId: z.string(),
 });
 
+// Token response from backend
+export const tokenResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  tokenType: z.string(),
+  accessTokenExpiresIn: z.number(),
+  refreshTokenExpiresIn: z.number(),
+});
+
+// Backend returns just the JWT token as a string
 export const authResponseSchema = z.object({
-  token: z.string(),
-  user: userSchema,
+  response: z.string(),
 });
 
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(1, "*Username is Required"),
+  password: z.string().min(1, "*Password is Required"),
 });
 
 export const registerSchema = z.object({
@@ -25,12 +37,8 @@ export const registerSchema = z.object({
 
 //add items table
 export const addItemFormSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  description: z.string().min(5, {
-    message: "Description must be at least 5 characters.",
-  }),
+  title: z.string().optional(),
+  description: z.string().optional(),
   price: z.string().min(1, {
     message: "Price is required.",
   }),
@@ -40,5 +48,23 @@ export const addItemFormSchema = z.object({
   stock: z.string().min(1, {
     message: "Stock quantity is required.",
   }),
-  image: z.instanceof(File, { message: "Image is required." }),
+  image: z.instanceof(File, { message: "Image is required." }).optional(),
+});
+
+// Add customer schema
+export const addCustomerSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  address: z.string().min(1, "Address is required"),
+  mobileNumber: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(/^07\d{8}$/, "Mobile number must be in the format 07xxxxxxxx"),
+  landline: z.string().optional(),
+  whatsapp: z
+    .string()
+    .min(1, "WhatsApp number is required")
+    .regex(/^07\d{8}$/, "WhatsApp number must be in the format 07xxxxxxxx"),
+  email: z
+    .union([z.string().email("Invalid email address"), z.literal("")])
+    .optional(),
 });
