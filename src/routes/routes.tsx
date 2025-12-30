@@ -12,8 +12,7 @@ import { SalaryHistory } from "@/pages/salary-history";
 import Login from "../pages/login";
 import Layout from "../components/organisms/layout/layout";
 import LeaveHistory from "@/pages/leave-history";
-import { ProtectedRoute } from "@/routes/protected-route";
-import {ProductionOverview} from "@/pages/production-overview"
+import AdvancePaymentOverviewPage from "@/pages/advance-payment-overview";
 
 function AppRoutes() {
   return (
