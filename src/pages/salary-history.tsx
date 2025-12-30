@@ -1,5 +1,11 @@
 import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
+import { useNavigate,  } from "react-router-dom";
+
+export function SalaryHistory() {
+
+  const navigator = useNavigate();
+  const employeeId = "123"; 
 import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
 import { useState, useEffect } from "react";
 
@@ -16,10 +22,14 @@ export function SalaryHistory() {
   }
 
   const salaryData = [
-    { month: "November", total: null, status: "add" },
-    { month: "October", total: "LKR 60,000", status: "paid" },
-    { month: "September", total: "LKR 60,000", status: "paid" },
+    { year: "2025", month: "November", total: null, status: "add" },
+    { year: "2025", month: "October", total: "LKR 60,000", status: "paid" },
+    { year: "2025", month: "September", total: "LKR 60,000", status: "paid" },
   ];
+
+  const handleRowClick = (month: string, year: string) => {
+     navigator(`/monthly-salary/${employeeId}/${year}/${month}`);
+  }
 
   return (
     <Chart>
@@ -43,6 +53,7 @@ export function SalaryHistory() {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col items-start">
           <select className="p-2  rounded-lg border border-(--color-border) bg-(--color-card) text-position-text">
+            <option>2025</option>
             <option>2024</option>
             <option>2023</option>
             <option>2022</option>
@@ -69,6 +80,7 @@ export function SalaryHistory() {
               <tr
                 key={salary.month}
                 className="bg- border-b border-(--color-border) text-position-text hover:bg-main-bg transition"
+                onClick={() => handleRowClick(salary.month, salary.year)}
               >
                 <td className="py-4 px-4 font-extralight  text-(--color-text)">
                   {salary.month}
