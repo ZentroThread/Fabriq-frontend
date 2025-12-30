@@ -7,7 +7,7 @@ import MonthYearSelect from "@/components/organisms/selection/month-years-select
 import useEmployeeStore from "@/store/employee-store";
 import type { EmployeeProductionRequest } from "@/types/employee-product.type";
 
-const ProductionOverview = () => {
+export const ProductionOverview = () => {
 
   const [selectedMonth, setSelectedMonth] = useState<string>();
   const [selectedYear, setSelectedYear] = useState<string>();
