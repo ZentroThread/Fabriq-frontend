@@ -4,8 +4,22 @@ import { ChartPie } from "@/components/organisms/charts/ChartPie";
 import Chart from "@/components/templates/Chart";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
+import { DashboardSkeleton } from "@/components/molecules/skeletons/dashboard-skeleton";
+import { useState, useEffect } from "react";
 
 function Dashboard() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <div className="p-5 flex flex-col ">
       <div className="text-style text-[30px] font-semibold">

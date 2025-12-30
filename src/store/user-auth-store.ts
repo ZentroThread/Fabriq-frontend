@@ -1,26 +1,152 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { User } from "@/types/types";
+import type { LoginInput, User, UserRole } from "@/types/types";
+import { queryClient } from "@/main";
+import { loginService } from "@/services/login.service";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
-  setAuth: (user: User, token: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  tokenExpiryTime: number | null;
+  isAuthChecked: boolean;
+  tenantId: string | null;
+
+  setTenantId: (id: string | null) => void;
+  login: (
+    credentials: LoginInput
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  validateSession: () => Promise<boolean>;
+  initializeAuth: () => Promise<void>; // Add this
+  setAuthChecked: (checked: boolean) => void; // Add this
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  clearError: () => void;
   isAuthenticated: () => boolean;
+  hasRole: (role: UserRole | UserRole[]) => boolean;
+  getTenantId: () => string | null;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set, get) => ({
-      user: null,
-      token: null,
-      setAuth: (user, token) => set({ user, token }),
-      logout: () => set({ user: null, token: null }),
-      isAuthenticated: () => !!get().token,
-    }),
-    {
-      name: "auth-storage",
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user: null,
+  isLoading: false,
+  error: null,
+  tokenExpiryTime: null,
+  isAuthChecked: false,
+  tenantId: null,
+
+  initializeAuth: async () => {
+    set({ isLoading: true });
+
+    try {
+      // Add flag to skip auto-redirect on this request
+      const user = await loginService.getUserProfile({
+        _skipAuthRedirect: true,
+      } as unknown);
+      set({
+        user,
+        isLoading: false,
+        isAuthChecked: true,
+        tenantId: user?.tenantId ?? null,
+      });
+    } catch {
+      // No valid session - this is fine on initial load
+      set({
+        user: null,
+        isLoading: false,
+        isAuthChecked: true,
+        tenantId: null,
+      });
     }
-  )
-);
+  },
+
+  login: async (credentials) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const tokenResponse = await loginService.login(credentials);
+      const user = await loginService.getUserProfile({});
+      const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
+
+      set({
+        user,
+        isLoading: false,
+        tokenExpiryTime: expiryTime,
+        tenantId: user?.tenantId ?? null,
+      });
+      return { success: true };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Login failed";
+      set({
+        error: message,
+        isLoading: false,
+        user: null,
+        tokenExpiryTime: null,
+        tenantId: null,
+      });
+      return { success: false, error: message };
+    }
+  },
+
+  logout: async () => {
+    try {
+      await loginService.logout();
+    } catch (error) {
+      console.error("Logout API call failed:", error);
+    }
+
+    await queryClient.cancelQueries();
+    queryClient.clear();
+
+    set({ user: null, error: null, tokenExpiryTime: null, tenantId: null });
+  },
+
+  validateSession: async () => {
+    const { user } = get();
+    if (!user) return false;
+
+    set({ isLoading: true });
+
+    try {
+      const freshUser = await loginService.getUserProfile({});
+      set({
+        user: freshUser,
+        isLoading: false,
+        tenantId: freshUser?.tenantId ?? null,
+      });
+      return true;
+    } catch {
+      await get().logout();
+      return false;
+    }
+  },
+
+  setAuthChecked: (checked: boolean) => set({ isAuthChecked: checked }),
+
+  setLoading: (loading) => set({ isLoading: loading }),
+
+  setError: (error) => set({ error }),
+
+  clearError: () => set({ error: null }),
+
+  isAuthenticated: () => {
+    return get().user !== null;
+  },
+
+  hasRole: (role) => {
+    const { user } = get();
+    if (!user) return false;
+
+    if (Array.isArray(role)) {
+      return role.includes(user.role);
+    }
+
+    return user.role === role;
+  },
+
+  getTenantId: () => {
+    return get().tenantId ?? get().user?.tenantId ?? null;
+  },
+
+  setTenantId: (id) => set({ tenantId: id }),
+}));

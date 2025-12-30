@@ -1,12 +1,18 @@
+import { useEffect } from "react";
 import Routes from "./routes/routes";
-import { ThemeProvider } from "./providers/theme-provider";
+import { useTheme } from "./hooks/useTheme";
+import { useAuth } from "./hooks/useAuth";
 
 function App() {
-  return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Routes />
-    </ThemeProvider>
-  );
+  const { initializeTheme } = useTheme();
+  const { initializeAuth } = useAuth();
+  // Initialize theme when app loads
+  useEffect(() => {
+    initializeTheme();
+    initializeAuth(); // Add this
+  }, [initializeTheme, initializeAuth]);
+
+  return <Routes />;
 }
 
 export default App;

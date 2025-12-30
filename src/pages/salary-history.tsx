@@ -7,6 +7,9 @@ import { useState } from "react";
 import Button from "@/components/atoms/button/add-button";
 import {getMonthAsString,getYearsForRange} from "@/utils/date";
 import SectionHeader from "@/components/molecules/header/section-header";
+import { useNavigate,useParams  } from "react-router-dom";
+import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
+import { useState, useEffect } from "react";
 
 export function SalaryHistory() {
 
@@ -18,6 +21,18 @@ export function SalaryHistory() {
   const {selectedEmployee} = useEmployeeStore();
   const employeeId = selectedEmployee?.id || 0;
   const empName = selectedEmployee?.fullName || "Employee Name";
+  const {id: employeeId} = useParams();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <SalaryHistorySkeleton />;
+  }
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
@@ -134,3 +149,4 @@ export function SalaryHistory() {
     </Chart>
   );
 }
+
