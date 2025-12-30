@@ -1,4 +1,5 @@
 import { z } from "zod";
-import {payRollResponseSchema} from "../schemas/payroll.schema";
+import {payrollRecordResponseSchema, payRollResponseSchema} from "../schemas/payroll.schema";
 
 export type PayRollResponseType = z.infer<typeof payRollResponseSchema>;
+export type PayrollRecordResponseType = z.infer<typeof payrollRecordResponseSchema>;

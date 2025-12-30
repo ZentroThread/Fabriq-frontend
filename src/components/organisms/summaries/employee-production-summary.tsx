@@ -1,17 +1,8 @@
-import {type EmployeeProductionResponse} from '@/types/employee-product.type';
+import {useEmployeeProdByEmpAndMonthYear} from '@/hooks/employee/productionRecord/useEmployeeProduction';
 
 export default function EmpProductionSummary(props:{empId:number, month:number, year:number}) {
  
-  const prodData: EmployeeProductionResponse[] = [{
-    id: 1,
-    date: "2024-06-01",
-    productionName: "Product A",
-    quantity: 100,
-    ratePerProduct: 50,
-    empId: props.empId,
-    empCode: "E001",
-    empName: "John Doe"
-  }]; 
+  const {data : prodByDate} = useEmployeeProdByEmpAndMonthYear(props.empId,String(props.month),String(props.year));
   
   return(
     <div className="space-y-6 p-6 bg-card rounded-2xl shadow-md lg:col-span-2 flex flex-col">
@@ -28,7 +19,7 @@ export default function EmpProductionSummary(props:{empId:number, month:number, 
         </thead>
 
         <tbody>
-          {(prodData)?.map((prod) => (
+          {(prodByDate)?.map((prod) => (
             <tr
               key={prod.productionName + prod.date}
               className="border-b border-(--color-border) hover:bg-(--color-hover-bg) transition py-5"    
@@ -43,7 +34,8 @@ export default function EmpProductionSummary(props:{empId:number, month:number, 
           ))}
         </tbody>
       </table>
-      <h2 className="text-position-text">Total Production: Rs.{prodData.reduce((total, prod) => total + (prod.quantity * prod.ratePerProduct), 0)}</h2>
+      <h2 className="text-position-text">Total Production: 
+        Rs.{(prodByDate?.reduce((total, prod) => total + (prod.quantity * prod.ratePerProduct), 0) || 0)}</h2>
     </div>
   )
 }

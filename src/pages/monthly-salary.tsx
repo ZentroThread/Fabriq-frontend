@@ -2,34 +2,31 @@ import SalarySummary from "@/components/organisms/summaries/salary-summary";
 import EmpProductionSummary from "@/components/organisms/summaries/employee-production-summary";
 import EmpAdvancePaymentSummary from "@/components/organisms/summaries/advance-payment-summary";
 import EarningsCard from "@/components/organisms/salary/earnings-card";
-import {type PayRollResponseType } from "@/types/payroll-type";
 import DeductionsCard from "@/components/organisms/salary/deductions-card";
 import AllowancesCard from "@/components/organisms/salary/allowances-card";
 import ExtraHolidayCard from "@/components/organisms/salary/extra-holiday-card";
 import OvertimeCard from "@/components/organisms/salary/overtime-card";
+import { useParams } from "react-router-dom";
+import {useGetPayroll} from "@/hooks/employee/payroll/usePayroll";
 
 export default function MonthlySalary() {
 
-  const salaryDetails: PayRollResponseType = {
-    empId: 2,
-    empCode: "E001",
-    employeeName: "John Doe",
-    month: 6,
-    year: 2024,
-    basicSalary: 50000,
-    totalAllowances: 10000,
-    totalDeductions: 8000,
-    commission: 5000,
-    overtimePay: 2000,
-    salaryAdvance: 3000,
-    productPay: 4000,
-    epfEmployee: 6000,
-    epfEmployer: 12000,
-    etf: 3000,
-    grossSalary: 67000,
-    netSalary: 59000,
-    calculatedAt: "2024-06-15T10:00:00Z",
-  };
+  const {id,year,month} = useParams();
+  const { data: salaryDetails,isLoading,isError,error } = useGetPayroll(
+    Number(id),
+    Number(month),
+    Number(year)
+  );
+
+  if (isLoading) {
+    return <div>Loading salary details...</div>;
+  }
+
+  if (isError || !salaryDetails) {
+    console.error("Error fetching salary details:", error);
+    return <div>Failed to load salary details</div>;
+  }
+
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
@@ -54,7 +51,7 @@ export default function MonthlySalary() {
         <OvertimeCard data={salaryDetails} className="lg:col-span-3" />
 
         {/*Extra Holiday Take*/}
-        <ExtraHolidayCard className="lg:col-span-1" />
+        <ExtraHolidayCard data = {salaryDetails} className="lg:col-span-1" />
 
         {/* Allowances */}
         <AllowancesCard data={salaryDetails} className="lg:col-span-2" />
@@ -66,11 +63,11 @@ export default function MonthlySalary() {
     
 
       {/* Production Summary */}
-      <EmpProductionSummary empId={1} month={6} year={2024} />
+      <EmpProductionSummary empId={Number(id)} month={Number(month)} year={Number(year)} />
   
 
       {/* Advance Payment Summary */}
-      <EmpAdvancePaymentSummary empId={1} month={6} year={2024} />
+      <EmpAdvancePaymentSummary empId={Number(id)} month={Number(month)} year={Number(year)} />
 
     </div>
   );
