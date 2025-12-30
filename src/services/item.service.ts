@@ -16,6 +16,7 @@ const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   status: backendItem.attireStatus,
   tenantId: backendItem.tenantId,
   image: backendItem.imageUrl,
+  name: ""
 });
 
 export const itemService = {
