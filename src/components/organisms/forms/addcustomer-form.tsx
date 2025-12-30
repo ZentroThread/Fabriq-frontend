@@ -99,14 +99,19 @@ function AddCustomerForm({
         await fetchCustomers();
         // Set the created customer as the selected customer for billing flow
         try {
+          const createdCustomer = created as {
+            custId?: string;
+            cust_id?: string;
+            custCode?: string;
+            cust_code?: string;
+          };
           billingStore.getState().setSelectedCustomer({
             ...created,
             cust_id:
-              (created as any).custId ?? (created as any).cust_id ?? undefined,
+              createdCustomer.custId ?? createdCustomer.cust_id ?? undefined,
             custCode:
-              (created as any).custCode ??
-              (created as any).cust_code ??
-              (created as any).custCode ??
+              createdCustomer.custCode ??
+              createdCustomer.cust_code ??
               undefined,
           });
         } catch (e) {

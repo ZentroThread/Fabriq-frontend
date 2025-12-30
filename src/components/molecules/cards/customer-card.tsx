@@ -10,6 +10,7 @@ import { useState } from "react";
 import useBillingStore from "@/store/customer-store";
 import Swal from "sweetalert2";
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
+import type { BackendCustomerPayload } from "@/types/item.types";
 
 function toTitleCase(name?: string) {
   if (!name) return "";
@@ -20,6 +21,15 @@ function toTitleCase(name?: string) {
     .join(" ");
 }
 
+interface UpdateCustomerFormData {
+  custCode?: string;
+  fullName?: string;
+  mobileNumber?: string;
+  landline?: string;
+  whatsapp?: string;
+  email?: string;
+  address?: string;
+}
 interface CustomerCardProps {
   customer: {
     custLandLine: string | undefined;
@@ -52,17 +62,17 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
     }
   };
 
-  const handleUpdate = async (data: any) => {
+  const handleUpdate = async (data: UpdateCustomerFormData) => {
     // Map AddCustomerForm values back to backend payload shape
-    const payload = {
+    const payload: Partial<BackendCustomerPayload> = {
       custCode: data.custCode,
-      custName: data.fullName,
-      custMobileNumber: data.mobileNumber,
+      custName: data.fullName ?? "",
+      custMobileNumber: data.mobileNumber ?? "",
       custLandLine: data.landline ?? "",
       custWhatsappNumber: data.whatsapp ?? "",
       custEmail: data.email ?? "",
       custAddress: data.address ?? "",
-    } as Partial<unknown>;
+    };
 
     await useBillingStore.getState().updateCustomer(customer.custCode, payload);
     setOpen(false);
