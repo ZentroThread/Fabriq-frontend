@@ -2,7 +2,7 @@ import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
 import { useNavigate,  } from "react-router-dom";
 import useEmployeeStore from "@/store/employee-store";
-import {useGetPayrollRecord} from "@/hooks/employee/usePayroll";
+import {useGetPayrollRecord} from "@/hooks/employee/payroll/usePayroll";
 import { useState } from "react";
 import Button from "@/components/atoms/button/add-button";
 import {getMonthAsString,getYearsForRange} from "@/utils/date";

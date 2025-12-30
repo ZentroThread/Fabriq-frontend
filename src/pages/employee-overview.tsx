@@ -7,8 +7,8 @@ import { useState } from "react";
 
 import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/ui/input";
-import { useEmployees } from "@/hooks/employee/useEmployess";
-import {useDeleteEmployee} from "@/hooks/employee/useDeleteEmployee";
+import { useEmployees } from "@/hooks/employee/employeeDetails/useEmployess";
+import {useDeleteEmployee} from "@/hooks/employee/employeeDetails/useDeleteEmployee";
 import useEmployeeStore from "@/store/employee-store";
 import type { Employee } from "@/types/employee.type";
 import SectionHeader from "@/components/molecules/header/section-header";
