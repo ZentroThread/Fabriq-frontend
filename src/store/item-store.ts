@@ -1,12 +1,18 @@
 import { create } from "zustand";
 
 interface Item {
+  id: number;
   code: string;
   title: string;
   description: string;
   price: number;
   stock: number;
-  category: number;
+  category: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
   status: string;
   tenantId: string;
   image?: File | string;
@@ -14,12 +20,40 @@ interface Item {
 
 interface ItemStore {
   items: Item[];
-  addItem: (item: Item) => void;
+  isLoading: boolean;
+  error: string | null;
+
+  // Actions
   setItems: (items: Item[]) => void;
+  addItem: (item: Item) => void;
+  updateItem: (id: number, item: Item) => void;
+  deleteItem: (id: number) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
 }
 
 export const useItemStore = create<ItemStore>((set) => ({
   items: [],
-  addItem: (item) => set((state) => ({ items: [...state.items, item] })),
+  isLoading: false,
+  error: null,
+
+  addItem: (item) =>
+    set((state) => ({
+      items: [...state.items, item],
+    })),
+
   setItems: (items) => set({ items }),
+
+  updateItem: (id, updatedItem) =>
+    set((state) => ({
+      items: state.items.map((item) => (item.id === id ? updatedItem : item)),
+    })),
+  deleteItem: (id) =>
+    set((state) => ({
+      items: state.items.filter((item) => item.id !== id),
+    })),
+
+  setLoading: (loading) => set({ isLoading: loading }),
+
+  setError: (error) => set({ error }),
 }));

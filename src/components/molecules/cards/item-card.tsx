@@ -1,76 +1,173 @@
+import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
 import Button from "@/components/atoms/button/add-button";
+import { AddItemForm } from "@/components/organisms/forms/additem-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useDeleteItem } from "@/hooks/useItems";
 import { SquarePen, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface ItemCardProps {
+  id: number;
   title: string;
   description: string;
-  price: string;
+  price: number;
   stock?: string;
   image: string;
+  code: string;
+  status: string;
+  categoryId?: {
+    tenantId: string;
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+  };
 }
 
 export function ItemCard({
-  title,
+  id,
+  title = "NO title",
   description,
   price,
   stock,
   image,
+  code,
+  status,
+  categoryId,
 }: ItemCardProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const deleteItemMutation = useDeleteItem();
+
+  const handleDelete = () => {
+    deleteItemMutation.mutate(Number(id));
+  };
+
   return (
-    <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-105 ">
-      <div className="relative">
-        <img src={image} alt="attire" className="w-full h-70 object-cover" />
+    <>
+      <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-105 ">
+        <div className="relative">
+          <img src={image} alt="attire" className="w-full h-70 object-cover" />
 
-        {/* Corner Button */}
-        <button className="absolute top-2 right-2 bg-support-button text-support-button-text border  px-3 py-1 rounded-xl text-xs shadow hover:opacity-90">
-          Available
-        </button>
-      </div>
-      <CardHeader>
-        <CardTitle className="text-lg pl-2 text-text-inactive ">
-          {title}
-        </CardTitle>
-      </CardHeader>
+          {/* Corner Button */}
+          <button
+            className={`absolute top-2 right-2  border px-3 py-1 rounded-xl text-xs shadow hover:opacity-90 ${
+              status === "Available"
+                ? "bg-support-button text-support-button-text "
+                : status === "In Laundry"
+                  ? "bg-bg-green text-light-white"
+                  : status === "Rented"
+                    ? "bg-bg-red text-light-white"
+                    : "bg-support-button "
+            }`}
+          >
+            {status}
+          </button>
+        </div>
+        <CardHeader>
+          <CardTitle className="text-lg pl-2 text-text-inactive ">
+            {title}
+            <br />
+            {code}
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent>
-        <p className="text-sm  pb-5 text-position-text font-light">
-          {description}
-        </p>
-        <div className="text-sm text-position-text font-light">
-          <div className="flex justify-between items-center w-full ">
-            <span>Per Day</span>
-            <span>Stock</span>
+        <CardContent>
+          <p className="text-sm  pb-5 text-position-text font-light">
+            {description}
+          </p>
+          <div className="text-sm text-position-text font-light ">
+            <div className="flex justify-between items-center w-full ">
+              <span>Per Day (LKR)</span>
+              <span>Stock</span>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between items-center w-full gap-x-4 mt-2">
-          <span className="text-style">{price}</span>
-          <span className="text-style font-extrabold">{stock}</span>
-        </div>
-        <div className="flex flex-2 justify-center gap-4 p-3">
-          <Button
-            text={"Edit"}
-            bgcolor={"bg-bg-card1"}
-            hoverbg={""}
-            width="w-25"
-            height="h-4"
-            padding="p-4"
-            textcolor={"text-icon-card1"}
-            bordercolor={"border-border-card1"}
-            icon={<SquarePen className="w-4" />}
+          <div className="flex justify-between items-center w-full gap-x-4 mt-2">
+            <span className="text-style">
+              {typeof price === "number"
+                ? price.toLocaleString("en-US")
+                : price}
+            </span>
+            <span className="text-style font-extrabold">
+              {stock && !isNaN(Number(stock))
+                ? Number(stock).toLocaleString("en-US")
+                : stock}
+            </span>
+          </div>
+          <div className="flex flex-2 justify-center gap-4 p-3">
+            <Button
+              text={"Edit"}
+              bgcolor={"bg-bg-card1"}
+              hoverbg={""}
+              width="w-25"
+              height="h-4"
+              padding="p-4"
+              textcolor={"text-icon-card1"}
+              bordercolor={"border-border-card1"}
+              onClick={() => setIsDialogOpen(true)}
+              icon={<SquarePen className="w-4" />}
+            />
+            <AlertDialogDemo
+              title={"Delete Item"}
+              description={"Are you sure, do you want to delete the item?"}
+              cancel={"Cancel"}
+              yes={"Delete"}
+              yesColor="bg-red border-1 "
+              onConfirm={handleDelete}
+            >
+              <Button
+                text={"Delete"}
+                bgcolor={"bg-bg-card3"}
+                hoverbg={""}
+                width="w-25"
+                height="h-4"
+                padding="p-4"
+                textcolor={"text-icon-card3"}
+                icon={<Trash2 className="w-4" />}
+              />
+            </AlertDialogDemo>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-xl max-h-[90vh]  bg-card ">
+          <DialogHeader className="flex items-center">
+            <DialogTitle className="text-style font-extrabold text-xl">
+              Edit Item
+            </DialogTitle>
+            <DialogDescription className="text-position-text font-light">
+              Update the item details in your bridal attire and accessories
+              inventory
+            </DialogDescription>
+          </DialogHeader>
+          <AddItemForm
+            editMode={true}
+            itemData={{
+              id,
+              code,
+              title,
+              description,
+              price,
+              stock: stock || "0",
+              status,
+              category: categoryId || {
+                tenantId: "",
+                categoryId: 0,
+                categoryCode: "",
+                categoryName: "",
+              },
+              image,
+            }}
+            onClose={() => setIsDialogOpen(false)}
           />
-          <Button
-            text={"Delete"}
-            bgcolor={"bg-bg-card3"}
-            hoverbg={""}
-            width="w-25"
-            height="h-4"
-            padding="p-4"
-            textcolor={"text-icon-card3"}
-            icon={<Trash2 className="w-4" />}
-          />
-        </div>
-      </CardContent>
-    </Card>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

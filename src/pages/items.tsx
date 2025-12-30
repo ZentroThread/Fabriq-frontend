@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Button from "@/components/atoms/button/add-button";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
-import { Input } from "@/components/molecules/input/input";
+import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
 import Chart from "@/components/templates/Chart";
-import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import { BanknoteArrowUp, Package, Plus, Tag } from "lucide-react";
-import nilame1 from "@/assets/items/nilame1.jpeg";
 import {
   Dialog,
   DialogContent,
@@ -15,9 +13,73 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
+import { useFilteredItems } from "@/hooks/useItems";
+import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
+import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 
 function Items() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const { items: allItems, isLoading, error, refetch } = useFilteredItems("");
+
+  // Filter items based on search query
+  const filteredItems = useMemo(() => {
+    if (!allItems) return [];
+
+    let result = allItems;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (item) =>
+          item.title?.toLowerCase().includes(query) ||
+          item.code?.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply category filter
+    if (categoryFilter) {
+      result = result.filter((item) => {
+        if (typeof item.category === "object" && item.category !== null) {
+          return String(item.category.categoryId) === categoryFilter;
+        }
+        return false;
+      });
+    }
+
+    return result;
+  }, [allItems, searchQuery, categoryFilter]); // 👈 Add categoryFilter dependency
+
+  //console.log("📦 Filtered Items:", filteredItems);
+  console.log("📦 All Items:", allItems);
+
+  const handleItemAdded = () => {
+    setIsDialogOpen(false);
+    // No need to manually refetch - TanStack Query handles it automatically
+  };
+
+  // Calculate stats from all items
+  const totalItems = allItems?.length || 0;
+  const withus =
+    allItems?.filter((item) => item.status !== "Rented").length || 0;
+  const rented =
+    allItems?.filter((item) => item.status === "Rented").length || 0;
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    // 👈 Add this handler
+    setCategoryFilter(category);
+    console.log("Category changed to:", category);
+  };
+
+  if (isLoading) {
+    return <ItemsSkeleton />;
+  }
 
   return (
     <div className="p-5 flex flex-col ">
@@ -46,24 +108,24 @@ function Items() {
               Add a new item to your bridal attire and accessories inventory
             </DialogDescription>
           </DialogHeader>
-          <AddItemForm onClose={() => setIsDialogOpen(false)} />
+          <AddItemForm onClose={handleItemAdded} />
         </DialogContent>
       </Dialog>
-      <div className="grid lg:grid-cols-3  sm:grid-cols-2  gap-6 mt-5 mb-5">
+      <div className="grid lg:grid-cols-3  sm:grid-cols-1  md:grid-cols-2 gap-6 mt-5 mb-5">
         <DashboardCard
-          lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
+          lable={"Total Items"}
+          lable1={String(totalItems)}
           icon={Package}
         />
         <DashboardCard
-          lable={"Active Rentals"}
-          lable1={"28"}
+          lable={"Available + In Laundry"}
+          lable1={String(withus)}
           icon={Tag}
           iconbg="var(--color-light-pie-1)"
         />
         <DashboardCard
-          lable={"Attendance Rate"}
-          lable1={"93%"}
+          lable={"Rented Items"}
+          lable1={String(rented)}
           icon={BanknoteArrowUp}
           iconbg="var(--color-dbcard)"
         />
@@ -71,61 +133,80 @@ function Items() {
 
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
-          <Input />
-          <NativeSelectDemo />
+          {/* <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search items..."
+          /> */}
+          <ItemSearchFilter
+            items={(allItems || []).map((item) => ({
+              ...item,
+              id: String(item.id),
+              image: typeof item.image === "string" ? item.image : undefined,
+            }))}
+            onSearchChange={handleSearchChange}
+          />
+          <NativeSelectDemo
+            option="All Categories"
+            value1="1"
+            value2="2"
+            value3="3"
+            string1="Saree"
+            string2="Nilame Costume"
+            string3="Jewellary"
+            value={categoryFilter}
+            onValueChange={handleCategoryChange}
+          />
         </div>
       </Chart>
 
-      <div
-        className="pt-5  grid gap-6 
-                grid-cols-1 
-                sm:grid-cols-2 
-                md:grid-cols-3 
-                lg:grid-cols-4"
-      >
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-        <ItemCard
-          title={"Nilame Suit1"}
-          description={"Black color with purls"}
-          price={"LKR 8,000"}
-          stock="3 "
-          image={nilame1}
-        />
-      </div>
+      {error ? (
+        <div className="flex flex-col items-center justify-center h-64">
+          <p className="text-destructive mb-4">
+            {error instanceof Error
+              ? "No items Found. Add New Items"
+              : "Failed to load items"}
+          </p>
+          <Button text="Retry" onClick={() => refetch()} />
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-position-text">
+            {searchQuery
+              ? "No items match your search"
+              : "No items found. Add your first item!"}
+          </p>
+        </div>
+      ) : (
+        <div
+          className="pt-5 grid gap-6 
+                    grid-cols-1 
+                    sm:grid-cols-2 
+                    md:grid-cols-3 
+                    lg:grid-cols-3"
+        >
+          {filteredItems.map((item) => (
+            <ItemCard
+              key={item.id}
+              id={item.id}
+              code={item.code}
+              title={item.title || "Untitled"}
+              description={item.description || "No description"}
+              price={item.price || 0}
+              stock={(item.stock || 0).toString()}
+              image={
+                typeof item.image === "string"
+                  ? item.image
+                  : "no photo available"
+              }
+              status={item.status}
+              categoryId={
+                typeof item.category === "object" ? item.category : undefined
+              }
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
