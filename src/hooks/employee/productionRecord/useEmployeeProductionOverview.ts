@@ -6,16 +6,13 @@ import { useAddEmployeeProduction,
         useDeleteEmployeeProduction,
         useEmployeeProdByEmpAndMonthYear
       } from "@/hooks/employee/productionRecord/useEmployeeProduction";
+import { currentMonth,currentYear,today } from "@/utils/date";
 
 export const useEmployeeProductionOverview = () => {
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
   
-  const toDay = new Date();
-  const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0'); 
-  const currentYear = String(toDay.getFullYear()); 
-
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
   const [selectedYear, setSelectedYear] = useState<string>(currentYear);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -32,7 +29,7 @@ export const useEmployeeProductionOverview = () => {
   (field: K,value: EmployeeProductionRequest[K]) => {
     setFormData((prev: Partial<EmployeeProductionRequest>) => ({
       ...prev,
-      date: selectedDay ? formatDate(selectedDay) : formatDate(toDay),
+      date: selectedDay ? formatDate(selectedDay) : formatDate(today),
       empId: selectedEmployee?.id,
       [field]: value,
     }));
@@ -79,21 +76,21 @@ export const useEmployeeProductionOverview = () => {
   };
 
   return ({
-    empName,
+    state: {empName,
     selectedMonth,
-    setSelectedMonth,
     selectedYear,
-    setSelectedYear,
     selectedDay,
-    setSelectedDay,
     isUpdateMode,
     formData,
     prodId,
+    prodByDate,},
+    actions: {setSelectedMonth,
+    setSelectedYear,
+    setSelectedDay,
     handleChange,
-    prodByDate,
     handleSetIsUpdateMode,
     handleAddProduction,
     handleProductionUpdate,
-    handleProductionDelete,
+    handleProductionDelete,}
   });
 }

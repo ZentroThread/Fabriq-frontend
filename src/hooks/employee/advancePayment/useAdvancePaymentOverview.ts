@@ -5,18 +5,13 @@ import { useAddEmployeeAdvancePayment,
         useDeleteEmployeeAdvancePayment,
         useGetAdvanceByEmpAndMonthYear,
         useUpdateEmployeeAdvancePayment } from "@/hooks/employee/advancePayment/useEmployeeAdvance";
+import { formatDate,currentMonth,currentYear,today } from "@/utils/date";
 
 
 export default function useAdvancePaymentOverview() {
 
   const {selectedEmployee} = useEmployeeStore();
   const empName = selectedEmployee ? selectedEmployee.fullName : "";
-
-  const toDay = new Date();
-  const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0'); 
-  const currentYear = String(toDay.getFullYear()); 
-  const formatDate = (date: Date) =>
-  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
   const [formData, setFormData] = useState<Partial<AdvancePaymentRequest>>({});
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
@@ -50,7 +45,7 @@ const handleAddAdvancePayment = () => {
   addAdvancePayment({
     ...formData,
     empId: selectedEmployee.id,
-    date: selectedDay ? formatDate(selectedDay) : formatDate(toDay),
+    date: selectedDay ? formatDate(selectedDay) : formatDate(today),
   });
 
   setFormData({});
@@ -72,7 +67,7 @@ const handleAddAdvancePayment = () => {
   (field: K,value: AdvancePaymentRequest[K]) => {
     setFormData((prev: Partial<AdvancePaymentRequest>) => ({
       ...prev,
-      date: selectedDay ? formatDate(selectedDay) : formatDate(toDay),
+      date: selectedDay ? formatDate(selectedDay) : formatDate(today),
       empId: selectedEmployee?.id,
       [field]: value,
     }));

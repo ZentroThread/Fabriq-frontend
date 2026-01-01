@@ -1,6 +1,6 @@
 import Button from "@/components/atoms/button/add-button";
 import { Calendar, Plus, Search, XCircle } from "lucide-react";
-import { CheckCircle, Pencil, Trash2 } from "lucide-react";
+import { CheckCircle, Trash2,Notebook } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {EmployeeOverviewSkeleton} from "@/components/molecules/skeletons/employee-overview-skeleton";
@@ -60,8 +60,7 @@ export default function EmployeeOverview() {
     }
   };
 
-  const handleRowClick = (id: string | number,emp:Employee) => {
-    console.log("Clicked employee ID:", id);
+  const handleRowClick = (id: string ,emp:Employee) => {
     setSelectedEmployee({
       id: emp.id,
       empCode: emp.empCode,
@@ -70,7 +69,7 @@ export default function EmployeeOverview() {
     navigate(`/emp/${id}`);
   };
 
-  const handleDeleteEmp = (code: string | number) => {
+  const handleDeleteEmp = (code: string ) => {
     console.log("Deleted employee ID:", code);
     if (confirm("Are you sure you want to delete this employee?"+code)) {
       deleteEmployee(code.toString());
@@ -176,8 +175,8 @@ export default function EmployeeOverview() {
 
                 <td className="flex gap-4 text-xl">
                   <div className="flex items-center gap-4">
-                    <CheckCircle className="text-[#d1a47c] w-5 h-5" />
-                    <Pencil className="text-[#d1a47c] w-5 h-5 cursor-pointer" onClick={() => handleRowClick(emp.empCode, emp)}/>
+                    {/* <CheckCircle className="text-[#d1a47c] w-5 h-5" /> */}
+                    <Notebook className="text-[#d1a47c] w-5 h-5 cursor-pointer" onClick={() => handleRowClick(emp.empCode, emp)}/>
                     <Trash2 className="text-[#fa7f83] w-5 h-5 cursor-pointer" onClick={() => handleDeleteEmp(emp.empCode)} />
                   </div>
                 </td>

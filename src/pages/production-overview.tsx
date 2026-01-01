@@ -5,7 +5,7 @@ import EmployeeProductionForm from "@/components/organisms/employee-production/e
 
 const ProductionOverview = () => {
 
-  const data = useEmployeeProductionOverview();
+  const {state,actions} = useEmployeeProductionOverview();
  
   return (
     <EmployeeMonthlyPageTemplate
@@ -15,33 +15,33 @@ const ProductionOverview = () => {
 
       form={
         <EmployeeProductionForm
-          empName={data.empName}
-          formData={data.formData}
-          onChange={data.handleChange}
-          productionId={data.prodId ? data.prodId : undefined}
-          handleAddProduction={data.handleAddProduction}
-          handleProductionUpdate={data.handleProductionUpdate}
-          isUpdateMode={data.isUpdateMode}
+          empName={state.empName}
+          formData={state.formData}
+          onChange={actions.handleChange}
+          productionId={state.prodId ? state.prodId : undefined}
+          handleAddProduction={actions.handleAddProduction}
+          handleProductionUpdate={actions.handleProductionUpdate}
+          isUpdateMode={state.isUpdateMode}
         />
       }
       table = {
         <EmployeeProductionTable 
-          data={data.prodByDate || []}
-          handleProductionDelete={data.handleProductionDelete}
-          handleSetIsUpdateMode={data.handleSetIsUpdateMode}
+          data={state.prodByDate || []}
+          handleProductionDelete={actions.handleProductionDelete}
+          handleSetIsUpdateMode={actions.handleSetIsUpdateMode}
         />
       }
-      selectedDay={data.selectedDay ?? null}
-      onDaySelect={data.setSelectedDay}
-      selectedMonth={data.selectedMonth}
-      selectedYear={data.selectedYear}
+      selectedDay={state.selectedDay ?? null}
+      onDaySelect={actions.setSelectedDay}
+      selectedMonth={state.selectedMonth}
+      selectedYear={state.selectedYear}
       onMonthChange={(month) => {
-        data.setSelectedMonth(month);
-        data.setSelectedDay(null);
+        actions.setSelectedMonth(month);
+        actions.setSelectedDay(null);
       }}
       onYearChange={(year) => {
-        data.setSelectedYear(year);
-        data.setSelectedDay(null);
+        actions.setSelectedYear(year);
+        actions.setSelectedDay(null);
       }}
 
     />

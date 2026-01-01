@@ -1,3 +1,9 @@
+export const today = new Date();
+export const currentMonth = String(today.getMonth() + 1).padStart(2, '0'); 
+export const currentYear = String(today.getFullYear()); 
+export const formatDate = (date: Date) =>
+`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
 export const getMonthDateRange = (year: number, month: number) =>{
 
   const startDate = new Date(year, month - 1, 1);

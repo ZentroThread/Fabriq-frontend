@@ -17,7 +17,6 @@ export const useDeleteEmployee = () => {
         }
       );
       toast.success("Employee deleted successfully.");
-      console.log("From useDeleteEmployee: Deleted employee with code:", empCode);
     },
   });
 }

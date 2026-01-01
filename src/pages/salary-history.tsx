@@ -35,6 +35,10 @@ export function SalaryHistory() {
   }
 
   const handleAddSalary = () => {
+    if(currentMonth === 1){
+      navigator(`/monthly-salary/${employeeId}/${year -1 }/12`);
+      return;
+    }
     navigator(`/monthly-salary/${employeeId}/${year}/${currentMonth -1 }`);
   }
 
