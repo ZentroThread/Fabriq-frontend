@@ -1,5 +1,5 @@
 import Button from "@/components/atoms/button/add-button";
-import BaseInputField from "@/components/molecules/input/base-input-field"; 
+import BaseInputField from "@/components/molecules/input/base-input-field";
 import BaseCheckboxField from "@/components/molecules/input/base-check-box-field";
 import type { Employee, EmployeeBankDetails } from "@/types/employee.type";
 
@@ -14,143 +14,109 @@ interface EmployeeFormProps {
   ) => void;
 }
 
-
-export default function EmployeeForm({ employee, isEditing, formData, handleChange, handleBankChange }: EmployeeFormProps) {
+export default function EmployeeForm({
+  employee,
+  isEditing,
+  formData,
+  handleChange,
+  handleBankChange,
+}: EmployeeFormProps) {
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between lg:pl-10 gap-6">
-          {/* Profile Image - Shows first on mobile */}
-          <div className="flex justify-center lg:hidden mb-6">
-            <div className="flex flex-col relative items-center">
-              <div className="bg-main-bg w-32 h-32 sm:w-35 sm:h-35 rounded-2xl border-avatar-border border-1">
-               {employee?.imgUrl || formData?.imgUrl ? (
-                  <img
-                    src={isEditing ? formData?.imgUrl ?? "" : employee?.imgUrl ?? ""}
-                    alt="profile"
-                    className="w-full h-full rounded-2xl"
-                  />
-                ) : (
-                  <div className="w-full h-full rounded-2xl flex items-center justify-center bg-border-card3 text-position-text">
-                    No Image
-                  </div>
-                )}
-              </div>
-              <Button text="Update" width="w-32 sm:w-35" />
-            </div>
-          </div>
+    <div className="flex flex-col lg:flex-row gap-8 lg:pl-10">
 
-          {/* Form Fields */}
-          
-          <div className="w-full lg:flex-1">
-            <div className="space-y-3 sm:space-y-4">
-              <h2 className="text-lg sm:text-xl mt-6">Personal Details</h2>
-
-              <BaseInputField label="First Name" value={isEditing ? formData?.empFirstName ?? "" : employee?.empFirstName ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("empFirstName", value)} />
-
-              <BaseInputField label="Last Name" value={isEditing ? formData?.empLastName ?? "" : employee?.empLastName ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("empLastName", value)} />
-
-              <BaseInputField label="Epf Number" value={isEditing ? formData?.epfNumber ?? "" : employee?.epfNumber ?? ""} readonly={!isEditing} onChange={(value) => handleChange("epfNumber", value)} />
-
-              <BaseInputField label="Employee ID" value={isEditing ? formData?.empCode ?? "" : employee?.empCode ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("empCode", value)} />
-
-              <BaseInputField label="Employee NIC" value={isEditing ? formData?.nicNumber ?? "" : employee?.nicNumber ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("nicNumber", value)} />
-
-              <BaseInputField label="Mobile Number" value={isEditing ? formData?.mobileNumber ?? "" : employee?.mobileNumber ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("mobileNumber", value)} />
-
-              <BaseInputField label="Role" value={isEditing ? formData?.role ?? "" : employee?.role ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("role", value)} />
-
-              <BaseInputField label="Basic Salary(Rs)" value={isEditing ? formData?.basicSalary ?? "" : employee?.basicSalary ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("basicSalary", parseFloat(value) || 0)} />
-
-              <BaseInputField label="Address" value={isEditing ? formData?.address ?? "" : employee?.address ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("address", value)} />
-
-              <BaseInputField label="Date of Birth" value={isEditing ? formData?.dateOfBirth ?? "" : employee?.dateOfBirth ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("dateOfBirth", value)} placeholder="xxxx-xx-xx" />
-
-              <BaseInputField
-                label="Gender"
-                placeholder="MALE, FEMALE, or OTHER"
-                value={
-                  isEditing
-                    ? (formData?.gender ?? "")
-                    : (employee?.gender ?? "")
-                }
-                readonly={!isEditing}
-                onChange={(value) =>
-                  handleChange(
-                    "gender",
-                    value as "MALE" | "FEMALE" | "OTHER"
-                  )
-                }
+      {/* ================= PROFILE ================= */}
+      <div className="w-full lg:w-[280px] order-1 lg:order-2">
+        <div className="flex flex-col items-center gap-4">
+          <div className="bg-main-bg w-32 h-32 rounded-2xl border border-avatar-border">
+            {employee?.imgUrl || formData?.imgUrl ? (
+              <img
+                src={isEditing ? formData?.imgUrl ?? "" : employee?.imgUrl ?? ""}
+                alt="profile"
+                className="w-full h-full rounded-2xl object-cover"
               />
- 
-              <BaseInputField label="Age" value={isEditing ? formData?.age ?? "" : employee?.age ?? ""} 
-              readonly={true} />
-
-              <BaseInputField label="Joined Date" value={isEditing ? formData?.joinedDate ?? "" : employee?.joinedDate ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleChange("joinedDate", value)} placeholder="xxxx-xx-xx" />
-
-              <BaseInputField label="Commission Rate Point (out of 10)" value={isEditing ? formData?.performancePoints ?? "" : employee?.performancePoints ?? ""} 
-              readonly={!isEditing}
-              onChange={(value) => {
-                          const num = Number(value);
-
-                          handleChange(
-                            "performancePoints",
-                            isNaN(num) ? 0 : num
-                          )
-                        }
-                      }
-              />
-
-              <BaseCheckboxField label="Commission Eligible" value={isEditing ? formData?.commissionEligible ?? false : employee?.commissionEligible ?? false} 
-              disabled={!isEditing} onChange={(value?: boolean) => handleChange("commissionEligible", value ?? false)} />
-
-              {/* Bank Details */}
-              <h2 className="text-lg sm:text-xl  mt-6">Bank Details</h2>
-           
-              <BaseInputField label="Bank Acc Number" value={isEditing ? formData?.employeeBankDetails?.accountNumber ?? "" : employee?.employeeBankDetails?.accountNumber ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleBankChange("accountNumber", value)} />
-
-              <BaseInputField label="Bank Acc Holder Name" value={isEditing ? formData?.employeeBankDetails?.accountHolderName ?? "" : employee?.employeeBankDetails?.accountHolderName ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleBankChange("accountHolderName", value)} />
-
-             
-              <BaseInputField label="Bank Name" value={isEditing ? formData?.employeeBankDetails?.bankName ?? "" : employee?.employeeBankDetails?.bankName ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleBankChange("bankName", value)} />
-
-            
-              <BaseInputField label="Branch Name" value={isEditing ? formData?.employeeBankDetails?.branchName ?? "" : employee?.employeeBankDetails?.branchName ?? ""} 
-              readonly={!isEditing} onChange={(value) => handleBankChange("branchName", value)} />
-
-            </div>
-          </div>
-
-          {/* Profile Image - Shows on desktop only */}
-          <div className="hidden lg:flex justify-end items-start pr-10">
-            <div className="flex flex-col relative items-center">
-              <div className="bg-main-bg w-35 h-35 rounded-2xl border-avatar-border border-1">
-                {employee?.imgUrl || formData?.imgUrl ? (
-                  <img
-                    src={isEditing ? formData?.imgUrl ?? "" : employee?.imgUrl ?? ""}
-                    alt="profile"
-                    className="w-full h-full rounded-2xl"
-                  />
-                ) : (
-                  <div className="w-full h-full rounded-2xl flex items-center justify-center bg-border-card3 text-position-text">
-                    No Image
-                  </div>
-                )}
+            ) : (
+              <div className="h-full flex items-center justify-center text-sm text-position-text">
+                No Image
               </div>
-              <Button text="Update" width="w-35" />
-            </div>
+            )}
           </div>
+
+          <Button text="Update" width="w-32" />
         </div>
-  )
+      </div>
+
+      {/* ================= FORM ================= */}
+      <div className="flex-1 order-2 lg:order-1 space-y-10">
+
+        {/* ===== Personal Details ===== */}
+        <section>
+          <h2 className="text-lg text-style mb-4">Personal Details</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <BaseInputField label="First Name" value={isEditing ? formData?.empFirstName ?? "" : employee?.empFirstName ?? ""} readonly={!isEditing} onChange={(v) => handleChange("empFirstName", v)} />
+            <BaseInputField label="Last Name" value={isEditing ? formData?.empLastName ?? "" : employee?.empLastName ?? ""} readonly={!isEditing} onChange={(v) => handleChange("empLastName", v)} />
+            <BaseInputField label="NIC" value={isEditing ? formData?.nicNumber ?? "" : employee?.nicNumber ?? ""} readonly={!isEditing} onChange={(v) => handleChange("nicNumber", v)} />
+            <BaseInputField label="Mobile Number" value={isEditing ? formData?.mobileNumber ?? "" : employee?.mobileNumber ?? ""} readonly={!isEditing} onChange={(v) => handleChange("mobileNumber", v)} />
+            <BaseInputField label="Date of Birth" value={isEditing ? formData?.dateOfBirth ?? "" : employee?.dateOfBirth ?? ""} readonly={!isEditing} placeholder="YYYY-MM-DD" onChange={(v) => handleChange("dateOfBirth", v)} />
+            <BaseInputField label="Gender" value={isEditing ? formData?.gender ?? "" : employee?.gender ?? ""} readonly={!isEditing} onChange={(v) => handleChange("gender", v as "MALE" | "FEMALE" | "OTHER")} />
+            <BaseInputField label="Age" value={isEditing ? formData?.age ?? "" : employee?.age ?? ""} readonly />
+            <BaseInputField label="Address" value={isEditing ? formData?.address ?? "" : employee?.address ?? ""} readonly={!isEditing} onChange={(v) => handleChange("address", v)} />
+          </div>
+        </section>
+
+        {/* ===== Employment Details ===== */}
+        <section>
+          <h2 className="text-lg text-style mb-4">Employment Details</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <BaseInputField label="Employee ID" value={isEditing ? formData?.empCode ?? "" : employee?.empCode ?? ""} readonly={!isEditing} onChange={(v) => handleChange("empCode", v)} />
+            <BaseInputField label="EPF Number" value={isEditing ? formData?.epfNumber ?? "" : employee?.epfNumber ?? ""} readonly={!isEditing} onChange={(v) => handleChange("epfNumber", v)} />
+            <BaseInputField label="Role" value={isEditing ? formData?.role ?? "" : employee?.role ?? ""} readonly={!isEditing} onChange={(v) => handleChange("role", v)} />
+            <BaseInputField label="Joined Date" value={isEditing ? formData?.joinedDate ?? "" : employee?.joinedDate ?? ""} readonly={!isEditing} placeholder="YYYY-MM-DD" onChange={(v) => handleChange("joinedDate", v)} />
+          </div>
+        </section>
+
+        {/* ===== Compensation ===== */}
+        <section>
+          <h2 className="text-lg text-style mb-4">Compensation</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <BaseInputField
+              label="Basic Salary (Rs)"
+              value={isEditing ? formData?.basicSalary ?? "" : employee?.basicSalary ?? ""}
+              readonly={!isEditing}
+              onChange={(v) => handleChange("basicSalary", Number(v) || 0)}
+            />
+
+            <BaseInputField
+              label="Commission Rate (0–10)"
+              value={isEditing ? formData?.performancePoints ?? "" : employee?.performancePoints ?? ""}
+              readonly={!isEditing}
+              onChange={(v) => handleChange("performancePoints", Number(v) || 0)}
+            />
+
+            <BaseCheckboxField
+              label="Commission Eligible"
+              value={isEditing ? formData?.commissionEligible ?? false : employee?.commissionEligible ?? false}
+              disabled={!isEditing}
+              onChange={(v) => handleChange("commissionEligible", v ?? false)}
+            />
+          </div>
+        </section>
+
+        {/* ===== Bank Details ===== */}
+        <section>
+          <h2 className="text-lg text-style mb-4">Bank Details</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <BaseInputField label="Account Number" value={isEditing ? formData?.employeeBankDetails?.accountNumber ?? "" : employee?.employeeBankDetails?.accountNumber ?? ""} readonly={!isEditing} onChange={(v) => handleBankChange("accountNumber", v)} />
+            <BaseInputField label="Account Holder Name" value={isEditing ? formData?.employeeBankDetails?.accountHolderName ?? "" : employee?.employeeBankDetails?.accountHolderName ?? ""} readonly={!isEditing} onChange={(v) => handleBankChange("accountHolderName", v)} />
+            <BaseInputField label="Bank Name" value={isEditing ? formData?.employeeBankDetails?.bankName ?? "" : employee?.employeeBankDetails?.bankName ?? ""} readonly={!isEditing} onChange={(v) => handleBankChange("bankName", v)} />
+            <BaseInputField label="Branch Name" value={isEditing ? formData?.employeeBankDetails?.branchName ?? "" : employee?.employeeBankDetails?.branchName ?? ""} readonly={!isEditing} onChange={(v) => handleBankChange("branchName", v)} />
+          </div>
+        </section>
+
+      </div>
+    </div>
+  );
 }

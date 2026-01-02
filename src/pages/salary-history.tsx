@@ -74,7 +74,19 @@ export function SalaryHistory() {
 
       <div>
         <div className="flex flex-col items-center mb-6 md:flex-row md:items-start md:gap-4 mt-5">
-          <div className="w-20 h-20 rounded-full bg-avatar-bg border-2 border-(--color-avatar-border)" />
+          <div className="w-20 h-20 rounded-full bg-avatar-bg border-2 border-(--color-avatar-border)" >
+            {selectedEmployee?.imgUrl ? (
+              <img
+                src={selectedEmployee.imgUrl}
+                alt="Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full text-white">
+                {empName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
           <div>
             <h2 className="mt-4 text-xl font-semibold text-style-white">
               {empName}

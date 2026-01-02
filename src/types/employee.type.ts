@@ -9,4 +9,5 @@ export type PersistedEmployee = {
   id: number;
   empCode: string;
   fullName: string;
+  imgUrl?: string;
 }

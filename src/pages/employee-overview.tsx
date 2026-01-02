@@ -65,6 +65,7 @@ export default function EmployeeOverview() {
       id: emp.id,
       empCode: emp.empCode,
       fullName: emp.empFirstName + " " + emp.empLastName,
+      imgUrl: emp.imgUrl ?? "",
     });
     navigate(`/emp/${id}`);
   };

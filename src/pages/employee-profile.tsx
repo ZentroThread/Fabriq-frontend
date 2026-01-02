@@ -4,96 +4,102 @@ import EmployeeForm from "@/components/organisms/employee/employee-form";
 import useEmployeeProfile from "@/hooks/employee/employeeDetails/useEmployeeProfile";
 
 export default function EmployeeProfile() {
+  const { states, actions } = useEmployeeProfile();
 
-  const {states,actions} = useEmployeeProfile();
-
-  if(states.isLoading) {
-    return <div>Loading...</div>;
+  if (states.isLoading) {
+    return <div className="p-4">Loading...</div>;
   }
-  if(states.isError) {
-    return <div>Error loading employee data.</div>;
+
+  if (states.isError) {
+    return <div className="p-4 text-red-500">Error loading employee data.</div>;
   }
 
   return (
-    <div className="p-3 sm:p-5 flex flex-col">
-      <Chart className="h-full flex flex-col justify-between relative md:flex-1">
-        {/* Header */}
-        <div className="mb-6 sm:mb-10">
-          <span className="text-style justify-center text-xl sm:text-2xl flex items-center">
-            {states.employee?.empFirstName ?? ""} {states.employee?.empLastName ?? ""}
-          </span>
-          <span className="justify-center flex items-center text-position-text font-light text-sm sm:text-base">
+    <div className="p-3 sm:p-5 flex flex-col gap-6">
+
+      <Chart className="flex flex-col gap-6 relative">
+
+        <header className="text-center">
+          <h1 className="text-xl sm:text-2xl text-style">
+            {states.employee?.empFirstName} {states.employee?.empLastName}
+          </h1>
+          <p className="text-position-text font-light text-sm sm:text-base">
             {states.employee?.role}
-          </span>
-        </div>
+          </p>
+        </header>
 
-        {/* Main Content */}
-        <EmployeeForm
-          employee={states.employee}
-          isEditing={states.isEditing}
-          formData={states.formData}
-          handleChange={actions.handleChange}
-          handleBankChange={actions.handleBankChange}
-        />
+        <section>
+          <EmployeeForm
+            employee={states.employee}
+            isEditing={states.isEditing}
+            formData={states.formData}
+            handleChange={actions.handleChange}
+            handleBankChange={actions.handleBankChange}
+          />
+        </section>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center lg:justify-end mt-6 gap-1 sm:gap-2 lg:pr-10">
-          <Button
-            bordercolor="border-border-card2"
-            bgcolor="bg-bg-card2"
-            hovertext="hover:text-background"
-            hoverbg="hover:bg-light-brown"
-            textcolor="text-black"
-            text="Production Records"
-            width="w-full sm:w-35"
-            onClick={actions.showProductionRecords}
-          />
-          <Button
-            bordercolor="border-border-card2"
-            bgcolor="bg-bg-card2"
-            hovertext="hover:text-background"
-            hoverbg="hover:bg-light-brown"
-            textcolor="text-black"
-            text="Advance Payment"
-            width="w-full sm:w-35"
-            onClick={actions.showAdvancePaymentRecords}
-          />
-          <Button
-            bordercolor="border-border-card3"
-            bgcolor="bg-bg-card3"
-            textcolor="text-black"
-            hoverbg="hover:bg-red"
-            hovertext="hover:text-background"
-            text="Salary History"
-            width="w-full sm:w-35"
-            onClick={actions.showSalaryHistory}
-          />
-          <Button
-            bordercolor="border-border-card2"
-            bgcolor="bg-bg-card2"
-            hovertext="hover:text-background"
-            hoverbg="hover:bg-light-brown"
-            textcolor="text-black"
-            text="Leave History"
-            width="w-full sm:w-35"
-            onClick={actions.showLeaveHistory}
-          />
-         <Button
-            bordercolor="border-border-add"
-            bgcolor="bg-bg-red"
-            textcolor="text-black"
-            text={states.isEditing ? "Update" : "Edit"}
-            width="w-full sm:w-35"
-            onClick={() => {
-              if (states.isEditing) {
-                actions.handleUpdate();
-              } else {
-                actions.startEditing();
-              }
-            }}
-          />
+        <footer className="mt-10 ">
+          <div className="h-0.5 bg-border" />
+        
+          <div className="pt-6">
+            <div className="mb-6">
+            <h3 className="text-sm text-style mb-3">
+              Employee Actions
+            </h3>
 
-        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              <Button
+                text="Production Records"
+                width="w-full"
+                bordercolor="border-border-card2"
+                bgcolor="bg-bg-card2"
+                hoverbg="hover:bg-light-brown"
+                hovertext="hover:text-background"
+                textcolor="text-black"
+                onClick={actions.showProductionRecords}
+              />
+
+              <Button
+                text="Advance Payment"
+                width="w-full"
+                bordercolor="border-border-card2"
+                bgcolor="bg-bg-card2"
+                hoverbg="hover:bg-light-brown"
+                hovertext="hover:text-background"
+                textcolor="text-black"
+                onClick={actions.showAdvancePaymentRecords}
+              />
+
+              <Button
+                text="Salary History"
+                width="w-full"
+                bordercolor="border-border-card3"
+                bgcolor="bg-bg-card3"
+                hoverbg="hover:bg-red"
+                hovertext="hover:text-background"
+                textcolor="text-black"
+                onClick={actions.showSalaryHistory}
+              />
+            </div>
+            </div>
+
+            <div className="h-px bg-border mb-6" />
+
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+              <Button
+                text={states.isEditing ? "Update Employee" : "Edit Employee"}
+                width="w-full sm:w-40"
+                onClick={() =>
+                  states.isEditing
+                    ? actions.handleUpdate()
+                    : actions.startEditing()
+                }
+              />
+            </div>
+          </div>
+
+        </footer>
+
       </Chart>
     </div>
   );
