@@ -31,7 +31,7 @@ export type BillingState = {
   addItem: (item: Partial<RentalItem>) => void;
   removeItem: (index: number) => void;
   clearItems: () => void;
-  clearAll: () => void; 
+  clearAll: () => void;
   confirmOrder: () => Promise<unknown>;
   payBilling: (opts: {
     discountPercentage?: number;
@@ -78,7 +78,6 @@ const useBillingStore = create<BillingState>((set, get) => ({
       set({ billings: [] });
     }
   },
-
 
   confirmOrder: async () => {
     const items = get().items;

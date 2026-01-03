@@ -12,7 +12,7 @@ export default function RentalItemsSection() {
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   );
-  
+
   const { markConfirming } = useReservationCleanup();
 
   async function onDelete(index: number): Promise<void> {
@@ -54,12 +54,12 @@ export default function RentalItemsSection() {
       console.log("✅ Order confirmed:", {
         customer: selectedCustomer?.custCode,
         items: items.length,
-        total: totalAmount
+        total: totalAmount,
       });
 
       // Clear the billing after successful confirmation
       confirmOrder();
-      
+
       alert("Order confirmed successfully!");
     } catch (error) {
       console.error("Failed to confirm order:", error);

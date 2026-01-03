@@ -35,7 +35,7 @@ export default function AddItemsSection() {
   // ensure items are fetched into the local zustand store for suggestions
   useItems();
   useStockUpdates();
-  useReservationCleanup(); 
+  useReservationCleanup();
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   ) as CustomerData | null;
@@ -129,15 +129,15 @@ export default function AddItemsSection() {
   };
 
   // Update displayed stock whenever local item OR store changes
-useEffect(() => {
-  if (localItem) {
-    const liveStock = getCurrentStock(localItem.code || "");
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDisplayedStock(liveStock);
-  } else {
-    setDisplayedStock(null);
-  }
-}, [localItem, allItems]); // ← Add allItems dependency
+  useEffect(() => {
+    if (localItem) {
+      const liveStock = getCurrentStock(localItem.code || "");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDisplayedStock(liveStock);
+    } else {
+      setDisplayedStock(null);
+    }
+  }, [localItem, allItems]); // ← Add allItems dependency
 
   // keep local customerCode in sync with selectedCustomer and allow edits
   useEffect(() => {
@@ -248,52 +248,53 @@ useEffect(() => {
               <Loader2 className="h-4 w-4 animate-spin" />
             </div>
           )}
-          
-          
+
           {/* Suggestions dropdown */}
-{suggestions.length > 0 && itemCode && (
-  <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
-    {suggestions.map((suggestion, idx) => {
-      const code = getSuggestionCode(suggestion);
-      const name = suggestion.title || suggestion.name || "-";
-      const stock = getCurrentStock(code); // ← Gets LIVE stock from store
-      
-      return (
-        <li
-          key={`${code}-${idx}`}
-          className="px-3 py-2 hover:bg-muted cursor-pointer flex justify-between items-center"
-          onClick={() => {
-            if (!code) return;
-            setItemCode(code);
-            // Use getCurrentStock instead of normalizeStock
-            setDisplayedStock(getCurrentStock(code)); // ← CHANGED THIS LINE
-          }}
-        >
-          <div className="text-sm">
-            <div className="font-medium">{code}</div>
-            <div className="text-xs text-muted-foreground">
-              {name}
-            </div>
-          </div>
-          <div className="text-sm text-right">
-            <div className="font-medium">
-              Rs. {Number(suggestion.price ?? 0).toFixed(2)}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {stock === null ? (
-                <span className="italic text-muted-foreground">N/A</span>
-              ) : stock > 0 ? (
-                <span>{stock}</span>
-              ) : (
-                <span className="text-destructive">0</span>
-              )}
-            </div>
-          </div>
-        </li>
-      );
-    })}
-  </ul>
-)}
+          {suggestions.length > 0 && itemCode && (
+            <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
+              {suggestions.map((suggestion, idx) => {
+                const code = getSuggestionCode(suggestion);
+                const name = suggestion.title || suggestion.name || "-";
+                const stock = getCurrentStock(code); // ← Gets LIVE stock from store
+
+                return (
+                  <li
+                    key={`${code}-${idx}`}
+                    className="px-3 py-2 hover:bg-muted cursor-pointer flex justify-between items-center"
+                    onClick={() => {
+                      if (!code) return;
+                      setItemCode(code);
+                      // Use getCurrentStock instead of normalizeStock
+                      setDisplayedStock(getCurrentStock(code)); // ← CHANGED THIS LINE
+                    }}
+                  >
+                    <div className="text-sm">
+                      <div className="font-medium">{code}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {name}
+                      </div>
+                    </div>
+                    <div className="text-sm text-right">
+                      <div className="font-medium">
+                        Rs. {Number(suggestion.price ?? 0).toFixed(2)}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {stock === null ? (
+                          <span className="italic text-muted-foreground">
+                            N/A
+                          </span>
+                        ) : stock > 0 ? (
+                          <span>{stock}</span>
+                        ) : (
+                          <span className="text-destructive">0</span>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
         {/* Show error message if lookup fails */}

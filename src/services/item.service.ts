@@ -26,7 +26,7 @@ const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   status: backendItem.attireStatus,
   tenantId: backendItem.tenantId,
   image: backendItem.imageUrl,
-  name: ""
+  name: "",
 });
 
 export const itemService = {
@@ -200,14 +200,14 @@ export const itemService = {
 
   reserveItem: async (data: ReserveItemRequest): Promise<StockUpdate> => {
     return apiClient.request<StockUpdate>(API_ENDPOINTS.ATTIRE.RESERVE, {
-      method: 'POST',
+      method: "POST",
       data,
     });
   },
 
   unreserveItem: async (data: ReserveItemRequest): Promise<StockUpdate> => {
     return apiClient.request<StockUpdate>(API_ENDPOINTS.ATTIRE.UNRESERVE, {
-      method: 'POST',
+      method: "POST",
       data,
     });
   },
