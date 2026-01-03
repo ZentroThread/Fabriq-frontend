@@ -167,6 +167,7 @@ export default function AddItemsSection() {
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await itemService.reserveItem({
         attireCode: code,
         customerCode: customerCode,
