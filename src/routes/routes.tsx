@@ -16,6 +16,8 @@ import AdvancePaymentOverviewPage from "@/pages/advance-payment-overview";
 import ProductionOverview from "@/pages/production-overview";
 import { ProtectedRoute } from "@/routes/protected-route";
 import MonthlySalary from "@/pages/monthly-salary";
+import EpfEtfHistoryPage from "@/pages/epf-etf-history";
+import AddEmployee from "@/pages/add-employee";
 
 function AppRoutes() {
   return (
@@ -39,6 +41,8 @@ function AppRoutes() {
             <Route path="/production-overview/:id" element={<ProductionOverview />} />
             <Route path="/advance-payment-overview/:id" element={<AdvancePaymentOverviewPage />} />
             <Route path="/monthly-salary/:id/:year/:month" element={<MonthlySalary />} />
+            <Route path="/epf-etf-history" element={<EpfEtfHistoryPage />} />
+            <Route path="/add-employee" element={<AddEmployee />} />
           </Route>
 
           {/* Attendance - Owner only */}

@@ -27,7 +27,9 @@ export default function EmployeeOverview() {
   const {data:employees,error,isLoading} = useEmployees();
   const {mutate:deleteEmployee} = useDeleteEmployee();
   
- 
+  const totalEmp = employees ? employees.length : 0;
+  const commissionEligible = employees?.filter(emp => emp.commissionEligible).length || 0;
+  const epflEligible = employees?.filter(emp => emp.epfNumber).length || 0;
   //const {searchText,setSearchText} = useEmployeeStore();
   const {setSelectedEmployee} = useEmployeeStore();
 
@@ -98,14 +100,27 @@ export default function EmployeeOverview() {
         description="Manage staff, attendance, and payroll" 
       />
 
-      <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
-        <Button text={"Add Employee"} width="w-45" icon={<Plus />} onClick={() => navigate("/add-employee")} />
+      <div className="flex flex-wrap gap-2 lg:ml-auto sm:ml-0">
+        <Button
+          text="Add Employee"
+          width="w-45"
+          icon={<Plus />}
+          onClick={() => navigate("/add-employee")}
+        />
+
+        <Button
+          text="EPF/ETF History"
+          icon={<Notebook />}
+          onClick={() => navigate("/epf-etf-history")}
+        />
+
       </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5 mb-5">
-        <EmployeeCard lable={"Total Revenue"} lable1={"LKR 3.28M"} />
-        <EmployeeCard lable={"Active Rentals"} lable1={"28"} />
-        <EmployeeCard lable={"Attendance Rate"} lable1={"93%"} />
+        <EmployeeCard label={"Total Employees"} label1={totalEmp.toString()} />
+        <EmployeeCard label={"Employees Eligible for Commission"} label1={commissionEligible.toString()} />
+        <EmployeeCard label="EPF-Eligible Employees" label1={epflEligible.toString()} />
       </div>
 
       {/* Employee List */}

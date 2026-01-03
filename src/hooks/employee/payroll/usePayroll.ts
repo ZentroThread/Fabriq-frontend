@@ -29,3 +29,19 @@ export const useGetPayroll = (empId: number, month: number, year: number) => {
       },
     });
   };
+
+  export const useGetEpfRecord = (month: number, year: number) => {
+    return useQuery({
+      queryKey: ["epf-record", month, year],
+      queryFn: () => payrollService.getEpfRecord(month, year),
+      enabled: !!month && !!year,
+    });
+  };
+
+  export const useGetEtfRecord = (month: number, year: number) => {
+    return useQuery({
+      queryKey: ["etf-record", month, year],
+      queryFn: () => payrollService.getEtfRecord(month, year),
+      enabled: !!month && !!year,
+    });
+  };

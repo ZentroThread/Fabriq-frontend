@@ -44,3 +44,21 @@ export const payrollRecordResponseSchema = z.object({
   netSalary: z.number(),
   confirmed: z.boolean(),
 })
+
+export const epfFormSchema = z.object({
+  employeeName: z.string(),
+  nic: z.string(),
+  epfNumber: z.string(),
+  epfSalary: z.number(),
+  epfEmployeeContribution: z.number(),
+  epfEmployerContribution: z.number(),
+  total: z.number(),
+});
+
+export const etfFormSchema = z.object({
+  employeeName: z.string(),
+  nic: z.string(),
+  epfNumber: z.string(),
+  etfSalary: z.number(),
+  etfContribution: z.number(),
+});
