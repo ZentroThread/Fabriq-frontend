@@ -8,6 +8,8 @@ import Button from "@/components/atoms/button/add-button";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
+import { useStockUpdates } from "@/hooks/useStockUpdates";
+import { itemService } from '@/services/item.service';
 
 // Extended type to handle both custCode and cust_id
 interface CustomerData {
@@ -31,6 +33,7 @@ interface ItemWithStock
 export default function AddItemsSection() {
   // ensure items are fetched into the local zustand store for suggestions
   useItems();
+  useStockUpdates();
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   ) as CustomerData | null;
@@ -147,10 +150,17 @@ export default function AddItemsSection() {
     setDays(Math.max(0, diff));
   }, [startDate, endDate]);
 
-  function onAdd() {
+  async function onAdd() {
     const code = (itemCode ?? "").trim();
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
+    try {
+    const response = await itemService.reserveItem({
+      attireCode: code,
+      customerCode: customerCode,
+    });
+
+    // Add to billing
     addItem({
       itemCode: code,
       name,
@@ -158,14 +168,29 @@ export default function AddItemsSection() {
       days,
       startDate: startDate || undefined,
       endDate: endDate || undefined,
-      customerCode: customerCode, // ← ADD THIS
+      customerCode: customerCode,
     });
-    // Decrease local displayed stock by 1 (UI only). Persist happens on confirm.
-    setDisplayedStock((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
+
+    // Reset form
     setStartDate(null);
     setEndDate(null);
     setItemCode("");
     setDays(0);
+  } catch (error: unknown) {
+    let message = "Failed to reserve item";
+    if (error instanceof Error) {
+      message = error.message || message;
+    } else if (typeof error === "object" && error !== null) {
+      const errObj = error as Record<string, unknown>;
+      const resp = errObj.response as Record<string, unknown> | undefined;
+      if (resp && typeof resp.data === "string") {
+        message = resp.data;
+      }
+    } else if (typeof error === "string") {
+      message = error;
+    }
+    alert(message);
+  }
   }
 
   const handleCustomerCodeChange = (value: string) => {

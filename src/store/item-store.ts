@@ -16,6 +16,10 @@ interface Item {
   status: string;
   tenantId: string;
   image?: File | string;
+  // optional fields used by real-time updates
+  attire_stock?: number;
+  availableQty?: number;
+  quantity?: number;
 }
 
 interface ItemStore {
@@ -30,6 +34,7 @@ interface ItemStore {
   deleteItem: (id: number) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  updateItemStock: (attireCode: string, newStock: number) => void;
 }
 
 export const useItemStore = create<ItemStore>((set) => ({
@@ -56,4 +61,19 @@ export const useItemStore = create<ItemStore>((set) => ({
   setLoading: (loading) => set({ isLoading: loading }),
 
   setError: (error) => set({ error }),
+
+  updateItemStock: (attireCode: string, newStock: number) =>
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.code === attireCode
+          ? {
+              ...item,
+              stock: newStock,
+              attire_stock: newStock,
+              availableQty: newStock,
+              quantity: newStock,
+            }
+          : item
+      ),
+    })),
 }));
