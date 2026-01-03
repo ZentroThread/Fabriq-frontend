@@ -31,6 +31,7 @@ export type BillingState = {
   addItem: (item: Partial<RentalItem>) => void;
   removeItem: (index: number) => void;
   clearItems: () => void;
+  clearAll: () => void;
   confirmOrder: () => Promise<unknown>;
   payBilling: (opts: {
     discountPercentage?: number;
@@ -78,31 +79,6 @@ const useBillingStore = create<BillingState>((set, get) => ({
     }
   },
 
-  // confirmOrder: async () => {
-  //   const { selectedCustomer, items } = get();
-  //   if (!selectedCustomer) throw new Error("No selected customer");
-  //   if (!items || items.length === 0) throw new Error("No items to confirm");
-
-  //   // Build payload matching backend's AttireRentAddDto
-  //   const first = items[0];
-  //   const sc = selectedCustomer;
-  //   const customerCode =
-  //     sc.custCode ||
-  //     sc.cust_code ||
-  //     (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : undefined);
-
-  //   const payload: AttireRentAddDto = {
-  //     customerCode,
-  //     attireCode: first.itemCode,
-  //     rentDate: first.startDate,
-  //     returnDate: first.endDate,
-  //   };
-
-  //   const resp = await billingService.addAttireRent(payload);
-  //   set({ items: [] });
-  //   return resp;
-  // },
-
   confirmOrder: async () => {
     const items = get().items;
     const customer = get().selectedCustomer;
@@ -140,6 +116,8 @@ const useBillingStore = create<BillingState>((set, get) => ({
       console.warn("could not store billing response", e);
     }
   },
+  clearAll: () => set({ items: [], selectedCustomer: null }),
+
   payBilling: async ({ discountPercentage = 0, paymentMethod = "cash" }) => {
     let billing = get().currentBilling;
     // If no billing exists yet, create it from current items/customer

@@ -4,6 +4,16 @@ import { useItemStore } from "@/store/item-store";
 
 import type { Item, BackendItem, AddItemPayload } from "@/types/item.types";
 
+interface ReserveItemRequest {
+  attireCode: string;
+  customerCode: string;
+}
+
+interface StockUpdate {
+  attireCode: string;
+  attireStock: number;
+  reservedBy: string;
+}
 // Helper function to map backend response to frontend Item
 const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   id: backendItem.id,
@@ -16,7 +26,7 @@ const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   status: backendItem.attireStatus,
   tenantId: backendItem.tenantId,
   image: backendItem.imageUrl,
-  name: ""
+  name: "",
 });
 
 export const itemService = {
@@ -186,5 +196,19 @@ export const itemService = {
     } finally {
       setLoading(false);
     }
+  },
+
+  reserveItem: async (data: ReserveItemRequest): Promise<StockUpdate> => {
+    return apiClient.request<StockUpdate>(API_ENDPOINTS.ATTIRE.RESERVE, {
+      method: "POST",
+      data,
+    });
+  },
+
+  unreserveItem: async (data: ReserveItemRequest): Promise<StockUpdate> => {
+    return apiClient.request<StockUpdate>(API_ENDPOINTS.ATTIRE.UNRESERVE, {
+      method: "POST",
+      data,
+    });
   },
 };

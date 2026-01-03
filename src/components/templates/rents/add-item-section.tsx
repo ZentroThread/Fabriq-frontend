@@ -8,6 +8,9 @@ import Button from "@/components/atoms/button/add-button";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
+import { useStockUpdates } from "@/hooks/useStockUpdates";
+import { itemService } from "@/services/item.service";
+import { useReservationCleanup } from "@/hooks/useReservationCleanup";
 
 // Extended type to handle both custCode and cust_id
 interface CustomerData {
@@ -31,6 +34,8 @@ interface ItemWithStock
 export default function AddItemsSection() {
   // ensure items are fetched into the local zustand store for suggestions
   useItems();
+  useStockUpdates();
+  useReservationCleanup();
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   ) as CustomerData | null;
@@ -67,6 +72,11 @@ export default function AddItemsSection() {
         })
       : []
   ) as Item[];
+
+  const getCurrentStock = (itemCode: string): number | null => {
+    const item = allItems.find((it) => it.code === itemCode);
+    return normalizeStock(item as ItemWithStock | null);
+  };
 
   const getSuggestionCode = (item: Item): string => {
     return item.code || (item.id ? String(item.id) : "");
@@ -118,11 +128,16 @@ export default function AddItemsSection() {
     return null;
   };
 
-  // update displayed stock whenever local item changes
+  // Update displayed stock whenever local item OR store changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDisplayedStock(normalizeStock(localItem as ItemWithStock | null));
-  }, [localItem]);
+    if (localItem) {
+      const liveStock = getCurrentStock(localItem.code || "");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDisplayedStock(liveStock);
+    } else {
+      setDisplayedStock(null);
+    }
+  }, [localItem, allItems]); // ← Add allItems dependency
 
   // keep local customerCode in sync with selectedCustomer and allow edits
   useEffect(() => {
@@ -147,25 +162,47 @@ export default function AddItemsSection() {
     setDays(Math.max(0, diff));
   }, [startDate, endDate]);
 
-  function onAdd() {
+  async function onAdd() {
     const code = (itemCode ?? "").trim();
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
-    addItem({
-      itemCode: code,
-      name,
-      price: price || 0,
-      days,
-      startDate: startDate || undefined,
-      endDate: endDate || undefined,
-      customerCode: customerCode, // ← ADD THIS
-    });
-    // Decrease local displayed stock by 1 (UI only). Persist happens on confirm.
-    setDisplayedStock((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
-    setStartDate(null);
-    setEndDate(null);
-    setItemCode("");
-    setDays(0);
+    try {
+      await itemService.reserveItem({
+        attireCode: code,
+        customerCode: customerCode,
+      });
+
+      // Add to billing
+      addItem({
+        itemCode: code,
+        name,
+        price: price || 0,
+        days,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        customerCode: customerCode,
+      });
+
+      // Reset form
+      setStartDate(null);
+      setEndDate(null);
+      setItemCode("");
+      setDays(0);
+    } catch (error: unknown) {
+      let message = "Failed to reserve item";
+      if (error instanceof Error) {
+        message = error.message || message;
+      } else if (typeof error === "object" && error !== null) {
+        const errObj = error as Record<string, unknown>;
+        const resp = errObj.response as Record<string, unknown> | undefined;
+        if (resp && typeof resp.data === "string") {
+          message = resp.data;
+        }
+      } else if (typeof error === "string") {
+        message = error;
+      }
+      alert(message);
+    }
   }
 
   const handleCustomerCodeChange = (value: string) => {
@@ -211,13 +248,15 @@ export default function AddItemsSection() {
               <Loader2 className="h-4 w-4 animate-spin" />
             </div>
           )}
+
           {/* Suggestions dropdown */}
           {suggestions.length > 0 && itemCode && (
             <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
               {suggestions.map((suggestion, idx) => {
                 const code = getSuggestionCode(suggestion);
                 const name = suggestion.title || suggestion.name || "-";
-                const stock = normalizeStock(suggestion as ItemWithStock);
+                const stock = getCurrentStock(code); // ← Gets LIVE stock from store
+
                 return (
                   <li
                     key={`${code}-${idx}`}
@@ -225,10 +264,8 @@ export default function AddItemsSection() {
                     onClick={() => {
                       if (!code) return;
                       setItemCode(code);
-                      // set displayed stock immediately for snappy UI
-                      setDisplayedStock(
-                        normalizeStock(suggestion as ItemWithStock)
-                      );
+                      // Use getCurrentStock instead of normalizeStock
+                      setDisplayedStock(getCurrentStock(code)); // ← CHANGED THIS LINE
                     }}
                   >
                     <div className="text-sm">
