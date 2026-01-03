@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Button from "@/components/atoms/button/add-button";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
@@ -16,12 +16,20 @@ import { AddItemForm } from "@/components/organisms/forms/additem-form";
 import { useFilteredItems } from "@/hooks/useItems";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
+import { useStockUpdates } from "@/hooks/useStockUpdates";
+import { useItemStore } from "@/store/item-store";
 
 function Items() {
+  useStockUpdates();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const { items: allItems, isLoading, error, refetch } = useFilteredItems("");
+  const allItemsFromStore = useItemStore((s) => s.items);
+  const { isLoading, error, refetch } = useFilteredItems("");
+  const allItems = allItemsFromStore;
+  useEffect(() => {
+    refetch(); // Get latest from database
+  }, [refetch]);
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {

@@ -63,6 +63,7 @@ export const useItem = (id: string) => {
     queryFn: () => itemService.getItemById(id),
     enabled: !!id, // Only run query if id exists
   });
+  
 };
 
 // Hook to add new item

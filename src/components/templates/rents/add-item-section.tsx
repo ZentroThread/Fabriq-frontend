@@ -9,7 +9,8 @@ import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
 import { useStockUpdates } from "@/hooks/useStockUpdates";
-import { itemService } from '@/services/item.service';
+import { itemService } from "@/services/item.service";
+import { useReservationCleanup } from "@/hooks/useReservationCleanup";
 
 // Extended type to handle both custCode and cust_id
 interface CustomerData {
@@ -34,6 +35,7 @@ export default function AddItemsSection() {
   // ensure items are fetched into the local zustand store for suggestions
   useItems();
   useStockUpdates();
+  useReservationCleanup(); 
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   ) as CustomerData | null;
@@ -70,6 +72,11 @@ export default function AddItemsSection() {
         })
       : []
   ) as Item[];
+
+  const getCurrentStock = (itemCode: string): number | null => {
+    const item = allItems.find((it) => it.code === itemCode);
+    return normalizeStock(item as ItemWithStock | null);
+  };
 
   const getSuggestionCode = (item: Item): string => {
     return item.code || (item.id ? String(item.id) : "");
@@ -121,11 +128,16 @@ export default function AddItemsSection() {
     return null;
   };
 
-  // update displayed stock whenever local item changes
-  useEffect(() => {
+  // Update displayed stock whenever local item OR store changes
+useEffect(() => {
+  if (localItem) {
+    const liveStock = getCurrentStock(localItem.code || "");
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDisplayedStock(normalizeStock(localItem as ItemWithStock | null));
-  }, [localItem]);
+    setDisplayedStock(liveStock);
+  } else {
+    setDisplayedStock(null);
+  }
+}, [localItem, allItems]); // ← Add allItems dependency
 
   // keep local customerCode in sync with selectedCustomer and allow edits
   useEffect(() => {
@@ -155,42 +167,42 @@ export default function AddItemsSection() {
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
     try {
-    const response = await itemService.reserveItem({
-      attireCode: code,
-      customerCode: customerCode,
-    });
+      const response = await itemService.reserveItem({
+        attireCode: code,
+        customerCode: customerCode,
+      });
 
-    // Add to billing
-    addItem({
-      itemCode: code,
-      name,
-      price: price || 0,
-      days,
-      startDate: startDate || undefined,
-      endDate: endDate || undefined,
-      customerCode: customerCode,
-    });
+      // Add to billing
+      addItem({
+        itemCode: code,
+        name,
+        price: price || 0,
+        days,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        customerCode: customerCode,
+      });
 
-    // Reset form
-    setStartDate(null);
-    setEndDate(null);
-    setItemCode("");
-    setDays(0);
-  } catch (error: unknown) {
-    let message = "Failed to reserve item";
-    if (error instanceof Error) {
-      message = error.message || message;
-    } else if (typeof error === "object" && error !== null) {
-      const errObj = error as Record<string, unknown>;
-      const resp = errObj.response as Record<string, unknown> | undefined;
-      if (resp && typeof resp.data === "string") {
-        message = resp.data;
+      // Reset form
+      setStartDate(null);
+      setEndDate(null);
+      setItemCode("");
+      setDays(0);
+    } catch (error: unknown) {
+      let message = "Failed to reserve item";
+      if (error instanceof Error) {
+        message = error.message || message;
+      } else if (typeof error === "object" && error !== null) {
+        const errObj = error as Record<string, unknown>;
+        const resp = errObj.response as Record<string, unknown> | undefined;
+        if (resp && typeof resp.data === "string") {
+          message = resp.data;
+        }
+      } else if (typeof error === "string") {
+        message = error;
       }
-    } else if (typeof error === "string") {
-      message = error;
+      alert(message);
     }
-    alert(message);
-  }
   }
 
   const handleCustomerCodeChange = (value: string) => {
@@ -236,53 +248,52 @@ export default function AddItemsSection() {
               <Loader2 className="h-4 w-4 animate-spin" />
             </div>
           )}
+          
+          
           {/* Suggestions dropdown */}
-          {suggestions.length > 0 && itemCode && (
-            <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
-              {suggestions.map((suggestion, idx) => {
-                const code = getSuggestionCode(suggestion);
-                const name = suggestion.title || suggestion.name || "-";
-                const stock = normalizeStock(suggestion as ItemWithStock);
-                return (
-                  <li
-                    key={`${code}-${idx}`}
-                    className="px-3 py-2 hover:bg-muted cursor-pointer flex justify-between items-center"
-                    onClick={() => {
-                      if (!code) return;
-                      setItemCode(code);
-                      // set displayed stock immediately for snappy UI
-                      setDisplayedStock(
-                        normalizeStock(suggestion as ItemWithStock)
-                      );
-                    }}
-                  >
-                    <div className="text-sm">
-                      <div className="font-medium">{code}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {name}
-                      </div>
-                    </div>
-                    <div className="text-sm text-right">
-                      <div className="font-medium">
-                        Rs. {Number(suggestion.price ?? 0).toFixed(2)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {stock === null ? (
-                          <span className="italic text-muted-foreground">
-                            N/A
-                          </span>
-                        ) : stock > 0 ? (
-                          <span>{stock}</span>
-                        ) : (
-                          <span className="text-destructive">0</span>
-                        )}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+{suggestions.length > 0 && itemCode && (
+  <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
+    {suggestions.map((suggestion, idx) => {
+      const code = getSuggestionCode(suggestion);
+      const name = suggestion.title || suggestion.name || "-";
+      const stock = getCurrentStock(code); // ← Gets LIVE stock from store
+      
+      return (
+        <li
+          key={`${code}-${idx}`}
+          className="px-3 py-2 hover:bg-muted cursor-pointer flex justify-between items-center"
+          onClick={() => {
+            if (!code) return;
+            setItemCode(code);
+            // Use getCurrentStock instead of normalizeStock
+            setDisplayedStock(getCurrentStock(code)); // ← CHANGED THIS LINE
+          }}
+        >
+          <div className="text-sm">
+            <div className="font-medium">{code}</div>
+            <div className="text-xs text-muted-foreground">
+              {name}
+            </div>
+          </div>
+          <div className="text-sm text-right">
+            <div className="font-medium">
+              Rs. {Number(suggestion.price ?? 0).toFixed(2)}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {stock === null ? (
+                <span className="italic text-muted-foreground">N/A</span>
+              ) : stock > 0 ? (
+                <span>{stock}</span>
+              ) : (
+                <span className="text-destructive">0</span>
+              )}
+            </div>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+)}
         </div>
 
         {/* Show error message if lookup fails */}

@@ -204,4 +204,11 @@ export const itemService = {
       data,
     });
   },
+
+  unreserveItem: async (data: ReserveItemRequest): Promise<StockUpdate> => {
+    return apiClient.request<StockUpdate>(API_ENDPOINTS.ATTIRE.UNRESERVE, {
+      method: 'POST',
+      data,
+    });
+  },
 };
