@@ -4,13 +4,15 @@ import type { Employee } from "@/types/employee.type";
 import { employeeService } from "@/services/employee.service";
 import { toast } from "sonner";
 
+type AddEmployeeData = Partial<Employee> & { image?: File };
+
 export const useAddEmployee = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: Partial<Employee>) =>
-      employeeService.addEmployee(data),
+    mutationFn: (data: AddEmployeeData) =>
+      employeeService.addEmployee(data, data.image),
 
     onSuccess: () => {
       queryClient.invalidateQueries({

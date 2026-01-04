@@ -16,9 +16,7 @@ export default function EmployeeProfile() {
 
   return (
     <div className="p-3 sm:p-5 flex flex-col gap-6">
-
       <Chart className="flex flex-col gap-6 relative">
-
         <header className="text-center">
           <h1 className="text-xl sm:text-2xl text-style">
             {states.employee?.empFirstName} {states.employee?.empLastName}
@@ -33,6 +31,8 @@ export default function EmployeeProfile() {
             employee={states.employee}
             isEditing={states.isEditing}
             formData={states.formData}
+            imagePreview={states.imagePreview}
+            onImageChange={actions.handleImageChange}
             handleChange={actions.handleChange}
             handleBankChange={actions.handleBankChange}
           />
@@ -40,47 +40,45 @@ export default function EmployeeProfile() {
 
         <footer className="mt-10 ">
           <div className="h-0.5 bg-border" />
-        
+
           <div className="pt-6">
             <div className="mb-6">
-            <h3 className="text-sm text-style mb-3">
-              Employee Actions
-            </h3>
+              <h3 className="text-sm text-style mb-3">Employee Actions</h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              <Button
-                text="Production Records"
-                width="w-full"
-                bordercolor="border-border-card2"
-                bgcolor="bg-bg-card2"
-                hoverbg="hover:bg-light-brown"
-                hovertext="hover:text-background"
-                textcolor="text-black"
-                onClick={actions.showProductionRecords}
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                <Button
+                  text="Production Records"
+                  width="w-full"
+                  bordercolor="border-border-card2"
+                  bgcolor="bg-bg-card2"
+                  hoverbg="hover:bg-light-brown"
+                  hovertext="hover:text-background"
+                  textcolor="text-black"
+                  onClick={actions.showProductionRecords}
+                />
 
-              <Button
-                text="Advance Payment"
-                width="w-full"
-                bordercolor="border-border-card2"
-                bgcolor="bg-bg-card2"
-                hoverbg="hover:bg-light-brown"
-                hovertext="hover:text-background"
-                textcolor="text-black"
-                onClick={actions.showAdvancePaymentRecords}
-              />
+                <Button
+                  text="Advance Payment"
+                  width="w-full"
+                  bordercolor="border-border-card2"
+                  bgcolor="bg-bg-card2"
+                  hoverbg="hover:bg-light-brown"
+                  hovertext="hover:text-background"
+                  textcolor="text-black"
+                  onClick={actions.showAdvancePaymentRecords}
+                />
 
-              <Button
-                text="Salary History"
-                width="w-full"
-                bordercolor="border-border-card3"
-                bgcolor="bg-bg-card3"
-                hoverbg="hover:bg-red"
-                hovertext="hover:text-background"
-                textcolor="text-black"
-                onClick={actions.showSalaryHistory}
-              />
-            </div>
+                <Button
+                  text="Salary History"
+                  width="w-full"
+                  bordercolor="border-border-card3"
+                  bgcolor="bg-bg-card3"
+                  hoverbg="hover:bg-red"
+                  hovertext="hover:text-background"
+                  textcolor="text-black"
+                  onClick={actions.showSalaryHistory}
+                />
+              </div>
             </div>
 
             <div className="h-px bg-border mb-6" />
@@ -97,9 +95,7 @@ export default function EmployeeProfile() {
               />
             </div>
           </div>
-
         </footer>
-
       </Chart>
     </div>
   );
