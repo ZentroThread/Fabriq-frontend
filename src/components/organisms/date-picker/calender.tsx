@@ -14,13 +14,12 @@ import {
 
 interface Calendar28Props {
   height?: string;
+  onDateChange?: (date: Date | undefined) => void; // callback to notify parent
 }
 
+// Format date to "Month Day, Year"
 function formatDate(date: Date | undefined) {
-  if (!date) {
-    return "";
-  }
-
+  if (!date) return "";
   return date.toLocaleDateString("en-US", {
     day: "2-digit",
     month: "long",
@@ -28,33 +27,43 @@ function formatDate(date: Date | undefined) {
   });
 }
 
+// Check if a date is valid
 function isValidDate(date: Date | undefined) {
-  if (!date) {
-    return false;
-  }
+  if (!date) return false;
   return !isNaN(date.getTime());
 }
 
-export function Calendar28({ height = "h-12" }: Calendar28Props) {
+export function Calendar28({ height = "h-12", onDateChange }: Calendar28Props) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [month, setMonth] = React.useState<Date | undefined>(date);
   const [value, setValue] = React.useState(formatDate(date));
 
+  // Handles date selection from calendar or input
+  const handleDateChange = (newDate: Date | undefined) => {
+    setDate(newDate);
+    setValue(formatDate(newDate));
+    setMonth(newDate);
+    if (onDateChange) {
+      onDateChange(newDate); // notify parent component
+    }
+    setOpen(false);
+  };
+
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <div className="relative flex gap-2">
+        {/* Input field for typing date */}
         <Input
           id="date"
           value={value}
           placeholder="June 01, 2025"
           className={`bg-background text-position-text font-light pr-10 rounded-xl ${height}`}
           onChange={(e) => {
-            const date = new Date(e.target.value);
+            const newDate = new Date(e.target.value);
             setValue(e.target.value);
-            if (isValidDate(date)) {
-              setDate(date);
-              setMonth(date);
+            if (isValidDate(newDate)) {
+              handleDateChange(newDate);
             }
           }}
           onKeyDown={(e) => {
@@ -64,17 +73,20 @@ export function Calendar28({ height = "h-12" }: Calendar28Props) {
             }
           }}
         />
+
+        {/* Calendar popover */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               id="date-picker"
               variant="ghost"
-              className="absolute top-1/2 right-2 size-6 -translate-y-1/2 "
+              className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
             >
-              <CalendarIcon className=" " />
+              <CalendarIcon />
               <span className="sr-only">Select date</span>
             </Button>
           </PopoverTrigger>
+
           <PopoverContent
             className="w-auto overflow-hidden p-0"
             align="end"
@@ -87,11 +99,7 @@ export function Calendar28({ height = "h-12" }: Calendar28Props) {
               captionLayout="dropdown"
               month={month}
               onMonthChange={setMonth}
-              onSelect={(date) => {
-                setDate(date);
-                setValue(formatDate(date));
-                setOpen(false);
-              }}
+              onSelect={handleDateChange} // called when a date is clicked
             />
           </PopoverContent>
         </Popover>

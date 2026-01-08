@@ -2,6 +2,8 @@ import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import type { EPFFormType, PayRollResponseType,  PayrollRecordResponseType, ETFFormType} from "@/types/payroll-type";
 import { payRollResponseSchema, payrollRecordResponseSchema } from "@/schemas/payroll.schema";
+import  {API_BASE_URL}  from "@/constants/constdata";
+import { useAuthStore } from "@/store/user-auth-store";
 
 export const payrollService = {
 
@@ -33,4 +35,15 @@ export const payrollService = {
     {method: "GET"});
     return response;
   },
+
 }
+
+export const printPayslip = (empId:number, month:number, year:number) => {
+  const tenantId = useAuthStore.getState().tenantId;
+  if (!tenantId) {
+    console.error("Tenant ID is not available");
+    return;
+  }
+  const url = `${API_BASE_URL}${API_ENDPOINTS.PAYROLL.PRINT_PAYSLIP(tenantId, empId, month, year)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+};

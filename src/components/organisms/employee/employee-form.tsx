@@ -137,11 +137,17 @@ export default function EmployeeForm({
               readonly={!isEditing}
               onChange={(v) => handleChange("basicSalary", Number(v) || 0)}
             />
-            <BaseInputField
+           <BaseInputField
               label="Commission Rate (0–10)"
               value={formData?.performancePoints ?? employee?.performancePoints ?? ""}
               readonly={!isEditing}
-              onChange={(v) => handleChange("performancePoints", Number(v) || 0)}
+              onChange={(v) => {
+                if (v === "") {
+                  handleChange("performancePoints", 0);
+                } else {
+                  handleChange("performancePoints", Number(v));
+                }
+              }}
             />
             <BaseCheckboxField
               label="Commission Eligible"

@@ -64,6 +64,15 @@ export const API_ENDPOINTS = {
     CONFIRM: (empId:number,month:number,year:number) => `/v1/payroll/confirm/${empId}/${month}/${year}`,
     EPF_RECORD: (month:number,year:number) => `/v1/payroll/epf-record/${month}/${year}`,
     ETF_RECORD: (month:number,year:number) => `/v1/payroll/etf-record/${month}/${year}`,
+    PRINT_PAYSLIP: (tenantId:string,empId:number,month:number,year:number) => `/v1/payroll/payslip/print/${tenantId}/${empId}/${month}/${year}`,
+  },
+
+  DEVICE_ATTENDANCE_LOG: {
+    GET_TODAY_LOGS: "/v1/device-attendance/today",
+  },
+
+  ATTENDANCE: {
+     GET_DAILY_ATTENDANCE: (date: string) => `/v1/attendance/date?date=${date}`,
   },
 
 };

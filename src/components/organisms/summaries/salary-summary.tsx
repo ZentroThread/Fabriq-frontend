@@ -4,7 +4,7 @@ import Button from "@/components/atoms/button/add-button";
 import {useGetPayrollRecord} from "@/hooks/employee/payroll/usePayroll";
 import { useParams } from "react-router-dom";
 import {useConfirmPayroll} from "@/hooks/employee/payroll/usePayroll";
-
+import {printPayslip} from "@/services/payroll.service";
 
  type props = {
     data: PayRollResponseType;
@@ -29,8 +29,8 @@ export default function SalarySummary({data}:props) {
     confirmPayroll();
   }
 
-  const handleGenerateSplip = () => {
-    console.log("Generate Payslip Clicked");
+  const handleGenerateSlip = () => {
+    printPayslip(Number(id), Number(month), Number(year));
   }
 
   const rows = [
@@ -87,7 +87,7 @@ export default function SalarySummary({data}:props) {
             textcolor="text-black"
             text="Generate Payslip"
             width="w-full"
-            onClick={handleGenerateSplip}
+            onClick={handleGenerateSlip}
             />
       </div>
       
