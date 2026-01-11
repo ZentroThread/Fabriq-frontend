@@ -1,8 +1,7 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip } from "recharts";
 import { ResponsiveContainer } from "recharts";
-import { chartData } from "@/constants/data";
 import {
   Card,
   CardContent,
@@ -12,80 +11,93 @@ import {
 import {
   type ChartConfig,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 
 export const description = "A line chart with dots";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  total: {
+    label: "Total",
     color: "var(--chart-1)",
   },
-  mobile: {
-    label: "Mobile",
+  month: {
+    label: "Month",
     color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
-export function ChartLineDots() {
+type ChartDataItem = {
+  month: string; // e.g., "2026-01"
+  total: number;
+};
+
+interface ChartLineDotsProps {
+  chartData: ChartDataItem[];
+}
+
+export function ChartLineDots({ chartData }: ChartLineDotsProps) {
+  // Format month for X-axis (e.g., "Jan 2026")
+  const formattedData = chartData.map((item) => {
+    const date = new Date(item.month + "-01");
+    const monthLabel = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      year: "numeric",
+    }).format(date);
+    return { ...item, month: monthLabel };
+  });
+
   return (
     <Card>
-      <CardHeader>
-        {/* <CardTitle>Line Chart - Dots</CardTitle>
-        <CardDescription>January - June 2024</CardDescription> */}
-      </CardHeader>
+      <CardHeader />
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <div className="w-full h-[250px] sm:h-[300px] [&_.recharts-cartesian-axis-tick_text]:fill-(--color-position-text)!">
+          <div className="w-full h-[250px] sm:h-[300px] [&_.recharts-cartesian-axis-tick_text]:fill-(--color-position-text)">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  left: 5,
-                  right: 10,
-                  top: 10,
-                  bottom: 5,
-                }}
+                data={formattedData}
+                margin={{ left: 5, right: 10, top: 10, bottom: 5 }}
               >
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="month"
                   stroke="var(--color-position-text)"
-                  tickLine={true}
-                  axisLine={true}
+                  tickLine
+                  axisLine
                   tickMargin={5}
-                  tickFormatter={(value: string) => value.slice(0, 3)}
                 />
                 <YAxis stroke="var(--color-position-text)" />
-                <ChartTooltip
-                  cursor={true}
-                  content={<ChartTooltipContent hideLabel />}
+                
+                {/* Tooltip for hover */}
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-white border rounded shadow p-2 text-sm">
+                          <div className="font-medium">{data.month}</div>
+                          <div>Total: {data.total}</div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
                 />
+
+                {/* Line with dots */}
                 <Line
-                  dataKey="desktop"
+                  dataKey="total"
                   type="natural"
                   stroke="var(--color-support-button)"
                   strokeWidth={2}
-                  dot={{
-                    fill: "var(--color-support-button)",
-                  }}
-                  activeDot={{
-                    r: 6,
-                  }}
+                  dot={{ r: 4, fill: "var(--color-support-button)" }}
+                  activeDot={{ r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-center   text-sm">
-        {/* <div className="flex gap-2 leading-none font-medium text-position-text">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div> */}
-      </CardFooter>
+      <CardFooter className="flex-col items-center text-sm" />
     </Card>
   );
 }

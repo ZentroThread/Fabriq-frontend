@@ -8,15 +8,18 @@ import { DashboardSkeleton } from "@/components/molecules/skeletons/dashboard-sk
 import { useState, useEffect } from "react";
 import {useAttireRentsSummary} from "@/hooks/attire/useAttireRentsSummary";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
+import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
 
 function Dashboard() {
   
   const { activeRentsCount, dueReturnsCount, overdueReturnsCount, newAttireRentsThisWeek } = useAttireRentsSummary();
-  const { totalEmployees, presentCount, lateCount, absentCount } = useTodayDeviceAttendanceLogsSummary();
+  const { totalEmployees, presentCount, lateCount } = useTodayDeviceAttendanceLogsSummary();
 
   const attendanceRate = totalEmployees > 0
     ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
     : 0;
+
+  const { monthlySummary } = useMonthlyBillSummary();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -75,7 +78,7 @@ function Dashboard() {
           label={"Revenue & Rentals"}
           description={"Monthly revenue and rental trends."}
         >
-          <ChartLineDots />
+          <ChartLineDots chartData={monthlySummary}/>
         </Chart>
         <Chart
           label={"Rentals by Category"}

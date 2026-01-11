@@ -3,7 +3,6 @@ import Chart from "@/components/templates/Chart";
 import { Calendar28 } from "@/components/organisms/date-picker/calender";
 import { AttendanceSkeleton } from "@/components/molecules/skeletons/attendance-skeleton";
 import {
-  Calendar,
   CircleCheck,
   CircleX,
   Clock4,
