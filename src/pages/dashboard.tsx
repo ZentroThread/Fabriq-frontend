@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import {useAttireRentsSummary} from "@/hooks/attire/useAttireRentsSummary";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
+import {useAttireRentCurrentMonthlyOverview} from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
 
 function Dashboard() {
   
@@ -20,6 +21,8 @@ function Dashboard() {
     : 0;
 
   const { monthlySummary } = useMonthlyBillSummary();
+
+  const currentMonthlyOverview = useAttireRentCurrentMonthlyOverview();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -84,7 +87,7 @@ function Dashboard() {
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
-          <ChartPie />
+          <ChartPie data={currentMonthlyOverview} />
         </Chart>
       </div>
       <div className="lg:flex lg:flex-3   gap-6 mt-5 mb-5">

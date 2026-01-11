@@ -23,6 +23,10 @@ export const API_ENDPOINTS = {
     ADD: "/v1/attire-rent/add",
     GET_ALL: "/v1/attire-rent/all",
   },
+  ATTIRE_CATEGORY: {
+    GET_ALL: "/v1/category/all",
+  },
+
   BILLING: {
     GET_ALL: "/v1/billing/all",
   },
