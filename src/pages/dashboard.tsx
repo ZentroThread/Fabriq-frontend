@@ -6,8 +6,18 @@ import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
 import { DashboardSkeleton } from "@/components/molecules/skeletons/dashboard-skeleton";
 import { useState, useEffect } from "react";
+import {useAttireRentsSummary} from "@/hooks/attire/useAttireRentsSummary";
+import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 
 function Dashboard() {
+  
+  const { activeRentsCount, dueReturnsCount, overdueReturnsCount, newAttireRentsThisWeek } = useAttireRentsSummary();
+  const { totalEmployees, presentCount, lateCount, absentCount } = useTodayDeviceAttendanceLogsSummary();
+
+  const attendanceRate = totalEmployees > 0
+    ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
+    : 0;
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +29,7 @@ function Dashboard() {
   if (isLoading) {
     return <DashboardSkeleton />;
   }
+
 
   return (
     <div className="p-5 flex flex-col ">
@@ -37,22 +48,25 @@ function Dashboard() {
         />
         <DashboardCard
           lable={"Active Rentals"}
-          lable1={"28"}
-          lable2={"+8 this week"}
+          lable1={`${activeRentsCount}`}
+          lable2={newAttireRentsThisWeek > 0 
+                    ? `+${newAttireRentsThisWeek} this week` 
+                    : "0 this week"}
           icon={Package}
           iconbg="var(--color-light-pie-1)"
         />
+
         <DashboardCard
           lable={"Attendance Rate"}
-          lable1={"93%"}
-          lable2={"14/15 present"}
+          lable1={`${attendanceRate}%`}
+          lable2={`${presentCount}/${totalEmployees} present`}
           icon={Users}
           iconbg="var(--color-dbcard)"
         />
         <DashboardCard
           lable={"Due Returns"}
-          lable1={"12"}
-          lable2={"2 overdue"}
+          lable1={`${dueReturnsCount}`}
+          lable2={`${overdueReturnsCount} overdue`}
           icon={Clock4}
         />
       </div>

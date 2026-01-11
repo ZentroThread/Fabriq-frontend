@@ -29,6 +29,7 @@ export default function useTodayDeviceAttendanceLogsSummary() {
   }) || [];
 
   return {
+    totalEmployees,
     presentCount,
     lateCount,
     absentCount,

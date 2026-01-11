@@ -5,6 +5,7 @@ import type {
 } from "@/types/item.types";
 import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
+import type { AttireRent } from "@/types/attireRent.type";
 
 type AttireRentAddDto = {
   customerCode?: string;
@@ -58,8 +59,8 @@ export const billingService = {
     return resp;
   },
 
-  async getAllAttireRents(): Promise<unknown[]> {
-    const resp = await apiClient.request<unknown[]>(
+  async getAllAttireRents(): Promise<AttireRent[]> {
+    const resp = await apiClient.request<AttireRent[]>(
       API_ENDPOINTS.ATTIRE_RENT.GET_ALL
     );
     return resp;
