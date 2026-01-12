@@ -1,25 +1,27 @@
 import AttendanceCard from "@/components/molecules/cards/attendance-card";
 import Chart from "@/components/templates/Chart";
 import { Calendar28 } from "@/components/organisms/date-picker/calender";
-import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { TableDemo } from "@/components/organisms/tables/table-demo";
 import { AttendanceSkeleton } from "@/components/molecules/skeletons/attendance-skeleton";
 import {
-  Calendar,
   CircleCheck,
   CircleX,
   Clock4,
   FingerprintPattern,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
+import AttendanceTable from "@/components/organisms/attendance/attendance-table";
+import {useDailyAttendanceTableSummary} from "@/hooks/employee/attendance/useDailyAttendanceTableSummary";
+import {useState} from "react";
+import {formatDate} from "@/utils/date";
+import { Input } from "@/components/ui/input";
 
 function Attendance() {
-  const [isLoading, setIsLoading] = useState(true);
+ 
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const { presentCount, absentCount,lateCount, isLoading } = useTodayDeviceAttendanceLogsSummary();
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const { dailyAttendance} = useDailyAttendanceTableSummary(selectedDate ? formatDate(selectedDate) : '', searchTerm);
 
   if (isLoading) {
     return <AttendanceSkeleton />;
@@ -62,7 +64,7 @@ function Attendance() {
           <AttendanceCard
             label={"Present"}
             icon={<CircleCheck />}
-            label1="3"
+            label1={presentCount.toString()}
             bgcolor={"var(--color-bg-card1)"}
             iconcolor="var(--color-icon-card1)"
             bordercolor="var( --color-border-card1)"
@@ -71,7 +73,7 @@ function Attendance() {
           <AttendanceCard
             label={"Late"}
             icon={<Clock4 />}
-            label1="3"
+            label1={lateCount.toString()}
             bgcolor={"var(--color-bg-card2)"}
             iconcolor="var(--color-icon-card2)"
             bordercolor="var( --color-border-card2)"
@@ -80,19 +82,10 @@ function Attendance() {
           <AttendanceCard
             label={"Absent"}
             icon={<CircleX />}
-            label1="3"
+            label1={absentCount.toString()}
             bgcolor={"var(--color-bg-card3)"}
             iconcolor="var(--color-icon-card3)"
             bordercolor="var( --color-border-card3)"
-          />
-          <br />
-          <AttendanceCard
-            label={"On Leave"}
-            icon={<Calendar />}
-            label1="3"
-            bgcolor={"var(--color-bg-card1)"}
-            iconcolor="var(--color-icon-card1)"
-            bordercolor="var( --color-border-card1)"
           />
           <br />
         </Chart>
@@ -107,20 +100,17 @@ function Attendance() {
             <div></div>
 
             <div className="flex gap-2 items-center mb-2">
-              <Calendar28 />
-              <NativeSelectDemo
-                option={""}
-                value1={""}
-                value2={""}
-                value3={""}
-                string1={""}
-                string2={""}
-                string3={""}
+              <Calendar28 onDateChange={(date) => setSelectedDate(date)} />
+              <Input
+                className="w-full sm:flex-1 max-w-full sm:max-w-80 h-12 rounded-2xl"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
 
-          <TableDemo />
+          <AttendanceTable data={dailyAttendance.map(item => ({ ...item, id: item.empId }))} />
         </Chart>
       </div>
     </div>

@@ -8,51 +8,71 @@ import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
 } from "@/components/ui/chart";
-import { chartDataDonut } from "@/constants/data";
 
 export const description = "A pie chart with a legend";
 
+type PieData = {
+  category: "saree" | "nilame" | "jwelary";
+  value: number;
+  percentage: number;
+};
+
+interface ChartPieProps {
+  data: PieData[];
+}
+
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
+  saree: {
+    label: "Bridal Sarees",
     color: "var(--chart-1)",
   },
-  safari: {
-    label: "Safari",
+  nilame: {
+    label: "Nilame Suits",
     color: "var(--chart-2)",
   },
-  firefox: {
-    label: "Firefox",
+  jwelary: {
+    label: "Bridal Jewellery",
     color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
   },
 } satisfies ChartConfig;
 
-export function ChartPie() {
+export function ChartPie({ data }: ChartPieProps) {
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0"></CardHeader>
+      <CardHeader className="items-center pb-0" />
+
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
-            <Pie data={chartDataDonut} dataKey="visitors" />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  formatter={(value, _name, props) => {
+                    const payload = props.payload as PieData;
+                    return [
+                      `${value} rentals`,
+                      `${payload.percentage.toFixed(1)}%`,
+                    ];
+                  }}
+                />
+              }
+            />
+
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="category"
+            />
+
             <ChartLegend
-              content={<ChartLegendContent nameKey="browser" />}
-              className="-translate-y-2 text-position-text flex-wrap gap-2 *:basis-1/4 *:justify-center"
+              content={<ChartLegendContent nameKey="category" />}
+              className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
             />
           </PieChart>
         </ChartContainer>

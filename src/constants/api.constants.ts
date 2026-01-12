@@ -25,6 +25,10 @@ export const API_ENDPOINTS = {
     ADD: "/v1/attire-rent/add",
     GET_ALL: "/v1/attire-rent/all",
   },
+  ATTIRE_CATEGORY: {
+    GET_ALL: "/v1/category/all",
+  },
+
   BILLING: {
     GET_ALL: "/v1/billing/all",
   },
@@ -66,6 +70,15 @@ export const API_ENDPOINTS = {
     CONFIRM: (empId:number,month:number,year:number) => `/v1/payroll/confirm/${empId}/${month}/${year}`,
     EPF_RECORD: (month:number,year:number) => `/v1/payroll/epf-record/${month}/${year}`,
     ETF_RECORD: (month:number,year:number) => `/v1/payroll/etf-record/${month}/${year}`,
+    PRINT_PAYSLIP: (tenantId:string,empId:number,month:number,year:number) => `/v1/payroll/payslip/print/${tenantId}/${empId}/${month}/${year}`,
+  },
+
+  DEVICE_ATTENDANCE_LOG: {
+    GET_TODAY_LOGS: "/v1/device-attendance/today",
+  },
+
+  ATTENDANCE: {
+     GET_DAILY_ATTENDANCE: (date: string) => `/v1/attendance/date?date=${date}`,
   },
 
 };

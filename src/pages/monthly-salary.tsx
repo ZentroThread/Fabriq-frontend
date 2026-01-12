@@ -8,10 +8,12 @@ import ExtraHolidayCard from "@/components/organisms/salary/extra-holiday-card";
 import OvertimeCard from "@/components/organisms/salary/overtime-card";
 import { useParams } from "react-router-dom";
 import {useGetPayroll} from "@/hooks/employee/payroll/usePayroll";
+import selectedEmployee from "@/store/employee-store";
 
 export default function MonthlySalary() {
 
   const {id,year,month} = useParams();
+  const empName = selectedEmployee.getState().selectedEmployee?.fullName || "Employee";
   const { data: salaryDetails,isLoading,isError,error } = useGetPayroll(
     Number(id),
     Number(month),
@@ -36,6 +38,14 @@ export default function MonthlySalary() {
         <p className="text-position-text">
           This page provides insights into the monthly salary metrics.
         </p>
+      </div>
+
+      <div className={"space-y-6 p-6 bg-card rounded-2xl shadow-md flex flex-col"}>
+        <h2 className="text-position-text">Salary Details for <span className="text-md text-style"> {month}/{year} </span></h2>
+        <div>
+          <span className="text-position-text">Employee Name: </span>
+          <span className="text-md text-style">{empName}</span>
+        </div>
       </div>
 
       {/* Salary Details */}
