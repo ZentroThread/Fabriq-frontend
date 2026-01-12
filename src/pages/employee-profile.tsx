@@ -1,170 +1,101 @@
 import Button from "@/components/atoms/button/add-button";
 import Chart from "@/components/templates/Chart";
-import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
-import { EmployeeProfileSkeleton } from "@/components/molecules/skeletons/employee-profile-skeleton";
-import { useState, useEffect } from "react";
+import EmployeeForm from "@/components/organisms/employee/employee-form";
+import useEmployeeProfile from "@/hooks/employee/employeeDetails/useEmployeeProfile";
 
 export default function EmployeeProfile() {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const { states, actions } = useEmployeeProfile();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return <EmployeeProfileSkeleton />;
+  if (states.isLoading) {
+    return <div className="p-4">Loading...</div>;
   }
 
-  const showSalaryHistory = (id: string) => {
-    navigate(`/salary-history/${id}`);
-  };
-
-  const showLeaveHistory = (id: string) => {
-    navigate(`/leave-history/${id}`);
-  };
+  if (states.isError) {
+    return <div className="p-4 text-red-500">Error loading employee data.</div>;
+  }
 
   return (
-    <div className="p-3 sm:p-5 flex flex-col">
-      <Chart className="h-full flex flex-col justify-between relative md:flex-1">
-        {/* Header */}
-        <div className="mb-6 sm:mb-10">
-          <span className="text-style justify-center text-xl sm:text-2xl flex items-center">
-            Employee Name
-          </span>
-          <span className="justify-center flex items-center text-position-text font-light text-sm sm:text-base">
-            Role
-          </span>
-        </div>
+    <div className="p-3 sm:p-5 flex flex-col gap-6">
+      <Chart className="flex flex-col gap-6 relative">
+        <header className="text-center">
+          <h1 className="text-xl sm:text-2xl text-style">
+            {states.employee?.empFirstName} {states.employee?.empLastName}
+          </h1>
+          <p className="text-position-text font-light text-sm sm:text-base">
+            {states.employee?.role}
+          </p>
+        </header>
 
-        {/* Main Content */}
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:pl-10 gap-6">
-          {/* Profile Image - Shows first on mobile */}
-          <div className="flex justify-center lg:hidden mb-6">
-            <div className="flex flex-col relative items-center">
-              <div className="bg-main-bg w-32 h-32 sm:w-35 sm:h-35 rounded-2xl border-avatar-border border-1"></div>
-              <Button text="Update" width="w-32 sm:w-35" />
-            </div>
-          </div>
+        <section>
+          <EmployeeForm
+            employee={states.employee}
+            isEditing={states.isEditing}
+            formData={states.formData}
+            imagePreview={states.imagePreview}
+            onImageChange={actions.handleImageChange}
+            handleChange={actions.handleChange}
+            handleBankChange={actions.handleBankChange}
+          />
+        </section>
 
-          {/* Form Fields */}
-          <div className="w-full lg:flex-1">
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Employee Name
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
+        <footer className="mt-10 ">
+          <div className="h-0.5 bg-border" />
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Employee ID
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
+          <div className="pt-6">
+            <div className="mb-6">
+              <h3 className="text-sm text-style mb-3">Employee Actions</h3>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Role
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                <Button
+                  text="Production Records"
+                  width="w-full"
+                  bordercolor="border-border-card2"
+                  bgcolor="bg-bg-card2"
+                  hoverbg="hover:bg-light-brown"
+                  hovertext="hover:text-background"
+                  textcolor="text-black"
+                  onClick={actions.showProductionRecords}
+                />
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Address
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
+                <Button
+                  text="Advance Payment"
+                  width="w-full"
+                  bordercolor="border-border-card2"
+                  bgcolor="bg-bg-card2"
+                  hoverbg="hover:bg-light-brown"
+                  hovertext="hover:text-background"
+                  textcolor="text-black"
+                  onClick={actions.showAdvancePaymentRecords}
+                />
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  District
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Date of Birth
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Age
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Gender
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Joined Date
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
-                  Bank Acc Number
-                </label>
-                <Input className="w-full sm:flex-1 max-w-full sm:max-w-80" />
+                <Button
+                  text="Salary History"
+                  width="w-full"
+                  bordercolor="border-border-card3"
+                  bgcolor="bg-bg-card3"
+                  hoverbg="hover:bg-red"
+                  hovertext="hover:text-background"
+                  textcolor="text-black"
+                  onClick={actions.showSalaryHistory}
+                />
               </div>
             </div>
-          </div>
 
-          {/* Profile Image - Shows on desktop only */}
-          <div className="hidden lg:flex justify-end items-start pr-10">
-            <div className="flex flex-col relative items-center">
-              <div className="bg-main-bg w-35 h-35 rounded-2xl border-avatar-border border-1"></div>
-              <Button text="Update" width="w-35" />
+            <div className="h-px bg-border mb-6" />
+
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+              <Button
+                text={states.isEditing ? "Update Employee" : "Edit Employee"}
+                width="w-full sm:w-40"
+                onClick={() =>
+                  states.isEditing
+                    ? actions.handleUpdate()
+                    : actions.startEditing()
+                }
+              />
             </div>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center lg:justify-end mt-6 gap-1 sm:gap-2 lg:pr-10">
-          <Button
-            bordercolor="border-border-card3"
-            bgcolor="bg-bg-card3"
-            textcolor="text-black"
-            hoverbg="hover:bg-red"
-            hovertext="hover:text-background"
-            text="Salary History"
-            width="w-full sm:w-35"
-            onClick={() => showSalaryHistory("1")}
-          />
-          <Button
-            bordercolor="border-border-card2"
-            bgcolor="bg-bg-card2"
-            hovertext="hover:text-background"
-            hoverbg="hover:bg-light-brown"
-            textcolor="text-black"
-            text="Leave History"
-            width="w-full sm:w-35"
-            onClick={() => showLeaveHistory("1")}
-          />
-          <Button
-            bordercolor="border-border-add"
-            bgcolor="bg-bg-red"
-            hoverbg=""
-            hovertext="hover:text-background"
-            textcolor="text-black"
-            text="Update"
-            width="w-full sm:w-35"
-          />
-        </div>
+        </footer>
       </Chart>
     </div>
   );

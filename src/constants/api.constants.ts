@@ -1,3 +1,5 @@
+
+
 export const API_ENDPOINTS = {
   ATTIRE: {
     ADD: "/v1/attire/add",
@@ -27,4 +29,43 @@ export const API_ENDPOINTS = {
     GET_ALL: "/v1/billing/all",
   },
   // Add more endpoints...
+
+  EMPLOYEE: {
+    ADD: "/v1/employees",
+    GET_ALL: "/v1/employees",
+    DELETE: (code: string) => `/v1/employees/${code}`,
+    UPDATE: (code: string) => `/v1/employees/${code}`,
+    GET_BY_CODE: (code: string ) => `/v1/employees/${code}`,
+  },
+
+  EMPLOYEE_PRODUCTION: {
+    ADD: "/v1/production-records",
+    GET_ALL: "/v1/production-records",
+    GET_BY_EMPLOYEE: (id: number) => `/v1/production-records/employee/${id}`,
+    GET_BY_DATE_RANGE: (startDate: string, endDate: string) =>
+      `/v1/production-records/date-range?startDate=${startDate}&endDate=${endDate}`,
+    GET_BY_DATE_RANGE_EMPLOYEE: (id: number, startDate: string, endDate: string) =>
+      `/v1/production-records/employee/${id}/date-range?startDate=${startDate}&endDate=${endDate}`,
+    DELETE: (id: number) => `/v1/production-records/${id}`,
+    UPDATE: (id: number) => `/v1/production-records/${id}`,
+  },
+
+  EMPLOYEE_ADVANCE_PAYMENT: {
+    ADD: "/v1/advance-payments",
+    GET_ALL: "/v1/advance-payments",
+    GET_BY_EMPLOYEE: (id: number) => `/v1/advance-payments/employee/${id}`,
+    GET_BY_DATE_RANGE_EMPLOYEE: (id: number, startDate: string, endDate: string) =>
+      `/v1/advance-payments/employee/${id}/date-range?startDate=${startDate}&endDate=${endDate}`,
+    DELETE: (id: number) => `/v1/advance-payments/${id}`,
+    UPDATE: (id: number) => `/v1/advance-payments/${id}`,
+  },
+
+  PAYROLL:{
+    GENERATE: (empId:number,month:number,year:number) => `/v1/payroll/calculate/${empId}/${month}/${year}`,
+    GET_RECORD: (empId:number,year:number) => `/v1/payroll/${empId}/${year}`,
+    CONFIRM: (empId:number,month:number,year:number) => `/v1/payroll/confirm/${empId}/${month}/${year}`,
+    EPF_RECORD: (month:number,year:number) => `/v1/payroll/epf-record/${month}/${year}`,
+    ETF_RECORD: (month:number,year:number) => `/v1/payroll/etf-record/${month}/${year}`,
+  },
+
 };
