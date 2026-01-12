@@ -10,6 +10,7 @@ import {useAttireRentsSummary} from "@/hooks/attire/useAttireRentsSummary";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
 import {useAttireRentCurrentMonthlyOverview} from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
+import {RentDetailsSummary} from "@/components/organisms/summaries/rent-details-summary";
 
 function Dashboard() {
   
@@ -102,8 +103,10 @@ function Dashboard() {
 
         <Chart
           label={"Upcoming & Overdue Returns"}
-          description={"Items that need to be returned soon"}
-        />
+          description={"Rentals due for return"}
+        >
+          <RentDetailsSummary />
+        </Chart>
       </div>
     </div>
   );

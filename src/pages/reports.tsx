@@ -4,7 +4,7 @@ import { Download, DollarSign, Package, Users, Clock4 } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import Chart from "@/components/templates/Chart";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
-import { ChartPie } from "@/components/organisms/charts/ChartPie";
+// import { ChartPie } from "@/components/organisms/charts/ChartPie";
 import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
 import { TableDemo } from "@/components/organisms/tables/table-demo";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
@@ -81,7 +81,7 @@ function Reports() {
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
-          <ChartPie />
+          {/* <ChartPie /> */}
         </Chart>
       </div>
       <div className="">
