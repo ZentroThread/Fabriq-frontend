@@ -54,9 +54,13 @@ export function ChartPie({ data }: ChartPieProps) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  formatter={(value) => {
+
+                  formatter={(value, _name, props) => {
+                    const payload = props.payload as PieData;
+
                     return [
                       `${value} rentals`,
+                      `${payload.percentage.toFixed(2)}%`,
                     ];
                   }}
                 />
