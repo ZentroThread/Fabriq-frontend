@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { House, Mail, Phone, User } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useEffect } from "react";
+import { normalizePhoneForProvider } from "@/lib/phone";
 import useBillingStore from "@/store/customer-store";
 import billingStore from "@/store/billing-store";
 import Swal from "sweetalert2";
@@ -81,13 +82,58 @@ function AddCustomerForm({
       custMobileNumber: values.mobileNumber,
       custAddress: values.address,
       custLandLine: values.landline ?? "",
-      custWhatsappNumber: values.whatsapp ?? "",
+      custWhatsappNumber: normalizePhoneForProvider(
+        values.whatsapp ?? values.mobileNumber ?? ""
+      ),
       custEmail: values.email ?? "",
     };
 
     try {
       const created = await useBillingStore.getState().addCustomer(apiPayload);
       if (created) {
+        // send welcome notification via backend endpoint
+        try {
+          const base = import.meta.env.VITE_API_BASE || "";
+          const url = `${base}/v1/notification/publish`;
+          const createdObj = created as unknown as Record<string, unknown>;
+          const phone = String(
+            createdObj["custWhatsappNumber"] ??
+              createdObj["custMobileNumber"] ??
+              ""
+          );
+          const eventPayload = {
+            eventType: "WELCOME",
+            recipientPhone: phone,
+            recipientEmail: String(createdObj["custEmail"] ?? ""),
+            recipientName: String(
+              createdObj["custName"] ?? createdObj["cust_name"] ?? ""
+            ),
+            templateData: {
+              custCode: String(
+                createdObj["custCode"] ?? createdObj["cust_code"] ?? ""
+              ),
+              custName: String(
+                createdObj["custName"] ?? createdObj["cust_name"] ?? ""
+              ),
+            },
+            priority: 1,
+            timestamp: new Date().toISOString(),
+          };
+
+          // fire and forget; log any failure
+          fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(eventPayload),
+          })
+            .then((res) => {
+              if (!res.ok)
+                console.warn("Notification publish failed", res.statusText);
+            })
+            .catch((e) => console.warn("Notification publish error", e));
+        } catch (e) {
+          console.warn("Failed to call notification endpoint", e);
+        }
         await Swal.fire({
           icon: "success",
           title: "Customer added",
