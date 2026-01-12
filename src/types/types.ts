@@ -1,14 +1,22 @@
 import { z } from "zod";
-import type {
+import {
   addItemFormSchema,
   authResponseSchema,
   loginSchema,
   registerSchema,
+  tokenResponseSchema,
   userSchema,
+  userRoleSchema,
+  addCustomerSchema,
 } from "@/schemas/user.schema";
 
 export type AddItemFormValues = z.infer<typeof addItemFormSchema>;
 export type User = z.infer<typeof userSchema>;
+export type UserRole = z.infer<typeof userRoleSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
+export type TokenResponse = z.infer<typeof tokenResponseSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type AddCustomerFormValues = z.infer<typeof addCustomerSchema>;
+
+// JWT Payload structure

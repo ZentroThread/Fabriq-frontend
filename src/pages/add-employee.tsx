@@ -1,8 +1,8 @@
-import EmployeeForm from "@/pages/employee-form";
+import EmployeeForm from "@/components/organisms/employee/employee-form";
 import Button from "@/components/atoms/button/add-button";
 import type { Employee, EmployeeBankDetails } from "@/types/employee.type";
 import { useState } from "react";
-import { useAddEmployee } from "@/hooks/employee/useAddEmployee";
+import { useAddEmployee } from "@/hooks/employee/employeeDetails/useAddEmployee";
 
 export default function AddEmployee() {
 
