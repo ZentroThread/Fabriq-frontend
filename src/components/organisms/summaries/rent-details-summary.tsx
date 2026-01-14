@@ -21,15 +21,15 @@ export const RentDetailsSummary = () => {
 
     const interval = setInterval(() => {
       setStartIndex((prev) =>
-        (prev + 3) % rentSummaryForCurrentWeek.length
+        (prev + 4) % rentSummaryForCurrentWeek.length
       );
-    }, 5000); // ⏱ 5 seconds
+    }, 5000); 
 
     return () => clearInterval(interval);
   }, [rentSummaryForCurrentWeek]);
 
   const visibleRents =
-    rentSummaryForCurrentWeek?.slice(startIndex, startIndex + 3);
+    rentSummaryForCurrentWeek?.slice(startIndex, startIndex + 4);
 
   return (
     <div>
@@ -42,7 +42,7 @@ export const RentDetailsSummary = () => {
           icon={
             rent.isOverdue
               ? <RefreshCcw className="text-(--color-bg-red)" />
-              : <RefreshCcw className="text-white" />
+              : <RefreshCcw className="text-(--color-button)" />
           }
         />
       ))}

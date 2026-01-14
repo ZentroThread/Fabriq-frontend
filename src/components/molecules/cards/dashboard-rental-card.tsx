@@ -15,7 +15,7 @@ export const DashboardRentalCard: React.FC<DashboardRentalCardProps> = ({
 }) => {
   return (
    <div className="bg-linear-to-r from-sidebar-button-active-from to-sidebar-button-active-to 
-                shadow-md rounded-lg p-4 flex items-center m-2">
+                shadow-md rounded-lg p-4 flex items-center mt-2">
 
       <div className="p-3 bg-( --color-button) rounded-full mr-4">
         {icon}

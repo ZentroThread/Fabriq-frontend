@@ -21,7 +21,7 @@ function Dashboard() {
     ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
     : 0;
 
-  const { monthlySummary } = useMonthlyBillSummary();
+  const { monthlySummary,summaryForThisMonth } = useMonthlyBillSummary();
 
   const currentMonthlyOverview = useAttireRentCurrentMonthlyOverview();
 
@@ -49,7 +49,7 @@ function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
+          lable1={`LKR ${((summaryForThisMonth.totalAmount/1000000).toFixed(2)).toLocaleString()}M`}
           lable2={"+15%"}
           icon={DollarSign}
         />

@@ -4,6 +4,33 @@ import { useMemo } from "react";
 export const useMonthlyBillSummary = () => {
   const { data: bills } = useGetAllBills();
 
+  const summaryForThisMonth = useMemo(() => {
+
+    if (!bills) return { totalAmount: 0, billCount: 0 };
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const billsThisMonth = bills.filter((bill) => {
+      if (!bill.billingDate) return false;
+      const billDate = new Date(bill.billingDate);
+      return (
+        billDate.getMonth() === currentMonth &&
+        billDate.getFullYear() === currentYear
+      );
+    });
+
+    const totalAmount = billsThisMonth.reduce((sum, bill) => {
+      return sum + (bill.billingTotal ? parseFloat(bill.billingTotal) : 0);
+    }, 0);
+
+    return {
+      totalAmount,
+      billCount: billsThisMonth.length,
+    };
+  }, [bills]);
+
   const monthlySummary = useMemo(() => {
     if (!bills) return [];
 
@@ -31,5 +58,5 @@ export const useMonthlyBillSummary = () => {
     return summaryArray;
   }, [bills]);
 
-  return { monthlySummary };
+  return { monthlySummary, summaryForThisMonth };
 };
