@@ -1,5 +1,5 @@
-import {useTotalSalary} from "./employee/payroll/useTotalSalary";
-import {useMonthlyBillSummary} from "./bill/useMonthlyBillSummary";
+import {useTotalSalary} from "../employee/payroll/useTotalSalary";
+import {useMonthlyBillSummary} from "../bill/useMonthlyBillSummary";
 
 export const useTotalProfit = (monthRange?: string) => {
 

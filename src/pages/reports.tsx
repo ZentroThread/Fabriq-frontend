@@ -11,8 +11,8 @@ import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skelet
 import { useState, useEffect } from "react";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
 import {useTotalSalary} from "@/hooks/employee/payroll/useTotalSalary";
-import {useTotalProfit} from "@/hooks/useTotalProfit";
-
+import {useTotalProfit} from "@/hooks/profit/useTotalProfit";
+import {useMonthlyProfitRevenue} from "@/hooks/profit/useMonthlyProfitRevenue";
 
 function Reports() {
 
@@ -21,6 +21,7 @@ function Reports() {
   const {summaryForSelectedMonthRange , totalOrdersByMonthRange } = useMonthlyBillSummary(timeRange);
   const { totalSalary } = useTotalSalary(timeRange);
   const { totalProfit } = useTotalProfit(timeRange);
+  const { chartData } = useMonthlyProfitRevenue(timeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -88,7 +89,7 @@ function Reports() {
           label={"Revenue & Rentals"}
           description={"Monthly revenue and rental trends."}
         >
-          <ChartBarMultiple />
+          <ChartBarMultiple data={chartData} />
         </Chart>
         <Chart
           label={"Rentals by Category"}

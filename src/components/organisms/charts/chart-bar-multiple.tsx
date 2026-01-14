@@ -1,55 +1,57 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { chartData } from "@/constants/data";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
-export const description = "A multiple bar chart";
-
+// Chart config for legend & colors
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
+  profit: {
+    label: "Profit",
+    color: "var(--color-light-pie-1)", // pink
   },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
+  revenue: {
+    label: "Revenue",
+    color: "var(--color-light-pie-2)", // brown
   },
-} satisfies ChartConfig;
+};
 
-export function ChartBarMultiple() {
+export const description = "Monthly Profit & Revenue Bar Chart";
+
+export function ChartBarMultiple({
+  data,
+}: {
+  data: { month: string; profit: number; revenue: number }[];
+}) {
+  if (!data || data.length === 0) return null;
+
   return (
-    <Card>
-      <CardHeader></CardHeader>
-      <CardContent>
-        <ChartContainer
-          config={chartConfig}
-          className="w-full [&_.recharts-cartesian-axis-tick_text]:fill-(--color-position-text)! h-[300px]"
-        >
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              stroke="var(--color-position-text)"
-              tickLine={true}
-              axisLine={true}
-              tickMargin={8}
-              tickFormatter={(value: string) => value.slice(0, 3)}
-            />
-            <YAxis stroke="var(--color-position-text)" />
-            <ChartTooltip
-              cursor={true}
-              content={<ChartTooltipContent indicator="dashed" />}
-            />
-            <Bar dataKey="desktop" fill="var(--color-pie-1)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-pie-3)" radius={4} />
-          </BarChart>
+    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+
+      <CardContent className="p-4">
+        <ChartContainer className="w-full h-[350px]" config={chartConfig}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+              <XAxis
+                dataKey="month"
+                stroke="var(--color-position-text)"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                style={{ fontWeight: 500 }}
+              />
+              <YAxis
+                stroke="var(--color-position-text)"
+                tickFormatter={(value) => `$${value.toLocaleString()}`}
+              />
+              <Tooltip cursor={{ fill: "rgba(0,0,0,0.05)" }} content={<ChartTooltipContent />} />
+ 
+              <Bar dataKey="profit" radius={[6, 6, 0, 0]} fill="var(--color-light-pie-1)" barSize={18} />
+
+              <Bar dataKey="revenue" radius={[6, 6, 0, 0]} fill="var(--color-light-pie-2)" barSize={18} />
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
     </Card>
