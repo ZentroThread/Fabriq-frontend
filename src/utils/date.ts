@@ -36,3 +36,24 @@ export const getYearsForRange = ()=>{
   }
   return years;
 }
+
+export const getStartDateFromRange = (range?: string) => {
+  const now = new Date();
+
+  switch (range) {
+    case "last-month":
+      return new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    case "last-3-months":
+      return new Date(now.getFullYear(), now.getMonth() - 2, 1);
+
+    case "last-6-months":
+      return new Date(now.getFullYear(), now.getMonth() - 5, 1);
+
+    case "last-year":
+      return new Date(now.getFullYear() - 1, now.getMonth(), 1);
+
+    default:
+      return new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+};

@@ -1,6 +1,6 @@
 import AddButton from "@/components/atoms/button/add-button";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { Download, DollarSign, Package, Users, Clock4 } from "lucide-react";
+import { Download, DollarSign, Package,TrendingUp } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import Chart from "@/components/templates/Chart";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
@@ -9,9 +9,14 @@ import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-mult
 import { TableDemo } from "@/components/organisms/tables/table-demo";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
 import { useState, useEffect } from "react";
+import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
+
+
 
 function Reports() {
   const [isLoading, setIsLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState("");
+  const {summaryForSelectedMonthRange } = useMonthlyBillSummary(timeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -21,6 +26,7 @@ function Reports() {
   if (isLoading) {
     return <ReportsSkeleton />;
   }
+  console.log(timeRange)
 
   return (
     <div className="p-5 flex flex-col ">
@@ -32,42 +38,45 @@ function Reports() {
       </div>
       <div className=" flex gap-2 lg:mr-5 lg:ml-auto mt-5 sm:ml-0 sm:mr-auto">
         <NativeSelectDemo
-          option={""}
-          value1={""}
-          value2={""}
-          value3={""}
-          string1={""}
-          string2={""}
-          string3={""}
+          option="Time Range"
+          value={timeRange}
+          onValueChange={setTimeRange}
+          value1="last-month"
+          value2="last-3-months"
+          value3="last-6-months"
+          string1="Last Month"
+          string2="Last 3 Months"
+          string3="Last 6 Months"
         />
         <AddButton text="Export" icon={<Download />} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
-          lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
-          lable2={"+15%"}
-          icon={DollarSign}
-        />
+                  lable={"Total Revenue"}
+                  lable1={`LKR ${((summaryForSelectedMonthRange.reduce((acc, curr) => acc + curr.total, 0)/1000000).toFixed(2)).toLocaleString()}M`}
+                  lable2={"+15%"}
+                  icon={DollarSign}
+                />
         <DashboardCard
-          lable={"Active Rentals"}
+          lable={"Total Profits"}
           lable1={"28"}
           lable2={"+8 this week"}
-          icon={Package}
+          icon={TrendingUp}
           iconbg="var(--color-light-pie-1)"
         />
         <DashboardCard
-          lable={"Attendance Rate"}
+          lable={"Total Orders"}
           lable1={"93%"}
           lable2={"14/15 present"}
-          icon={Users}
+          icon={Package}
           iconbg="var(--color-dbcard)"
         />
         <DashboardCard
-          lable={"Due Returns"}
-          lable1={"12"}
-          lable2={"2 overdue"}
-          icon={Clock4}
+          lable={"Total Salary"}
+          lable1={"28"}
+          lable2={"+8 this week"}
+          icon={DollarSign}
+          iconbg="var(--color-light-pie-1)"
         />
       </div>
       <div className="grid sm:grid-cols-1 sm:w-full lg:grid-cols-2 gap-6 mt-5 mb-5 ">
