@@ -83,6 +83,7 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
     });
   }, [monthRange, monthlySummary]);
 
+  const totalOrdersByMonthRange = summaryForSelectedMonthRange.length;
 
-  return { monthlySummary, summaryForThisMonth, summaryForSelectedMonthRange };
+  return { monthlySummary, summaryForThisMonth, summaryForSelectedMonthRange, totalOrdersByMonthRange };
 };

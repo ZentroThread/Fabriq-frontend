@@ -10,13 +10,17 @@ import { TableDemo } from "@/components/organisms/tables/table-demo";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
 import { useState, useEffect } from "react";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
-
+import {useTotalSalary} from "@/hooks/employee/payroll/useTotalSalary";
+import {useTotalProfit} from "@/hooks/useTotalProfit";
 
 
 function Reports() {
+
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("");
-  const {summaryForSelectedMonthRange } = useMonthlyBillSummary(timeRange);
+  const {summaryForSelectedMonthRange , totalOrdersByMonthRange } = useMonthlyBillSummary(timeRange);
+  const { totalSalary } = useTotalSalary(timeRange);
+  const { totalProfit } = useTotalProfit(timeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -26,7 +30,7 @@ function Reports() {
   if (isLoading) {
     return <ReportsSkeleton />;
   }
-  console.log(timeRange)
+  console.log(totalSalary)
 
   return (
     <div className="p-5 flex flex-col ">
@@ -54,27 +58,27 @@ function Reports() {
         <DashboardCard
                   lable={"Total Revenue"}
                   lable1={`LKR ${((summaryForSelectedMonthRange.reduce((acc, curr) => acc + curr.total, 0)/1000000).toFixed(2)).toLocaleString()}M`}
-                  lable2={"+15%"}
+                  lable2={""}
                   icon={DollarSign}
                 />
         <DashboardCard
           lable={"Total Profits"}
-          lable1={"28"}
-          lable2={"+8 this week"}
+          lable1={`LKR ${((totalProfit/1000000).toFixed(2)).toLocaleString()}M`}
+          lable2={""}
           icon={TrendingUp}
           iconbg="var(--color-light-pie-1)"
         />
         <DashboardCard
           lable={"Total Orders"}
-          lable1={"93%"}
-          lable2={"14/15 present"}
+          lable1={`${totalOrdersByMonthRange}`}
+          lable2={""}
           icon={Package}
           iconbg="var(--color-dbcard)"
         />
         <DashboardCard
           lable={"Total Salary"}
-          lable1={"28"}
-          lable2={"+8 this week"}
+          lable1={`LKR ${((totalSalary/1000000).toFixed(2)).toLocaleString()}M`}
+          lable2={""}
           icon={DollarSign}
           iconbg="var(--color-light-pie-1)"
         />
