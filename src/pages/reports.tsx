@@ -5,7 +5,6 @@ import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import Chart from "@/components/templates/Chart";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
 import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
-import { TableDemo } from "@/components/organisms/tables/table-demo";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
 import { useState, useEffect } from "react";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
@@ -16,6 +15,8 @@ import {RevenueByCategoryPie} from "@/components/organisms/charts/revenue-by-cat
 import {useAttireRentSummaryByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
 import {TopSellingProdTable} from "@/components/organisms/tables/top-selling-prod-table";
 import {useTopSellingProductsByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
+import {usePayrollByRole} from "@/hooks/employee/payroll/usePayrollByRole";
+import {PayrollByRoleTable} from "@/components/organisms/tables/salary-by-role-table";
 
 function Reports() {
 
@@ -27,6 +28,7 @@ function Reports() {
   const { chartData } = useMonthlyProfitRevenue(timeRange);
   const attireRentSummary = useAttireRentSummaryByDateRange(timeRange);
   const topSellingProducts = useTopSellingProductsByDateRange(timeRange);
+  const payrollByRole = usePayrollByRole(timeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -116,13 +118,13 @@ function Reports() {
           label={"Top Selling Products"}
           description={"Best performing products by revenue"}
         >
-          <TopSellingProdTable tableData={topSellingProducts} />
+          <TopSellingProdTable tableData={topSellingProducts.slice(0, 5)} />
         </Chart>
         <Chart
           label={"Salary Report by Role"}
           description={"Employee salary breakdown"}
         >
-          <TableDemo />
+          <PayrollByRoleTable tableData={payrollByRole} />
         </Chart>
       </div>
     </div>
