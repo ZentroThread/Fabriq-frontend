@@ -105,12 +105,8 @@ export const useUpdateItem = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.ITEMS.BY_ID(variables.id),
       });
-      Swal.fire({
-        icon: "success",
-        title: "Item updated successfully!",
-        timer: 1600,
-        showConfirmButton: false,
-      });
+      // Success handling (UI notifications) should be handled by the
+      // component that triggers the mutation so it can also close dialogs.
     },
     onError: (error: Error) => {
       Swal.fire({

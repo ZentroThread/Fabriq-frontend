@@ -117,7 +117,14 @@ export function AddItemForm({
         { id: String(itemData.id), data: payload },
         {
           onSuccess: () => {
-            if (onClose) onClose();
+            Swal.fire({
+              icon: "success",
+              title: "Item updated successfully!",
+              timer: 1600,
+              showConfirmButton: false,
+            }).then(() => {
+              if (onClose) onClose();
+            });
           },
           onError: (error) => {
             console.error("Error updating item:", error);
