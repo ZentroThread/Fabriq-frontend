@@ -1,37 +1,93 @@
 import { useGetAllBills } from "./useBill";
 import { useMemo } from "react";
-import {getStartDateFromRange} from "@/utils/date";
+import { getStartDateFromRange } from "@/utils/date";
+
+type MonthlySummary = {
+  month: string;
+  total: number;
+};
 
 export const useMonthlyBillSummary = (monthRange?: string) => {
-
   const { data: bills } = useGetAllBills();
 
-  const summaryForThisMonth = useMemo(() => {
+  /* ===============================
+     Bills filtered by date range
+  ================================= */
+  const filteredBills = useMemo(() => {
+    if (!bills) return [];
 
+    if (!monthRange) return bills;
+
+    const startDate = getStartDateFromRange(monthRange);
+
+    return bills.filter((bill) => {
+      if (!bill.billingDate) return false;
+      return new Date(bill.billingDate) >= startDate;
+    });
+  }, [bills, monthRange]);
+
+  /* ===============================
+     Summary for CURRENT month
+  ================================= */
+  const summaryForThisMonth = useMemo(() => {
     if (!bills) return { totalAmount: 0, billCount: 0 };
 
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    const billsThisMonth = bills.filter((bill) => {
+    const thisMonthBills = bills.filter((bill) => {
       if (!bill.billingDate) return false;
-      const billDate = new Date(bill.billingDate);
+      const d = new Date(bill.billingDate);
       return (
-        billDate.getMonth() === currentMonth &&
-        billDate.getFullYear() === currentYear
+        d.getMonth() === currentMonth &&
+        d.getFullYear() === currentYear
       );
     });
 
-    const totalAmount = billsThisMonth.reduce((sum, bill) => {
-      return sum + (bill.billingTotal ? parseFloat(bill.billingTotal) : 0);
-    }, 0);
+    const totalAmount = thisMonthBills.reduce(
+      (sum, bill) => sum + Number(bill.billingTotal || 0),
+      0
+    );
 
     return {
       totalAmount,
-      billCount: billsThisMonth.length,
+      billCount: thisMonthBills.length,
     };
   }, [bills]);
+
+  /* ===============================
+     Monthly summary (grouped)
+  ================================= */
+  const summaryForSelectedMonthRange: MonthlySummary[] = useMemo(() => {
+    const summaryMap: Record<string, number> = {};
+
+    filteredBills.forEach((bill) => {
+      if (!bill.billingDate) return;
+
+      const date = new Date(bill.billingDate);
+      const key = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
+
+      summaryMap[key] =
+        (summaryMap[key] ?? 0) + Number(bill.billingTotal || 0);
+    });
+
+    return Object.entries(summaryMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, total]) => ({ month, total }));
+  }, [filteredBills]);
+
+  /* ===============================
+     True bill count (not months!)
+  ================================= */
+  const totalOrdersByMonthRange = filteredBills.length;
+
+  /* ===============================
+     Bill details for selected range
+  ================================= */
+  const billDetailsForSelectedRange = filteredBills;
 
   const monthlySummary = useMemo(() => {
     if (!bills) return [];
@@ -69,34 +125,11 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
     }));
   }, [bills]);
 
-  const summaryForSelectedMonthRange = useMemo(() => {
-    
-    if (!monthRange) return monthlySummary;
-
-    const startDate = getStartDateFromRange(monthRange);
-    const startTime = startDate.getTime();
-
-    return monthlySummary.filter(({ month }) => {
-      const [year, monthIndex] = month.split("-").map(Number);
-      const monthDate = new Date(year, monthIndex - 1, 1);
-      return monthDate.getTime() >= startTime;
-    });
-  }, [monthRange, monthlySummary]);
-
-  const totalOrdersByMonthRange = summaryForSelectedMonthRange.length;
-
-  const billDetailsForSelectedRange = useMemo(() => {
-    if (!bills) return [];
-    if (!monthRange) return bills;
-
-    const startDate = getStartDateFromRange(monthRange);
-    const startTime = startDate.getTime();
-    return bills.filter((bill) => {
-      if (!bill.billingDate) return false;
-      const billDate = new Date(bill.billingDate);
-      return billDate.getTime() >= startTime;
-    });
-  }, [bills, monthRange]);
-
-  return { monthlySummary, summaryForThisMonth, summaryForSelectedMonthRange, totalOrdersByMonthRange, billDetailsForSelectedRange };
+  return {
+    summaryForThisMonth,
+    summaryForSelectedMonthRange,
+    totalOrdersByMonthRange,
+    billDetailsForSelectedRange,
+    monthlySummary
+  };
 };
