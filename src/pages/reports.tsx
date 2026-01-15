@@ -4,7 +4,6 @@ import { Download, DollarSign, Package,TrendingUp } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import Chart from "@/components/templates/Chart";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
-import { ChartPie } from "@/components/organisms/charts/ChartPie";
 import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
 import { TableDemo } from "@/components/organisms/tables/table-demo";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
@@ -13,6 +12,8 @@ import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
 import {useTotalSalary} from "@/hooks/employee/payroll/useTotalSalary";
 import {useTotalProfit} from "@/hooks/profit/useTotalProfit";
 import {useMonthlyProfitRevenue} from "@/hooks/profit/useMonthlyProfitRevenue";
+import {RevenueByCategoryPie} from "@/components/organisms/charts/revenue-by-category-pie";
+import {useAttireRentSummaryByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
 
 function Reports() {
 
@@ -22,6 +23,7 @@ function Reports() {
   const { totalSalary } = useTotalSalary(timeRange);
   const { totalProfit } = useTotalProfit(timeRange);
   const { chartData } = useMonthlyProfitRevenue(timeRange);
+  const attireRentSummary = useAttireRentSummaryByDateRange(timeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -95,7 +97,7 @@ function Reports() {
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
-          <ChartPie data={[]} />
+          <RevenueByCategoryPie data={attireRentSummary} />
 
         </Chart>
       </div>

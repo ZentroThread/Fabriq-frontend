@@ -85,5 +85,18 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
 
   const totalOrdersByMonthRange = summaryForSelectedMonthRange.length;
 
-  return { monthlySummary, summaryForThisMonth, summaryForSelectedMonthRange, totalOrdersByMonthRange };
+  const billDetailsForSelectedRange = useMemo(() => {
+    if (!bills) return [];
+    if (!monthRange) return bills;
+
+    const startDate = getStartDateFromRange(monthRange);
+    const startTime = startDate.getTime();
+    return bills.filter((bill) => {
+      if (!bill.billingDate) return false;
+      const billDate = new Date(bill.billingDate);
+      return billDate.getTime() >= startTime;
+    });
+  }, [bills, monthRange]);
+
+  return { monthlySummary, summaryForThisMonth, summaryForSelectedMonthRange, totalOrdersByMonthRange, billDetailsForSelectedRange };
 };
