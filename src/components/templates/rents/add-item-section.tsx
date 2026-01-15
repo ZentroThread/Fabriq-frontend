@@ -132,9 +132,14 @@ export default function AddItemsSection() {
   useEffect(() => {
     if (localItem) {
       const liveStock = getCurrentStock(localItem.code || "");
+      console.log(
+        `📊 [DISPLAY] Updating displayed stock for ${localItem.code}:`,
+        liveStock
+      );
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayedStock(liveStock);
     } else {
+      console.log("📊 [DISPLAY] No local item, clearing displayed stock");
       setDisplayedStock(null);
     }
   }, [localItem, allItems]); // ← Add allItems dependency
@@ -166,11 +171,28 @@ export default function AddItemsSection() {
     const code = (itemCode ?? "").trim();
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
+
+    console.log("🔵 [ADD ITEM] Starting reservation for:", code);
+    console.log("📊 [ADD ITEM] Current stock before reserve:", displayedStock);
+
     try {
-      await itemService.reserveItem({
+      const resp = await itemService.reserveItem({
         attireCode: code,
         customerCode: customerCode,
       });
+
+      console.log("✅ [ADD ITEM] Reserve response:", resp);
+
+      // Update local item store immediately with returned stock
+      if (resp && typeof resp.attireStock === "number") {
+        console.log(
+          "📦 [ADD ITEM] Updating store with new stock:",
+          resp.attireStock
+        );
+        useItemStore.getState().updateItemStock(code, resp.attireStock);
+      } else {
+        console.warn("⚠️ [ADD ITEM] Invalid stock in response:", resp);
+      }
 
       // Add to billing
       addItem({

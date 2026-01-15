@@ -63,8 +63,9 @@ export const useItemStore = create<ItemStore>((set) => ({
   setError: (error) => set({ error }),
 
   updateItemStock: (attireCode: string, newStock: number) =>
-    set((state) => ({
-      items: state.items.map((item) =>
+    set((state) => {
+      console.log(`🔄 [STORE] Updating stock for ${attireCode}: ${newStock}`);
+      const updatedItems = state.items.map((item) =>
         item.code === attireCode
           ? {
               ...item,
@@ -74,6 +75,8 @@ export const useItemStore = create<ItemStore>((set) => ({
               quantity: newStock,
             }
           : item
-      ),
-    })),
+      );
+      console.log(`✅ [STORE] Stock updated for ${attireCode}`);
+      return { items: updatedItems };
+    }),
 }));

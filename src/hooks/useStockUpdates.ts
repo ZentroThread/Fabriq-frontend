@@ -9,16 +9,22 @@ type StockUpdateMessage = {
 
 export function useStockUpdates() {
   useEffect(() => {
+    console.log(
+      "🌐 [WEBSOCKET] Connecting and subscribing to stock updates..."
+    );
     wsService.connect();
 
     wsService.subscribe("/topic/stock-updates", (message: unknown) => {
       const data = message as StockUpdateMessage;
-      console.log("📦 Stock update received:", data); // ← ADD DEBUG
+      console.log("📦 [WEBSOCKET] Stock update received:", data);
       useItemStore
         .getState()
         .updateItemStock(data.attireCode, data.attireStock);
     });
 
-    return () => wsService.disconnect();
+    return () => {
+      console.log("🔌 [WEBSOCKET] Disconnecting...");
+      wsService.disconnect();
+    };
   }, []);
 }
