@@ -33,7 +33,7 @@ interface AddItemPayload {
 }
 
 export const useItems = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: QUERY_KEYS.ITEMS.ALL,
     queryFn: async () => {
       console.log("🔍 TanStack Query: Starting getAllItems fetch");
@@ -50,10 +50,12 @@ export const useItems = () => {
       }
     },
     retry: 1,
-    staleTime: 30000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: "always",
   });
+
+  return query;
 };
 
 // Hook to fetch single item by ID
@@ -61,7 +63,7 @@ export const useItem = (id: string) => {
   return useQuery({
     queryKey: QUERY_KEYS.ITEMS.BY_ID(id),
     queryFn: () => itemService.getItemById(id),
-    enabled: !!id, // Only run query if id exists
+    enabled: !!id,
   });
 };
 
@@ -72,7 +74,6 @@ export const useAddItem = () => {
   return useMutation({
     mutationFn: itemService.addItem,
     onSuccess: () => {
-      // Invalidate and refetch items list
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       Swal.fire({
         icon: "success",
@@ -99,7 +100,6 @@ export const useUpdateItem = () => {
     mutationFn: ({ id, data }: { id: string; data: AddItemPayload }) =>
       itemService.updateItem(id, data),
     onSuccess: async (_, variables) => {
-      // Invalidate both the list and the specific item
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       queryClient.invalidateQueries({

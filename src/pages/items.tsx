@@ -24,12 +24,21 @@ function Items() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  
   const allItemsFromStore = useItemStore((s) => s.items);
-  const { isLoading, error, refetch } = useFilteredItems("");
-  const allItems = allItemsFromStore;
+  const setItems = useItemStore((s) => s.setItems);
+  const { allItems: fetchedItems, isLoading, error, refetch } = useFilteredItems("");
+
+  // Sync database to Zustand ONLY if Zustand is empty (first load)
   useEffect(() => {
-    refetch(); // Get latest from database
-  }, [refetch]);
+    if (fetchedItems && fetchedItems.length > 0 && allItemsFromStore.length === 0) {
+      console.log("📥 [INITIAL LOAD] Syncing database to Zustand");
+      setItems(fetchedItems);
+    }
+  }, [fetchedItems]);
+
+  // Use Zustand as source of truth
+  const allItems = allItemsFromStore;
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {
@@ -59,14 +68,12 @@ function Items() {
     }
 
     return result;
-  }, [allItems, searchQuery, categoryFilter]); // 👈 Add categoryFilter dependency
+  }, [allItems, searchQuery, categoryFilter]);
 
-  //console.log("📦 Filtered Items:", filteredItems);
-  console.log("📦 All Items:", allItems);
+  console.log("📦 All Items from Zustand:", allItems.length);
 
   const handleItemAdded = () => {
     setIsDialogOpen(false);
-    // No need to manually refetch - TanStack Query handles it automatically
   };
 
   // Calculate stats from all items
@@ -75,17 +82,17 @@ function Items() {
     allItems?.filter((item) => item.status !== "Rented").length || 0;
   const rented =
     allItems?.filter((item) => item.status === "Rented").length || 0;
+    
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
   };
 
   const handleCategoryChange = (category: string) => {
-    // 👈 Add this handler
     setCategoryFilter(category);
     console.log("Category changed to:", category);
   };
 
-  if (isLoading) {
+  if (isLoading && allItems.length === 0) {
     return <ItemsSkeleton />;
   }
 
@@ -119,6 +126,7 @@ function Items() {
           <AddItemForm onClose={handleItemAdded} />
         </DialogContent>
       </Dialog>
+      
       <div className="grid lg:grid-cols-3  sm:grid-cols-1  md:grid-cols-2 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Items"}
@@ -141,11 +149,6 @@ function Items() {
 
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
-          {/* <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search items..."
-          /> */}
           <ItemSearchFilter
             items={(allItems || []).map((item) => ({
               ...item,
