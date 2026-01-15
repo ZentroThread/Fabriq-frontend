@@ -2,10 +2,8 @@
 
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useItemStore } from "@/store/item-store";
 import { itemService } from "@/services/item.service";
-import SuccessAlert from "@/components/atoms/alert/success-alert";
-import { useState } from "react";
+import Swal from "sweetalert2";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -56,8 +54,6 @@ export function AddItemForm({
 }: AddItemFormProps) {
   const form = useAddItemForm();
   const queryClient = useQueryClient();
-  const addItem = useItemStore((state) => state.addItem);
-  const [showSuccess, setShowSuccess] = useState(false);
   // Pre-fill form when in edit mode
   useEffect(() => {
     if (editMode && itemData) {
@@ -78,27 +74,28 @@ export function AddItemForm({
   const mutation = useMutation({
     mutationFn: itemService.addItem,
     onSuccess: (data) => {
-      // Update Zustand store
-      if (data) {
-        addItem(data);
-      }
-
-      // Invalidate and refetch queries
+      // itemService.addItem already updates the Zustand store,
+      // so avoid adding again here to prevent duplicates.
       queryClient.invalidateQueries({ queryKey: ["items"] });
 
-      // Show success alert
-      setShowSuccess(true);
-
-      // Hide success alert after 3 seconds
-      setTimeout(() => {
-        setShowSuccess(false);
+      // Show SweetAlert success and close the form afterwards
+      Swal.fire({
+        icon: "success",
+        title: "Item added successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      }).then(() => {
         if (onClose) onClose();
-      }, 3000);
+      });
     },
     onError: (error) => {
       console.error("Error adding item:", error);
-      // Show error message to user
-      alert(`Failed to add item: ${error.message || "Unknown error"}`);
+      // Show error message to user via SweetAlert
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add item",
+        text: error.message || "Unknown error",
+      });
     },
   });
 
@@ -120,15 +117,15 @@ export function AddItemForm({
         { id: String(itemData.id), data: payload },
         {
           onSuccess: () => {
-            setShowSuccess(true);
-            setTimeout(() => {
-              setShowSuccess(false);
-              if (onClose) onClose();
-            }, 3000);
+            if (onClose) onClose();
           },
           onError: (error) => {
             console.error("Error updating item:", error);
-            alert(`Failed to update item: ${error.message || "Unknown error"}`);
+            Swal.fire({
+              icon: "error",
+              title: "Failed to update item",
+              text: error.message || "Unknown error",
+            });
           },
         }
       );
@@ -140,18 +137,7 @@ export function AddItemForm({
 
   return (
     <Form {...form}>
-      {showSuccess && (
-        <div className="mb-4">
-          <SuccessAlert
-            title="Success!"
-            description={
-              editMode
-                ? "Item updated successfully!"
-                : "Item added successfully!"
-            }
-          />
-        </div>
-      )}
+      {/* SweetAlert2 used for success messages; inline SuccessAlert removed */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="bg-card">
         <ScrollArea className="h-[500px] w-full pr-4 [&>div>div]:space-y-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-500">
           <div className="space-y-4">

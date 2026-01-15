@@ -11,6 +11,7 @@ import type { BillingState } from "@/store/billing-store";
 import { useStockUpdates } from "@/hooks/useStockUpdates";
 import { itemService } from "@/services/item.service";
 import { useReservationCleanup } from "@/hooks/useReservationCleanup";
+import Swal from "sweetalert2";
 
 // Extended type to handle both custCode and cust_id
 interface CustomerData {
@@ -223,7 +224,7 @@ export default function AddItemsSection() {
       } else if (typeof error === "string") {
         message = error;
       }
-      alert(message);
+      Swal.fire({ icon: "error", title: "Failed to add item", text: message });
     }
   }
 

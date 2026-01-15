@@ -1,4 +1,5 @@
 import { Trash2, Ruler, CheckCircle } from "lucide-react";
+import Swal from "sweetalert2";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
 import CustomButton from "@/components/atoms/button/add-button";
@@ -29,13 +30,13 @@ export default function RentalItemsSection() {
       removeItem(index);
     } catch (error) {
       console.error("Failed to unreserve item:", error);
-      alert("Failed to remove item. Please try again.");
+      Swal.fire({ icon: "error", title: "Failed to remove item", text: "Please try again." });
     }
   }
 
   async function handleConfirmOrder(): Promise<void> {
     if (items.length === 0) {
-      alert("No items to confirm");
+      Swal.fire({ icon: "info", title: "No items to confirm" });
       return;
     }
 
@@ -60,10 +61,10 @@ export default function RentalItemsSection() {
       // Clear the billing after successful confirmation
       confirmOrder();
 
-      alert("Order confirmed successfully!");
+      Swal.fire({ icon: "success", title: "Order confirmed successfully!", timer: 1600, showConfirmButton: false });
     } catch (error) {
       console.error("Failed to confirm order:", error);
-      alert("Failed to confirm order. Please try again.");
+      Swal.fire({ icon: "error", title: "Failed to confirm order", text: "Please try again." });
     }
   }
 

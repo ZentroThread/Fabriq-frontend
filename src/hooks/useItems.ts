@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { itemService } from "@/services/item.service";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import { toast } from "sonner";
+import Swal from "sweetalert2";
 
 export interface Item {
   id: number;
@@ -74,10 +74,19 @@ export const useAddItem = () => {
     onSuccess: () => {
       // Invalidate and refetch items list
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
-      toast.success("Item added successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Item added successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to add item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add item",
+        text: error.message || "An error occurred",
+      });
     },
   });
 };
@@ -96,10 +105,19 @@ export const useUpdateItem = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.ITEMS.BY_ID(variables.id),
       });
-      toast.success("Item updated successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Item updated successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to update item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to update item",
+        text: error.message || "An error occurred",
+      });
     },
   });
 };
@@ -113,10 +131,19 @@ export const useDeleteItem = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
-      toast.success("Item deleted successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Item deleted successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to delete item",
+        text: error.message || "An error occurred",
+      });
     },
   });
 };
