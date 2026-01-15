@@ -10,9 +10,6 @@ type MonthlySummary = {
 export const useMonthlyBillSummary = (monthRange?: string) => {
   const { data: bills } = useGetAllBills();
 
-  /* ===============================
-     Bills filtered by date range
-  ================================= */
   const filteredBills = useMemo(() => {
     if (!bills) return [];
 
@@ -26,9 +23,6 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
     });
   }, [bills, monthRange]);
 
-  /* ===============================
-     Summary for CURRENT month
-  ================================= */
   const summaryForThisMonth = useMemo(() => {
     if (!bills) return { totalAmount: 0, billCount: 0 };
 
@@ -56,9 +50,6 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
     };
   }, [bills]);
 
-  /* ===============================
-     Monthly summary (grouped)
-  ================================= */
   const summaryForSelectedMonthRange: MonthlySummary[] = useMemo(() => {
     const summaryMap: Record<string, number> = {};
 
@@ -79,14 +70,8 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
       .map(([month, total]) => ({ month, total }));
   }, [filteredBills]);
 
-  /* ===============================
-     True bill count (not months!)
-  ================================= */
   const totalOrdersByMonthRange = filteredBills.length;
 
-  /* ===============================
-     Bill details for selected range
-  ================================= */
   const billDetailsForSelectedRange = filteredBills;
 
   const monthlySummary = useMemo(() => {

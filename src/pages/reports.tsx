@@ -14,6 +14,8 @@ import {useTotalProfit} from "@/hooks/profit/useTotalProfit";
 import {useMonthlyProfitRevenue} from "@/hooks/profit/useMonthlyProfitRevenue";
 import {RevenueByCategoryPie} from "@/components/organisms/charts/revenue-by-category-pie";
 import {useAttireRentSummaryByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
+import {TopSellingProdTable} from "@/components/organisms/tables/top-selling-prod-table";
+import {useTopSellingProductsByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
 
 function Reports() {
 
@@ -24,6 +26,7 @@ function Reports() {
   const { totalProfit } = useTotalProfit(timeRange);
   const { chartData } = useMonthlyProfitRevenue(timeRange);
   const attireRentSummary = useAttireRentSummaryByDateRange(timeRange);
+  const topSellingProducts = useTopSellingProductsByDateRange(timeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -33,7 +36,6 @@ function Reports() {
   if (isLoading) {
     return <ReportsSkeleton />;
   }
-  console.log(totalSalary)
 
   return (
     <div className="p-5 flex flex-col ">
@@ -114,7 +116,7 @@ function Reports() {
           label={"Top Selling Products"}
           description={"Best performing products by revenue"}
         >
-          <TableDemo />
+          <TopSellingProdTable tableData={topSellingProducts} />
         </Chart>
         <Chart
           label={"Salary Report by Role"}
