@@ -20,6 +20,7 @@ import {PayrollByRoleTable} from "@/components/organisms/tables/salary-by-role-t
 import {useUpcomingAttireRentWithCustomerDetails} from "@/hooks/attire/useUpcomingAttireRentWithCustomerDetails";
 import {CustomerWithRentalTable} from "@/components/organisms/tables/customer-with-rental";
 import {CustomerWithFirstFitOnTable} from "@/components/organisms/tables/customer-with-first-fit-on-table";
+import {sampleRentalData} from "@/constants/data";
 
 function Reports() {
 
@@ -159,7 +160,7 @@ function Reports() {
           label={"Upcoming First Fit-Ons"}
           description={"Attire rentals scheduled for first fit-on appointments"}
         >
-          <CustomerWithFirstFitOnTable tableData={[]} />
+          <CustomerWithFirstFitOnTable tableData={sampleRentalData} />
         </Chart>
       </div>
     </div>
