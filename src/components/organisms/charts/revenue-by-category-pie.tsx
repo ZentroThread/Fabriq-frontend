@@ -21,6 +21,14 @@ type PieData = {
 interface ChartPieProps {
   data: PieData[];
 }
+interface LabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  value: number | string;
+}
 
 const chartConfig = {
   saree: {
@@ -44,7 +52,7 @@ const renderLabel = ({
   innerRadius,
   outerRadius,
   value,
-}: any) => {
+}: LabelProps) => {
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) / 2;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);

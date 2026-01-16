@@ -17,11 +17,14 @@ import {TopSellingProdTable} from "@/components/organisms/tables/top-selling-pro
 import {useTopSellingProductsByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
 import {usePayrollByRole} from "@/hooks/employee/payroll/usePayrollByRole";
 import {PayrollByRoleTable} from "@/components/organisms/tables/salary-by-role-table";
+import {useUpcomingAttireRentWithCustomerDetails} from "@/hooks/attire/useUpcomingAttireRentWithCustomerDetails";
+import {CustomerWithRentalTable} from "@/components/organisms/tables/customer-with-rental";
 
 function Reports() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("");
+  const [nextTimeRange, setNextTimeRange] = useState("");
   const {summaryForSelectedMonthRange , totalOrdersByMonthRange } = useMonthlyBillSummary(timeRange);
   const { totalSalary } = useTotalSalary(timeRange);
   const { totalProfit } = useTotalProfit(timeRange);
@@ -29,6 +32,7 @@ function Reports() {
   const attireRentSummary = useAttireRentSummaryByDateRange(timeRange);
   const topSellingProducts = useTopSellingProductsByDateRange(timeRange);
   const payrollByRole = usePayrollByRole(timeRange);
+  const upcomingAttireRentWithCustomerDetails = useUpcomingAttireRentWithCustomerDetails(nextTimeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -125,6 +129,27 @@ function Reports() {
           description={"Employee salary breakdown"}
         >
           <PayrollByRoleTable tableData={payrollByRole} />
+        </Chart>
+      </div>
+
+      <NativeSelectDemo
+        option="Time Range"
+        value={nextTimeRange}
+        onValueChange={setNextTimeRange}
+        value1="next-7-days"
+        value2="next-14-days"
+        value3="next-30-days"
+        string1="Next 7 Days"
+        string2="Next 14 Days"
+        string3="Next 30 Days"
+      />
+
+       <div className=" mt-5 mb-5">
+        <Chart
+          label={"Upcoming Attire Returns"}
+          description={"Attire rentals due for return soon"}
+        >
+          <CustomerWithRentalTable tableData={upcomingAttireRentWithCustomerDetails} />
         </Chart>
       </div>
     </div>

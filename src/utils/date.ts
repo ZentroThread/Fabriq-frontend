@@ -58,4 +58,38 @@ export const getStartDateFromRange = (range?: string) => {
   }
 };
 
+// Returns the start date for upcoming rental range (always today)
+export const getUpcomingRentalStartDate = (range?: string) => {
+  const now = new Date();
+
+  switch (range) {
+    case "next-7-days":
+    case "next-14-days":
+    case "next-30-days":
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    default:
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+};
+
+export const getUpcomingRentalEndDate = (range?: string) => {
+  const now = new Date();
+
+  switch (range) {
+    case "next-7-days":
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
+
+    case "next-14-days":
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14);
+
+    case "next-30-days":
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
+
+    default:
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
+  }
+};
+
+
 

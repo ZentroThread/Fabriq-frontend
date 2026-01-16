@@ -24,7 +24,7 @@ export function PayrollByRoleTable({ tableData }: { tableData: PayrollByRole[] }
   return (
     <Table className="w-full text-sm shadow-lg rounded-lg overflow-hidden">
       {/* Table Header */}
-      <TableHeader className="bg-gray-100 uppercase text-gray-700">
+      <TableHeader className="bg-gray-100 uppercase text-position-text">
         <TableRow>
           <TableHead className="w-[200px] text-left px-4 py-2">Role</TableHead>
           <TableHead className="text-left px-4 py-2">Employees</TableHead>
@@ -39,9 +39,9 @@ export function PayrollByRoleTable({ tableData }: { tableData: PayrollByRole[] }
             key={roleData.role}
             className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
           >
-            <TableCell className="font-medium px-4 py-2">{roleData.role}</TableCell>
-            <TableCell className="px-4 py-2">{roleData.employeeCount}</TableCell>
-            <TableCell className="text-right px-4 py-2">{formatCurrency(roleData.totalSalary)}</TableCell>
+            <TableCell className="font-medium px-4 py-2 text-position-text">{roleData.role}</TableCell>
+            <TableCell className="px-4 py-2 text-position-text">{roleData.employeeCount}</TableCell>
+            <TableCell className="text-right px-4 py-2 text-position-text">{formatCurrency(roleData.totalSalary)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -49,9 +49,9 @@ export function PayrollByRoleTable({ tableData }: { tableData: PayrollByRole[] }
       {/* Table Footer */}
       <TableFooter className="bg-gray-100 font-semibold">
         <TableRow>
-          <TableCell className="px-4 py-2">Total</TableCell>
-          <TableCell className="px-4 py-2">{totalEmployees}</TableCell>
-          <TableCell className="text-right px-4 py-2">{formatCurrency(totalSalary)}</TableCell>
+          <TableCell className="px-4 py-2 text-position-text">Total</TableCell>
+          <TableCell className="px-4 py-2 text-position-text">{totalEmployees}</TableCell>
+          <TableCell className="text-right px-4 py-2 text-position-text">{formatCurrency(totalSalary)}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
