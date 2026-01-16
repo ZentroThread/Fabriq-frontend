@@ -3,7 +3,7 @@ import { FetchCustomers } from "@/hooks/customer/useCustomer";
 import { getUpcomingRentalEndDate } from "@/utils/date";
 import { useGetAllAttire } from "@/hooks/attire/useAttire";
 
-type CustomerWithRental = {
+type CustomerWithUpcomingRental = {
   rentalId: string;
   customerName: string;
   contactNumber: string;
@@ -30,7 +30,7 @@ export const useUpcomingAttireRentWithCustomerDetails = (dateRange?: string) => 
     attires.map((attire) => [attire.id, attire])
   );
 
-  const upcomingRentals: CustomerWithRental[] = attireRents
+  const upcomingRentals: CustomerWithUpcomingRental[] = attireRents
 
     .filter((rent) => {
       const rentDate = new Date(rent.rentDate || "");

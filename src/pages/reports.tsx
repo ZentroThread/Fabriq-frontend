@@ -1,10 +1,10 @@
-import AddButton from "@/components/atoms/button/add-button";
+// import AddButton from "@/components/atoms/button/add-button";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { Download, DollarSign, Package,TrendingUp } from "lucide-react";
+import { DollarSign, Package,TrendingUp } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import Chart from "@/components/templates/Chart";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
-import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
+// import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
 import { useState, useEffect } from "react";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
@@ -65,7 +65,7 @@ function Reports() {
           string2="Last 3 Months"
           string3="Last 6 Months"
         />
-        <AddButton text="Export" icon={<Download />} />
+        {/* <AddButton text="Export" icon={<Download />} /> */}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
@@ -111,14 +111,14 @@ function Reports() {
 
         </Chart>
       </div>
-      <div className="">
+      {/* <div className="">
         <Chart
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
           <ChartLineMultiple />
         </Chart>
-      </div>
+      </div> */}
       <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mt-5 mb-5">
         <Chart
           label={"Top Selling Products"}
@@ -134,22 +134,24 @@ function Reports() {
         </Chart>
       </div>
 
-      <NativeSelectDemo
-        option="Time Range"
-        value={nextTimeRange}
-        onValueChange={setNextTimeRange}
-        value1="next-7-days"
-        value2="next-14-days"
-        value3="next-30-days"
-        string1="Next 7 Days"
-        string2="Next 14 Days"
-        string3="Next 30 Days"
-      />
+      <div className=" flex gap-2 lg:mr-5 lg:ml-auto mt-5 sm:ml-0 sm:mr-auto">
+        <NativeSelectDemo
+          option="Time Range"
+          value={nextTimeRange}
+          onValueChange={setNextTimeRange}
+          value1="next-7-days"
+          value2="next-14-days"
+          value3="next-30-days"
+          string1="Next 7 Days"
+          string2="Next 14 Days"
+          string3="Next 30 Days"
+        />
+      </div>
 
       <div className=" mt-5 mb-5">
         <Chart
-          label={"Upcoming Attire Returns"}
-          description={"Attire rentals due for return soon"}
+          label={"Upcoming Attire Rental"}
+          description={"Attire rentals scheduled "}
         >
           <CustomerWithRentalTable tableData={upcomingAttireRentWithCustomerDetails} />
         </Chart>
