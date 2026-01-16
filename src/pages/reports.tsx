@@ -19,6 +19,7 @@ import {usePayrollByRole} from "@/hooks/employee/payroll/usePayrollByRole";
 import {PayrollByRoleTable} from "@/components/organisms/tables/salary-by-role-table";
 import {useUpcomingAttireRentWithCustomerDetails} from "@/hooks/attire/useUpcomingAttireRentWithCustomerDetails";
 import {CustomerWithRentalTable} from "@/components/organisms/tables/customer-with-rental";
+import {CustomerWithFirstFitOnTable} from "@/components/organisms/tables/customer-with-first-fit-on-table";
 
 function Reports() {
 
@@ -144,12 +145,21 @@ function Reports() {
         string3="Next 30 Days"
       />
 
-       <div className=" mt-5 mb-5">
+      <div className=" mt-5 mb-5">
         <Chart
           label={"Upcoming Attire Returns"}
           description={"Attire rentals due for return soon"}
         >
           <CustomerWithRentalTable tableData={upcomingAttireRentWithCustomerDetails} />
+        </Chart>
+      </div>
+
+       <div className=" mt-5 mb-5">
+        <Chart
+          label={"Upcoming First Fit-Ons"}
+          description={"Attire rentals scheduled for first fit-on appointments"}
+        >
+          <CustomerWithFirstFitOnTable tableData={[]} />
         </Chart>
       </div>
     </div>
