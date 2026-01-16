@@ -66,7 +66,7 @@ export function ItemCard({
                     : "bg-support-button "
             }`}
           >
-            {status}
+            #{stock} {status}
           </button>
         </div>
         <CardHeader>

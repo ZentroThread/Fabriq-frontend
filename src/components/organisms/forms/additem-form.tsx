@@ -1,9 +1,8 @@
 "use client";
 
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { itemService } from "@/services/item.service";
 import Swal from "sweetalert2";
+import { useAddItem } from "@/hooks/useItems";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -53,7 +52,6 @@ export function AddItemForm({
   itemData,
 }: AddItemFormProps) {
   const form = useAddItemForm();
-  const queryClient = useQueryClient();
   // Pre-fill form when in edit mode
   useEffect(() => {
     if (editMode && itemData) {
@@ -71,35 +69,9 @@ export function AddItemForm({
   }, [editMode, itemData, form]);
 
   const updateItemMutation = useUpdateItem();
-  const mutation = useMutation({
-    mutationFn: itemService.addItem,
-    onSuccess: (data) => {
-      // itemService.addItem already updates the Zustand store,
-      // so avoid adding again here to prevent duplicates.
-      queryClient.invalidateQueries({ queryKey: ["items"] });
+  const addItemMutation = useAddItem();
 
-      // Show SweetAlert success and close the form afterwards
-      Swal.fire({
-        icon: "success",
-        title: "Item added successfully!",
-        timer: 1600,
-        showConfirmButton: false,
-      }).then(() => {
-        if (onClose) onClose();
-      });
-    },
-    onError: (error) => {
-      console.error("Error adding item:", error);
-      // Show error message to user via SweetAlert
-      Swal.fire({
-        icon: "error",
-        title: "Failed to add item",
-        text: error.message || "Unknown error",
-      });
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof addItemFormSchema>) {
+  async function onSubmit(values: z.infer<typeof addItemFormSchema>) {
     const payload = {
       ...values,
       // ensure numeric types
@@ -113,32 +85,39 @@ export function AddItemForm({
 
     if (editMode && itemData) {
       // Update existing item
-      updateItemMutation.mutate(
-        { id: String(itemData.id), data: payload },
-        {
-          onSuccess: () => {
-            Swal.fire({
-              icon: "success",
-              title: "Item updated successfully!",
-              timer: 1600,
-              showConfirmButton: false,
-            }).then(() => {
-              if (onClose) onClose();
-            });
-          },
-          onError: (error) => {
-            console.error("Error updating item:", error);
-            Swal.fire({
-              icon: "error",
-              title: "Failed to update item",
-              text: error.message || "Unknown error",
-            });
-          },
-        }
-      );
+      try {
+        await updateItemMutation.mutateAsync({
+          id: String(itemData.id),
+          data: payload,
+        });
+        await Swal.fire({
+          icon: "success",
+          title: "Item updated successfully!",
+          timer: 1600,
+          showConfirmButton: false,
+        });
+        if (onClose) onClose();
+      } catch (error: any) {
+        console.error("Error updating item:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed to update item. Refresh the page.",
+          text: error?.message || "Unknown error",
+        });
+      }
     } else {
       // Add new item
-      mutation.mutate(payload);
+      try {
+        await addItemMutation.mutateAsync(payload);
+        if (onClose) onClose();
+      } catch (error: any) {
+        console.error("Error adding item:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed to add item",
+          text: error?.message || "Unknown error",
+        });
+      }
     }
   }
 
@@ -356,20 +335,22 @@ export function AddItemForm({
                 type="button"
                 className="bg-bg-red  hover:opacity-80 hover:bg-bg-red"
                 onClick={onClose}
-                disabled={mutation.isPending}
+                disabled={addItemMutation.isLoading}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className=" bg-bg-green hover:opacity-80 hover:bg-bg-green "
-                disabled={mutation.isPending || updateItemMutation.isPending}
+                disabled={
+                  addItemMutation.isLoading || updateItemMutation.isLoading
+                }
               >
                 {editMode
-                  ? updateItemMutation.isPending
+                  ? updateItemMutation.isLoading
                     ? "Updating..."
                     : "Update Item"
-                  : mutation.isPending
+                  : addItemMutation.isLoading
                     ? "Adding..."
                     : "Add Item"}
               </Button>
