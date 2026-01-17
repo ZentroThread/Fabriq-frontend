@@ -78,7 +78,16 @@ axiosInstance.interceptors.response.use(
       _skipAuthRedirect?: boolean; // Add this flag
     };
 
-    console.error("❌ API Error:", error.response?.data || error.message);
+    // Log richer error information for easier debugging
+    const resp = error.response;
+    const errInfo = resp
+      ? { status: resp.status, statusText: resp.statusText, data: resp.data }
+      : { message: error.message };
+    try {
+      console.error("❌ API Error:", JSON.stringify(errInfo));
+    } catch (jsonErr) {
+      console.error("❌ API Error:", errInfo);
+    }
 
     // Handle 401 - Unauthorized (token expired)
     if (

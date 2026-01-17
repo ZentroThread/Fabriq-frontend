@@ -211,4 +211,23 @@ export const itemService = {
       data,
     });
   },
+  // New: fetch rental stats and wishlist for an attire code
+  getStatsByAttireCode: async (attireCode: string): Promise<any> => {
+    return apiClient.request<any>(
+      `/v1/attire-rent/stats/${encodeURIComponent(attireCode)}`
+    );
+  },
+  // Create an attire rent (used for future/wishlist entries)
+  addAttireRent: async (payload: {
+    attireCode: string;
+    customerCode: string;
+    rentDate?: string | Date;
+    returnDate?: string | Date;
+    billingCode?: string;
+  }) => {
+    return apiClient.request<any>(`/v1/attire-rent/add`, {
+      method: "POST",
+      data: payload,
+    });
+  },
 };

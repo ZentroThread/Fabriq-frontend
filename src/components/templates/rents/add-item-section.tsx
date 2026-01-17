@@ -8,10 +8,6 @@ import Button from "@/components/atoms/button/add-button";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
-import { useStockUpdates } from "@/hooks/useStockUpdates";
-import { itemService } from "@/services/item.service";
-import { useReservationCleanup } from "@/hooks/useReservationCleanup";
-import Swal from "sweetalert2";
 
 // Extended type to handle both custCode and cust_id
 interface CustomerData {
@@ -35,8 +31,7 @@ interface ItemWithStock
 export default function AddItemsSection() {
   // ensure items are fetched into the local zustand store for suggestions
   useItems();
-  useStockUpdates();
-  useReservationCleanup();
+
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   ) as CustomerData | null;
@@ -133,22 +128,15 @@ export default function AddItemsSection() {
   useEffect(() => {
     if (localItem) {
       const liveStock = getCurrentStock(localItem.code || "");
-      console.log(
-        `📊 [DISPLAY] Updating displayed stock for ${localItem.code}:`,
-        liveStock
-      );
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayedStock(liveStock);
     } else {
-      console.log("📊 [DISPLAY] No local item, clearing displayed stock");
       setDisplayedStock(null);
     }
-  }, [localItem, allItems]); // ← Add allItems dependency
+  }, [localItem, allItems]);
 
   // keep local customerCode in sync with selectedCustomer and allow edits
   useEffect(() => {
     if (!selectedCustomer) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCustomerCode("");
       return;
     }
@@ -160,7 +148,6 @@ export default function AddItemsSection() {
   }, [selectedCustomer]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!startDate || !endDate) return setDays(0);
     const s = new Date(startDate);
     const e = new Date(endDate);
@@ -168,64 +155,32 @@ export default function AddItemsSection() {
     setDays(Math.max(0, diff));
   }, [startDate, endDate]);
 
-  async function onAdd() {
+  function onAdd() {
     const code = (itemCode ?? "").trim();
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
 
-    console.log("🔵 [ADD ITEM] Starting reservation for:", code);
-    console.log("📊 [ADD ITEM] Current stock before reserve:", displayedStock);
+    const payload = {
+      itemCode: code,
+      name,
+      price: price || 0,
+      days,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      customerCode: customerCode,
+    };
 
-    try {
-      const resp = await itemService.reserveItem({
-        attireCode: code,
-        customerCode: customerCode,
-      });
+    console.log("Rent startDate:", startDate);
+    console.log("Add item payload:", payload);
 
-      console.log("✅ [ADD ITEM] Reserve response:", resp);
+    // Just add to local billing state - NO API CALLS
+    addItem(payload);
 
-      // Update local item store immediately with returned stock
-      if (resp && typeof resp.attireStock === "number") {
-        console.log(
-          "📦 [ADD ITEM] Updating store with new stock:",
-          resp.attireStock
-        );
-        useItemStore.getState().updateItemStock(code, resp.attireStock);
-      } else {
-        console.warn("⚠️ [ADD ITEM] Invalid stock in response:", resp);
-      }
-
-      // Add to billing
-      addItem({
-        itemCode: code,
-        name,
-        price: price || 0,
-        days,
-        startDate: startDate || undefined,
-        endDate: endDate || undefined,
-        customerCode: customerCode,
-      });
-
-      // Reset form
-      setStartDate(null);
-      setEndDate(null);
-      setItemCode("");
-      setDays(0);
-    } catch (error: unknown) {
-      let message = "Failed to reserve item";
-      if (error instanceof Error) {
-        message = error.message || message;
-      } else if (typeof error === "object" && error !== null) {
-        const errObj = error as Record<string, unknown>;
-        const resp = errObj.response as Record<string, unknown> | undefined;
-        if (resp && typeof resp.data === "string") {
-          message = resp.data;
-        }
-      } else if (typeof error === "string") {
-        message = error;
-      }
-      Swal.fire({ icon: "error", title: "Failed to add item", text: message });
-    }
+    // Reset form
+    setStartDate(null);
+    setEndDate(null);
+    setItemCode("");
+    setDays(0);
   }
 
   const handleCustomerCodeChange = (value: string) => {
@@ -240,7 +195,6 @@ export default function AddItemsSection() {
         setSelectedCustomer({ custCode: value } as CustomerData);
       }
     } catch (err) {
-      // swallow; keep local value at least
       console.warn("Failed to update selected customer code", err);
     }
   };
@@ -278,7 +232,7 @@ export default function AddItemsSection() {
               {suggestions.map((suggestion, idx) => {
                 const code = getSuggestionCode(suggestion);
                 const name = suggestion.title || suggestion.name || "-";
-                const stock = getCurrentStock(code); // ← Gets LIVE stock from store
+                const stock = getCurrentStock(code);
 
                 return (
                   <li
@@ -287,8 +241,7 @@ export default function AddItemsSection() {
                     onClick={() => {
                       if (!code) return;
                       setItemCode(code);
-                      // Use getCurrentStock instead of normalizeStock
-                      setDisplayedStock(getCurrentStock(code)); // ← CHANGED THIS LINE
+                      setDisplayedStock(getCurrentStock(code));
                     }}
                   >
                     <div className="text-sm">
@@ -357,14 +310,22 @@ export default function AddItemsSection() {
           min={new Date().toISOString().split("T")[0]}
           onChange={(e) => {
             const val = e.target.value || null;
-            if (!val) return setStartDate(null);
+            if (!val) {
+              setStartDate(null);
+              console.log("Start date cleared");
+              return;
+            }
+
             const chosen = new Date(val);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (chosen < today) {
-              setStartDate(today.toISOString().split("T")[0]);
+              const sVal = today.toISOString().split("T")[0];
+              setStartDate(sVal);
+              console.log("Start date adjusted to today:", sVal);
             } else {
               setStartDate(val);
+              console.log("Start date selected:", val);
             }
           }}
         />

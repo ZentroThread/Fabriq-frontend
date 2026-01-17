@@ -11,7 +11,7 @@ import {
 import Chart from "@/components/templates/Chart";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// Card components not used in this page; removed to fix unused import
 import {
   Table,
   TableBody,

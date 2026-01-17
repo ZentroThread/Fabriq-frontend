@@ -18,6 +18,8 @@ import { ProtectedRoute } from "@/routes/protected-route";
 import MonthlySalary from "@/pages/monthly-salary";
 import EpfEtfHistoryPage from "@/pages/epf-etf-history";
 import AddEmployee from "@/pages/add-employee";
+import ItemsWishlist from "@/pages/items-wishlist";
+import ItemsHistory from "@/pages/items-history";
 
 function AppRoutes() {
   return (
@@ -38,9 +40,18 @@ function AppRoutes() {
             <Route path="/emp/:id" element={<EmployeeProfile />} />
             <Route path="/salary-history/:id" element={<SalaryHistory />} />
             <Route path="/leave-history/:id" element={<LeaveHistory />} />
-            <Route path="/production-overview/:id" element={<ProductionOverview />} />
-            <Route path="/advance-payment-overview/:id" element={<AdvancePaymentOverviewPage />} />
-            <Route path="/monthly-salary/:id/:year/:month" element={<MonthlySalary />} />
+            <Route
+              path="/production-overview/:id"
+              element={<ProductionOverview />}
+            />
+            <Route
+              path="/advance-payment-overview/:id"
+              element={<AdvancePaymentOverviewPage />}
+            />
+            <Route
+              path="/monthly-salary/:id/:year/:month"
+              element={<MonthlySalary />}
+            />
             <Route path="/epf-etf-history" element={<EpfEtfHistoryPage />} />
             <Route path="/add-employee" element={<AddEmployee />} />
           </Route>
@@ -67,6 +78,8 @@ function AppRoutes() {
           >
             <Route path="/items" element={<Items />} />
             <Route path="/attire" element={<Items />} />
+            <Route path="/items/wishlist" element={<ItemsWishlist />} />
+            <Route path="/items/history" element={<ItemsHistory />} />
           </Route>
 
           {/* Reports - Owner only */}

@@ -8,7 +8,7 @@ type RentalItem = {
   days: number;
   startDate?: string;
   endDate?: string;
-  customerCode?: string; // ← ADD THIS
+  customerCode?: string;
 };
 
 type Customer = {
@@ -94,33 +94,32 @@ const useBillingStore = create<BillingState>((set, get) => ({
 
     if (!customerCode) throw new Error("Customer code is required");
 
-    // Send all items + customer in ONE request
+    // ✅ Use item.startDate and item.endDate from the selected dates
     const payload = {
       customerCode,
       items: items.map((item) => ({
         attireCode: item.itemCode,
-        rentDate: new Date()
-          .toLocaleString("sv", { timeZone: "Asia/Colombo", hour12: false })
-          .replace(" ", "T"),
-        returnDate: item.endDate ? `${item.endDate}T23:59:59` : undefined,
+        rentDate: item.startDate || new Date().toISOString().split('T')[0],
+        returnDate: item.endDate || undefined,
       })),
     };
+    
     console.log("📤 Sending payload:", payload);
     const resp = await billingService.createBillingWithRentals(payload);
-    // backend returns created billing; store it so summary can display
+    
     try {
-      // resp may be the billing object
       const createdBilling = resp as Billing;
       set({ currentBilling: createdBilling });
     } catch (e) {
       console.warn("could not store billing response", e);
     }
   },
+
   clearAll: () => set({ items: [], selectedCustomer: null }),
 
   payBilling: async ({ discountPercentage = 0, paymentMethod = "cash" }) => {
     let billing = get().currentBilling;
-    // If no billing exists yet, create it from current items/customer
+    
     if (!billing || !billing.billingCode) {
       const items = get().items;
       const customer = get().selectedCustomer;
@@ -133,14 +132,13 @@ const useBillingStore = create<BillingState>((set, get) => ({
         (customer.cust_id ? String(customer.cust_id) : undefined);
       if (!customerCode) throw new Error("Customer code is required");
 
+      // ✅ Use item.startDate and item.endDate from the selected dates
       const payload = {
         customerCode,
         items: items.map((item) => ({
           attireCode: item.itemCode,
-          rentDate: new Date()
-            .toLocaleString("sv", { timeZone: "Asia/Colombo", hour12: false })
-            .replace(" ", "T"),
-          returnDate: item.endDate ? `${item.endDate}T23:59:59` : undefined,
+          rentDate: item.startDate || new Date().toISOString().split('T')[0],
+          returnDate: item.endDate || undefined,
         })),
       };
 
@@ -160,7 +158,6 @@ const useBillingStore = create<BillingState>((set, get) => ({
       | { billHtml?: string; billing?: Billing }
       | undefined;
 
-    // resp expected to contain billHtml and updated billing
     if (respTyped && respTyped.billHtml) {
       const w = window.open("");
       if (w) {
@@ -174,12 +171,11 @@ const useBillingStore = create<BillingState>((set, get) => ({
       }
     }
 
-    // Update local state: clear items and currentBilling
     set({
       items: [],
       currentBilling: respTyped && respTyped.billing ? respTyped.billing : null,
     });
-    // Reload the whole app to ensure all stores reset
+    
     setTimeout(() => {
       try {
         window.location.reload();

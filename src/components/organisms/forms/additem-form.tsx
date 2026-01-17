@@ -335,7 +335,7 @@ export function AddItemForm({
                 type="button"
                 className="bg-bg-red  hover:opacity-80 hover:bg-bg-red"
                 onClick={onClose}
-                disabled={addItemMutation.isLoading}
+                disabled={(addItemMutation as any).isLoading}
               >
                 Cancel
               </Button>
@@ -343,14 +343,15 @@ export function AddItemForm({
                 type="submit"
                 className=" bg-bg-green hover:opacity-80 hover:bg-bg-green "
                 disabled={
-                  addItemMutation.isLoading || updateItemMutation.isLoading
+                  (addItemMutation as any).isLoading ||
+                  (updateItemMutation as any).isLoading
                 }
               >
                 {editMode
-                  ? updateItemMutation.isLoading
+                  ? (updateItemMutation as any).isLoading
                     ? "Updating..."
                     : "Update Item"
-                  : addItemMutation.isLoading
+                  : (addItemMutation as any).isLoading
                     ? "Adding..."
                     : "Add Item"}
               </Button>

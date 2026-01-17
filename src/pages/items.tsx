@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import Button from "@/components/atoms/button/add-button";
+import { useNavigate } from "react-router-dom";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
 import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
@@ -21,17 +22,30 @@ import { useItemStore } from "@/store/item-store";
 
 function Items() {
   useStockUpdates();
+  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
+
   const allItemsFromStore = useItemStore((s) => s.items);
   const setItems = useItemStore((s) => s.setItems);
-  const { allItems: fetchedItems, isLoading, error, refetch } = useFilteredItems("");
+  const {
+    allItems: fetchedItems,
+    isLoading,
+    error,
+    refetch,
+  } = useFilteredItems("");
 
   // Sync database to Zustand ONLY if Zustand is empty (first load)
   useEffect(() => {
-    if (fetchedItems && fetchedItems.length > 0 && allItemsFromStore.length === 0) {
+    if (
+      fetchedItems &&
+      fetchedItems.length > 0 &&
+      allItemsFromStore.length === 0
+    ) {
       console.log("📥 [INITIAL LOAD] Syncing database to Zustand");
       setItems(fetchedItems);
     }
@@ -82,7 +96,7 @@ function Items() {
     allItems?.filter((item) => item.status !== "Rented").length || 0;
   const rented =
     allItems?.filter((item) => item.status === "Rented").length || 0;
-    
+
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
   };
@@ -111,6 +125,18 @@ function Items() {
           icon={<Plus />}
           onClick={() => setIsDialogOpen(true)}
         />
+        <Button
+          text={"Wishlist"}
+          width="w-30"
+          icon={undefined}
+          onClick={() => navigate("/items/wishlist")}
+        />
+        <Button
+          text={"History"}
+          width="w-30"
+          icon={undefined}
+          onClick={() => navigate("/items/history")}
+        />
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -126,7 +152,7 @@ function Items() {
           <AddItemForm onClose={handleItemAdded} />
         </DialogContent>
       </Dialog>
-      
+
       <div className="grid lg:grid-cols-3  sm:grid-cols-1  md:grid-cols-2 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Items"}
@@ -171,6 +197,17 @@ function Items() {
         </div>
       </Chart>
 
+      <div className="mt-3 mb-3">
+        <label className="text-sm text-position-text mr-2">Select Date:</label>
+        <input
+          type="date"
+          value={selectedDate}
+          min={new Date().toISOString().split("T")[0]}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="border rounded px-2 py-1"
+        />
+      </div>
+
       {error ? (
         <div className="flex flex-col items-center justify-center h-64">
           <p className="text-destructive mb-4">
@@ -214,6 +251,7 @@ function Items() {
               categoryId={
                 typeof item.category === "object" ? item.category : undefined
               }
+              selectedDate={selectedDate}
             />
           ))}
         </div>
