@@ -6,7 +6,7 @@ import type {
 import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import type { AttireRent } from "@/types/attireRent.type";
-import type {Bill} from "@/types/bill.type";
+import type { Bill } from "@/types/bill.type";
 
 type AttireRentAddDto = {
   customerCode?: string;
@@ -54,9 +54,7 @@ export const billingService = {
   },
 
   async getAllBillings(): Promise<Bill[]> {
-    const resp = await apiClient.request<Bill[]>(
-      API_ENDPOINTS.BILLING.GET_ALL
-    );
+    const resp = await apiClient.request<Bill[]>(API_ENDPOINTS.BILLING.GET_ALL);
     return resp;
   },
 

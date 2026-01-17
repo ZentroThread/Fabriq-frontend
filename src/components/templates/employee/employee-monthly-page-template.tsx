@@ -3,7 +3,6 @@ import SectionHeader from "@/components/molecules/header/section-header";
 import SingleDatePicker from "@/components/organisms/calender/single-date-picker";
 
 type EmployeeMonthlyPageTemplateProps = {
-
   title: string;
   description?: string;
 
@@ -17,34 +16,27 @@ type EmployeeMonthlyPageTemplateProps = {
   selectedYear: string;
   onMonthChange: (month: string) => void;
   onYearChange: (year: string) => void;
-
 };
 
-export default function EmployeeMonthlyPageTemplate(props: EmployeeMonthlyPageTemplateProps) {
+export default function EmployeeMonthlyPageTemplate(
+  props: EmployeeMonthlyPageTemplateProps
+) {
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
-
       {/* Header */}
-      <SectionHeader
-        title={props.title}
-        description={props.description}
-      />
+      <SectionHeader title={props.title} description={props.description} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        {/* Form Section */}
+        <div className="lg:col-span-2 ">{props.form}</div>
 
-         {/* Form Section */}
-        <div className="lg:col-span-2 ">
-          {props.form}
+        {/* Calendar Section */}
+        <div className="lg:col-span-1">
+          <SingleDatePicker
+            selectedDay={props.selectedDay}
+            onDaySelect={props.onDaySelect}
+          />
         </div>
-
-         {/* Calendar Section */}
-         <div className="lg:col-span-1">
-           <SingleDatePicker
-              selectedDay={props.selectedDay}
-              onDaySelect={props.onDaySelect}
-            />
-         </div>
-
       </div>
 
       {/* Table Section */}
@@ -58,8 +50,6 @@ export default function EmployeeMonthlyPageTemplate(props: EmployeeMonthlyPageTe
         />
         {props.table}
       </div>
-      
     </div>
-
-  )
+  );
 }

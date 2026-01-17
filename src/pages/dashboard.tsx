@@ -6,19 +6,25 @@ import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
 import { DashboardSkeleton } from "@/components/molecules/skeletons/dashboard-skeleton";
 import { useState, useEffect } from "react";
-import {useAttireRentsSummary} from "@/hooks/attire/useAttireRentsSummary";
+import { useAttireRentsSummary } from "@/hooks/attire/useAttireRentsSummary";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
-import {useAttireRentCurrentMonthlyOverview} from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
+import { useAttireRentCurrentMonthlyOverview } from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
 
 function Dashboard() {
-  
-  const { activeRentsCount, dueReturnsCount, overdueReturnsCount, newAttireRentsThisWeek } = useAttireRentsSummary();
-  const { totalEmployees, presentCount, lateCount } = useTodayDeviceAttendanceLogsSummary();
+  const {
+    activeRentsCount,
+    dueReturnsCount,
+    overdueReturnsCount,
+    newAttireRentsThisWeek,
+  } = useAttireRentsSummary();
+  const { totalEmployees, presentCount, lateCount } =
+    useTodayDeviceAttendanceLogsSummary();
 
-  const attendanceRate = totalEmployees > 0
-    ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
-    : 0;
+  const attendanceRate =
+    totalEmployees > 0
+      ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
+      : 0;
 
   const { monthlySummary } = useMonthlyBillSummary();
 
@@ -35,7 +41,6 @@ function Dashboard() {
   if (isLoading) {
     return <DashboardSkeleton />;
   }
-
 
   return (
     <div className="p-5 flex flex-col ">
@@ -55,9 +60,11 @@ function Dashboard() {
         <DashboardCard
           lable={"Active Rentals"}
           lable1={`${activeRentsCount}`}
-          lable2={newAttireRentsThisWeek > 0 
-                    ? `+${newAttireRentsThisWeek} this week` 
-                    : "0 this week"}
+          lable2={
+            newAttireRentsThisWeek > 0
+              ? `+${newAttireRentsThisWeek} this week`
+              : "0 this week"
+          }
           icon={Package}
           iconbg="var(--color-light-pie-1)"
         />
@@ -81,7 +88,7 @@ function Dashboard() {
           label={"Revenue & Rentals"}
           description={"Monthly revenue and rental trends."}
         >
-          <ChartLineDots chartData={monthlySummary}/>
+          <ChartLineDots chartData={monthlySummary} />
         </Chart>
         <Chart
           label={"Rentals by Category"}

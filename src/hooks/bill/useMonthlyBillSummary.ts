@@ -18,7 +18,9 @@ export const useMonthlyBillSummary = () => {
       if (!summaryMap[monthYear]) {
         summaryMap[monthYear] = 0;
       }
-      summaryMap[monthYear] += bill.billingTotal ? parseFloat(bill.billingTotal) : 0;
+      summaryMap[monthYear] += bill.billingTotal
+        ? parseFloat(bill.billingTotal)
+        : 0;
     });
 
     const summaryArray = Object.entries(summaryMap).map(([month, total]) => ({

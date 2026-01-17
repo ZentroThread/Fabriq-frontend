@@ -35,16 +35,16 @@ export function useStockUpdates() {
         queryClient.setQueryData<Item[]>(QUERY_KEYS.ITEMS.ALL, (oldData) => {
           if (!oldData) return oldData;
           const updated = oldData.map((item) =>
-            item.code === attireCode
-              ? { ...item, stock: attireStock }
-              : item
+            item.code === attireCode ? { ...item, stock: attireStock } : item
           );
           console.log("✅ [REACT QUERY] Cache updated for:", attireCode);
           return updated;
         });
 
         // 3. Sync React Query → Zustand
-        const updatedData = queryClient.getQueryData<Item[]>(QUERY_KEYS.ITEMS.ALL);
+        const updatedData = queryClient.getQueryData<Item[]>(
+          QUERY_KEYS.ITEMS.ALL
+        );
         if (updatedData) {
           setItems(updatedData);
         }

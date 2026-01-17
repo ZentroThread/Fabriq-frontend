@@ -99,14 +99,14 @@ const useBillingStore = create<BillingState>((set, get) => ({
       customerCode,
       items: items.map((item) => ({
         attireCode: item.itemCode,
-        rentDate: item.startDate || new Date().toISOString().split('T')[0],
+        rentDate: item.startDate || new Date().toISOString().split("T")[0],
         returnDate: item.endDate || undefined,
       })),
     };
-    
+
     console.log("📤 Sending payload:", payload);
     const resp = await billingService.createBillingWithRentals(payload);
-    
+
     try {
       const createdBilling = resp as Billing;
       set({ currentBilling: createdBilling });
@@ -119,7 +119,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
 
   payBilling: async ({ discountPercentage = 0, paymentMethod = "cash" }) => {
     let billing = get().currentBilling;
-    
+
     if (!billing || !billing.billingCode) {
       const items = get().items;
       const customer = get().selectedCustomer;
@@ -137,7 +137,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
         customerCode,
         items: items.map((item) => ({
           attireCode: item.itemCode,
-          rentDate: item.startDate || new Date().toISOString().split('T')[0],
+          rentDate: item.startDate || new Date().toISOString().split("T")[0],
           returnDate: item.endDate || undefined,
         })),
       };
@@ -175,7 +175,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
       items: [],
       currentBilling: respTyped && respTyped.billing ? respTyped.billing : null,
     });
-    
+
     setTimeout(() => {
       try {
         window.location.reload();

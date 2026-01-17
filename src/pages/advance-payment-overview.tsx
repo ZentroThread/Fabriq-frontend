@@ -4,28 +4,27 @@ import AdvancePaymentsTable from "@/components/organisms/advance-payment/advance
 import useAdvancePaymentOverview from "@/hooks/employee/advancePayment/useAdvancePaymentOverview";
 
 export default function AdvancePaymentOverviewPage() {
-
   const { state, actions } = useAdvancePaymentOverview();
 
   return (
     <EmployeeMonthlyPageTemplate
-
       title="Advance Payment Overview"
       description="Manage advance payments for the selected employee."
-
       form={
         <AdvancePaymentForm
           empName={state.empName}
           formData={state.formData}
           onchange={actions.handleChange}
-          advancePaymentId={state.advancePaymentId ? state.advancePaymentId : undefined}
+          advancePaymentId={
+            state.advancePaymentId ? state.advancePaymentId : undefined
+          }
           handleAddAdvancePayment={actions.handleAddAdvancePayment}
           handleAdvancePaymentUpdate={actions.handleAdvancePaymentUpdate}
           isUpdateMode={state.isUpdateMode}
         />
       }
       table={
-        <AdvancePaymentsTable 
+        <AdvancePaymentsTable
           data={state.advancePayments || []}
           handleAdvancePaymentDelete={actions.handleAdvancePaymentDelete}
           handleSetIsUpdateMode={actions.handleSetIsUpdateMode}
@@ -44,6 +43,5 @@ export default function AdvancePaymentOverviewPage() {
         actions.setSelectedDay(null);
       }}
     />
-
-  )
+  );
 }

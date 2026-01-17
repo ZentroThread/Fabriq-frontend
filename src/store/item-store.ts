@@ -55,9 +55,11 @@ export const useItemStore = create<ItemStore>()(
 
       updateItem: (id, updatedItem) =>
         set((state) => ({
-          items: state.items.map((item) => (item.id === id ? updatedItem : item)),
+          items: state.items.map((item) =>
+            item.id === id ? updatedItem : item
+          ),
         })),
-        
+
       deleteItem: (id) =>
         set((state) => ({
           items: state.items.filter((item) => item.id !== id),
@@ -69,7 +71,9 @@ export const useItemStore = create<ItemStore>()(
 
       updateItemStock: (attireCode: string, newStock: number) =>
         set((state) => {
-          console.log(`🔄 [STORE] Updating stock for ${attireCode}: ${newStock}`);
+          console.log(
+            `🔄 [STORE] Updating stock for ${attireCode}: ${newStock}`
+          );
           const updatedItems = state.items.map((item) =>
             item.code === attireCode
               ? {

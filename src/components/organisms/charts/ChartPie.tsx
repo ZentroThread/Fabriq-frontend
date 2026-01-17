@@ -64,11 +64,7 @@ export function ChartPie({ data }: ChartPieProps) {
               }
             />
 
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="category"
-            />
+            <Pie data={data} dataKey="value" nameKey="category" />
 
             <ChartLegend
               content={<ChartLegendContent nameKey="category" />}

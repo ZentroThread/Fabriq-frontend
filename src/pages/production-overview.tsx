@@ -1,18 +1,15 @@
 import EmployeeMonthlyPageTemplate from "@/components/templates/employee/employee-monthly-page-template";
 import EmployeeProductionTable from "@/components/organisms/employee-production/employee-production-table";
-import { useEmployeeProductionOverview } from "@/hooks/employee/productionRecord/useEmployeeProductionOverview"
-import EmployeeProductionForm from "@/components/organisms/employee-production/employee-production-form"
+import { useEmployeeProductionOverview } from "@/hooks/employee/productionRecord/useEmployeeProductionOverview";
+import EmployeeProductionForm from "@/components/organisms/employee-production/employee-production-form";
 
 const ProductionOverview = () => {
+  const { state, actions } = useEmployeeProductionOverview();
 
-  const {state,actions} = useEmployeeProductionOverview();
- 
   return (
     <EmployeeMonthlyPageTemplate
-
       title="Production Overview"
       description="Manage production records for the selected employee."
-
       form={
         <EmployeeProductionForm
           empName={state.empName}
@@ -24,8 +21,8 @@ const ProductionOverview = () => {
           isUpdateMode={state.isUpdateMode}
         />
       }
-      table = {
-        <EmployeeProductionTable 
+      table={
+        <EmployeeProductionTable
           data={state.prodByDate || []}
           handleProductionDelete={actions.handleProductionDelete}
           handleSetIsUpdateMode={actions.handleSetIsUpdateMode}
@@ -43,7 +40,6 @@ const ProductionOverview = () => {
         actions.setSelectedYear(year);
         actions.setSelectedDay(null);
       }}
-
     />
   );
 };

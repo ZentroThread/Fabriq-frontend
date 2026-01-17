@@ -5,7 +5,14 @@ import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
 import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
 import Chart from "@/components/templates/Chart";
-import { BanknoteArrowUp, Package, Plus, Tag } from "lucide-react";
+import {
+  BanknoteArrowUp,
+  Heart,
+  Package,
+  Plus,
+  Tag,
+  History,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -118,7 +125,7 @@ function Items() {
       <div className="text-position-text ">
         Manage bridal attire and accessories inventory
       </div>
-      <div className="flex gap-2 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
+      <div className="flex gap-5 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
         <Button
           text={"Add New Item"}
           width="w-45"
@@ -126,15 +133,15 @@ function Items() {
           onClick={() => setIsDialogOpen(true)}
         />
         <Button
-          text={"Wishlist"}
-          width="w-30"
-          icon={undefined}
+          text={"View Wishlist"}
+          width="w-45"
+          icon={<Heart />}
           onClick={() => navigate("/items/wishlist")}
         />
         <Button
           text={"History"}
-          width="w-30"
-          icon={undefined}
+          width="w-45"
+          icon={<History />}
           onClick={() => navigate("/items/history")}
         />
       </div>

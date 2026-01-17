@@ -3,18 +3,22 @@ import Table from "@/components/molecules/Table/table";
 import type { AdvancePaymentResponse } from "@/types/advance-payment.type";
 
 const columns = [
-  {header:"Date",accessor:"date" as const},
-  {header:"Amount",accessor:"amount" as const},
-  {header:"Reason",accessor:"reason" as const},
+  { header: "Date", accessor: "date" as const },
+  { header: "Amount", accessor: "amount" as const },
+  { header: "Reason", accessor: "reason" as const },
 ];
 
 type AdvancePaymentTableProps = {
-  data:AdvancePaymentResponse[];
+  data: AdvancePaymentResponse[];
   handleSetIsUpdateMode: (id: number) => void;
   handleAdvancePaymentDelete: (id: number) => void;
 };
 
-export default function AdvancePaymentsTable({ data: advancePayments, handleSetIsUpdateMode, handleAdvancePaymentDelete }: AdvancePaymentTableProps) {
+export default function AdvancePaymentsTable({
+  data: advancePayments,
+  handleSetIsUpdateMode,
+  handleAdvancePaymentDelete,
+}: AdvancePaymentTableProps) {
   return (
     <Table
       columns={columns}

@@ -1,8 +1,13 @@
-import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "@/components/ui/select";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const toDay = new Date();
-const currentMonth = String(toDay.getMonth() + 1).padStart(2, '0');
+const currentMonth = String(toDay.getMonth() + 1).padStart(2, "0");
 const currentYear = String(toDay.getFullYear());
 
 type MonthYearSelectProps = {
@@ -10,7 +15,7 @@ type MonthYearSelectProps = {
   year?: string;
   onMonthChange: (month: string) => void;
   onYearChange: (year: string) => void;
-  yearRange?: number; 
+  yearRange?: number;
 };
 
 const months = [
@@ -29,13 +34,12 @@ const months = [
 ];
 
 const MonthYearSelect = ({
-  month=currentMonth,
-  year=currentYear,
+  month = currentMonth,
+  year = currentYear,
   onMonthChange,
   onYearChange,
   yearRange = 5,
 }: MonthYearSelectProps) => {
-
   const currentYear = new Date().getFullYear();
 
   const years = Array.from({ length: yearRange }, (_, i) =>

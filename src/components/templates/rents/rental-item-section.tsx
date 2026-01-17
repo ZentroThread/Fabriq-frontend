@@ -30,7 +30,11 @@ export default function RentalItemsSection() {
       removeItem(index);
     } catch (error) {
       console.error("Failed to unreserve item:", error);
-      Swal.fire({ icon: "error", title: "Failed to remove item", text: "Please try again." });
+      Swal.fire({
+        icon: "error",
+        title: "Failed to remove item",
+        text: "Please try again.",
+      });
     }
   }
 
@@ -61,10 +65,19 @@ export default function RentalItemsSection() {
       // Clear the billing after successful confirmation
       confirmOrder();
 
-      Swal.fire({ icon: "success", title: "Order confirmed successfully!", timer: 1600, showConfirmButton: false });
+      Swal.fire({
+        icon: "success",
+        title: "Order confirmed successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Failed to confirm order:", error);
-      Swal.fire({ icon: "error", title: "Failed to confirm order", text: "Please try again." });
+      Swal.fire({
+        icon: "error",
+        title: "Failed to confirm order",
+        text: "Please try again.",
+      });
     }
   }
 

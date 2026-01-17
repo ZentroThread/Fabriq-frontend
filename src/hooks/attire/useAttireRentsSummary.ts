@@ -8,7 +8,6 @@ type AttireRentsSummary = {
 };
 
 export const useAttireRentsSummary = (): AttireRentsSummary => {
-  
   const { data: attireRents } = useGetAllAttireRents();
 
   const now = new Date();

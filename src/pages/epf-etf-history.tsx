@@ -1,7 +1,10 @@
 import { useState } from "react";
 import EtfRecordTable from "@/components/organisms/payroll/etf-record-table";
 import EpfRecordTable from "@/components/organisms/payroll/epf-record-table";
-import { useGetEpfRecord, useGetEtfRecord } from "@/hooks/employee/payroll/usePayroll";
+import {
+  useGetEpfRecord,
+  useGetEtfRecord,
+} from "@/hooks/employee/payroll/usePayroll";
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import SectionHeader from "@/components/molecules/header/section-header";
 import { currentMonth, currentYear } from "@/utils/date";
@@ -12,8 +15,14 @@ export default function EpfEtfHistoryPage() {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [activeTab, setActiveTab] = useState<"EPF" | "ETF">("EPF");
 
-  const { data: epfRecords } = useGetEpfRecord(Number(selectedMonth), Number(selectedYear));
-  const { data: etfRecords } = useGetEtfRecord(Number(selectedMonth), Number(selectedYear));
+  const { data: epfRecords } = useGetEpfRecord(
+    Number(selectedMonth),
+    Number(selectedYear)
+  );
+  const { data: etfRecords } = useGetEtfRecord(
+    Number(selectedMonth),
+    Number(selectedYear)
+  );
 
   return (
     <div className="space-y-6 p-6 bg-(--color-main-bg) min-h-screen">
@@ -55,7 +64,9 @@ export default function EpfEtfHistoryPage() {
                   ? "bg-[var(--color-card)] shadow-inner"
                   : "bg-[var(--color-sidebar-button-inactive)]"
               }
-              hoverbg={activeTab === tab ? "" : "hover:bg-[var(--color-hover-bg)]"}
+              hoverbg={
+                activeTab === tab ? "" : "hover:bg-[var(--color-hover-bg)]"
+              }
             />
           ))}
         </div>

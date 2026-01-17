@@ -1,5 +1,8 @@
-import { z } from 'zod';
-import { EmployeeBankDetailsSchema,EmployeeSchema } from '@/schemas/employee.schema';
+import { z } from "zod";
+import {
+  EmployeeBankDetailsSchema,
+  EmployeeSchema,
+} from "@/schemas/employee.schema";
 
 export type Employee = z.infer<typeof EmployeeSchema>;
 export type EmployeeBankDetails = z.infer<typeof EmployeeBankDetailsSchema>;
@@ -10,4 +13,4 @@ export type PersistedEmployee = {
   empCode: string;
   fullName: string;
   imgUrl?: string;
-}
+};

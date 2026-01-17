@@ -2,26 +2,26 @@ import AttendanceCard from "@/components/molecules/cards/attendance-card";
 import Chart from "@/components/templates/Chart";
 import { Calendar28 } from "@/components/organisms/date-picker/calender";
 import { AttendanceSkeleton } from "@/components/molecules/skeletons/attendance-skeleton";
-import {
-  CircleCheck,
-  CircleX,
-  Clock4,
-  FingerprintPattern,
-} from "lucide-react";
+import { CircleCheck, CircleX, Clock4, FingerprintPattern } from "lucide-react";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import AttendanceTable from "@/components/organisms/attendance/attendance-table";
-import {useDailyAttendanceTableSummary} from "@/hooks/employee/attendance/useDailyAttendanceTableSummary";
-import {useState} from "react";
-import {formatDate} from "@/utils/date";
+import { useDailyAttendanceTableSummary } from "@/hooks/employee/attendance/useDailyAttendanceTableSummary";
+import { useState } from "react";
+import { formatDate } from "@/utils/date";
 import { Input } from "@/components/ui/input";
 
 function Attendance() {
- 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const { presentCount, absentCount,lateCount, isLoading } = useTodayDeviceAttendanceLogsSummary();
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
+  const { presentCount, absentCount, lateCount, isLoading } =
+    useTodayDeviceAttendanceLogsSummary();
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const { dailyAttendance} = useDailyAttendanceTableSummary(selectedDate ? formatDate(selectedDate) : '', searchTerm);
+  const { dailyAttendance } = useDailyAttendanceTableSummary(
+    selectedDate ? formatDate(selectedDate) : "",
+    searchTerm
+  );
 
   if (isLoading) {
     return <AttendanceSkeleton />;
@@ -110,7 +110,9 @@ function Attendance() {
             </div>
           </div>
 
-          <AttendanceTable data={dailyAttendance.map(item => ({ ...item, id: item.empId }))} />
+          <AttendanceTable
+            data={dailyAttendance.map((item) => ({ ...item, id: item.empId }))}
+          />
         </Chart>
       </div>
     </div>

@@ -7,4 +7,4 @@ export const useDailyAttendance = (date: string) => {
     queryKey: ["attendance", date],
     queryFn: () => AttendanceService.fetchDailyAttendance(date),
   });
-}
+};

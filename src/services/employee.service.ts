@@ -37,26 +37,42 @@ function appendFormData(
 
 export const employeeService = {
   async getAll(): Promise<Employee[]> {
-    const response = await apiClient.request<Employee[]>(API_ENDPOINTS.EMPLOYEE.GET_ALL, { method: "GET" });
+    const response = await apiClient.request<Employee[]>(
+      API_ENDPOINTS.EMPLOYEE.GET_ALL,
+      { method: "GET" }
+    );
     return z.array(EmployeeSchema).parse(response);
   },
 
   async getByEmpCode(empCode: string): Promise<Employee> {
-    const response = await apiClient.request<Employee>(API_ENDPOINTS.EMPLOYEE.GET_BY_CODE(empCode), { method: "GET" });
+    const response = await apiClient.request<Employee>(
+      API_ENDPOINTS.EMPLOYEE.GET_BY_CODE(empCode),
+      { method: "GET" }
+    );
     return EmployeeSchema.parse(response);
   },
 
-  async addEmployee(data: Partial<EmployeeCreateInput>, image?: File): Promise<Employee> {
+  async addEmployee(
+    data: Partial<EmployeeCreateInput>,
+    image?: File
+  ): Promise<Employee> {
     const formData = new FormData();
     appendFormData(formData, data);
     if (image) formData.append("image", image);
 
-    const response = await apiClient.upload<Employee>(API_ENDPOINTS.EMPLOYEE.ADD, formData );
+    const response = await apiClient.upload<Employee>(
+      API_ENDPOINTS.EMPLOYEE.ADD,
+      formData
+    );
 
     return EmployeeSchema.parse(response);
   },
 
-  async updateEmployee(empCode: string, data: Partial<Employee>, image?: File): Promise<Employee> {
+  async updateEmployee(
+    empCode: string,
+    data: Partial<Employee>,
+    image?: File
+  ): Promise<Employee> {
     const formData = new FormData();
     appendFormData(formData, data);
     if (image) formData.append("image", image);
@@ -69,6 +85,8 @@ export const employeeService = {
     return EmployeeSchema.parse(response);
   },
   async deleteEmployee(empCode: string): Promise<void> {
-    await apiClient.request<void>(API_ENDPOINTS.EMPLOYEE.DELETE(empCode), { method: "DELETE" });
+    await apiClient.request<void>(API_ENDPOINTS.EMPLOYEE.DELETE(empCode), {
+      method: "DELETE",
+    });
   },
 };
