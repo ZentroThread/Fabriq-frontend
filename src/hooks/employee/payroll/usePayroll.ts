@@ -1,6 +1,9 @@
 import { payrollService } from "@/services/payroll.service";
-import { useQuery,useMutation, useQueryClient} from "@tanstack/react-query";
-import { type PayrollRecordResponseType, type PayRollResponseType } from "@/types/payroll-type";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  type PayrollRecordResponseType,
+  type PayRollResponseType,
+} from "@/types/payroll-type";
 import { toast } from "sonner";
 
 export const useGetPayroll = (empId: number, month: number, year: number) => {
@@ -9,39 +12,45 @@ export const useGetPayroll = (empId: number, month: number, year: number) => {
     queryFn: () => payrollService.generatePayroll(empId, month, year),
     enabled: !!empId && !!month && !!year,
   });
-}
+};
 
-  export const useGetPayrollRecord = (empId: number, year: number) => {
-    return useQuery<PayrollRecordResponseType[]>({
-      queryKey: ["payroll-record", empId, year],
-      queryFn: () => payrollService.getPayrollRecord(empId, year),
-      enabled: !!empId && !!year,
-    });
-  };
+export const useGetPayrollRecord = (empId: number, year: number) => {
+  return useQuery<PayrollRecordResponseType[]>({
+    queryKey: ["payroll-record", empId, year],
+    queryFn: () => payrollService.getPayrollRecord(empId, year),
+    enabled: !!empId && !!year,
+  });
+};
 
-  export const useConfirmPayroll = (empId: number, month: number, year: number) => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: () => payrollService.confirmPayroll(empId, month, year),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["payroll-record", empId, year] });
-        toast.success("Payroll confirmed successfully.");
-      },
-    });
-  };
+export const useConfirmPayroll = (
+  empId: number,
+  month: number,
+  year: number
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => payrollService.confirmPayroll(empId, month, year),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["payroll-record", empId, year],
+      });
+      toast.success("Payroll confirmed successfully.");
+    },
+  });
+};
 
-  export const useGetEpfRecord = (month: number, year: number) => {
-    return useQuery({
-      queryKey: ["epf-record", month, year],
-      queryFn: () => payrollService.getEpfRecord(month, year),
-      enabled: !!month && !!year,
-    });
-  };
+export const useGetEpfRecord = (month: number, year: number) => {
+  return useQuery({
+    queryKey: ["epf-record", month, year],
+    queryFn: () => payrollService.getEpfRecord(month, year),
+    enabled: !!month && !!year,
+  });
+};
 
-  export const useGetEtfRecord = (month: number, year: number) => {
-    return useQuery({
-      queryKey: ["etf-record", month, year],
-      queryFn: () => payrollService.getEtfRecord(month, year),
-      enabled: !!month && !!year,
-    });
-  };
+export const useGetEtfRecord = (month: number, year: number) => {
+  return useQuery({
+    queryKey: ["etf-record", month, year],
+    queryFn: () => payrollService.getEtfRecord(month, year),
+    enabled: !!month && !!year,
+  });
+};

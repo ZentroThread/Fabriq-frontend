@@ -7,16 +7,14 @@ export const useDeleteEmployee = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (empCode: string) =>
-      employeeService.deleteEmployee(empCode),
+    mutationFn: (empCode: string) => employeeService.deleteEmployee(empCode),
 
     onSuccess: (_data, empCode) => {
-        queryClient.setQueryData<Employee[]>(["employees"], (oldEmployees) =>{
-          if (!oldEmployees) return [];
-          return oldEmployees.filter(emp => emp.empCode !== empCode);
-        }
-      );
+      queryClient.setQueryData<Employee[]>(["employees"], (oldEmployees) => {
+        if (!oldEmployees) return [];
+        return oldEmployees.filter((emp) => emp.empCode !== empCode);
+      });
       toast.success("Employee deleted successfully.");
     },
   });
-}
+};

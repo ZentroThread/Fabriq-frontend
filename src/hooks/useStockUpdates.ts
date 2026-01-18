@@ -1,24 +1,61 @@
-import { useEffect } from "react";
-import { wsService } from "@/services/websocket.service";
-import { useItemStore } from "@/store/item-store";
+// import { useEffect } from "react";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { wsService } from "@/services/websocket.service";
+// import { useItemStore } from "@/store/item-store";
+// import { QUERY_KEYS } from "@/constants/query-keys";
+// import type { Item } from "@/hooks/useItems";
 
-type StockUpdateMessage = {
-  attireCode: string;
-  attireStock: number;
-};
+// type StockUpdateMessage = {
+//   attireCode: string;
+//   attireStock: number;
+// };
 
-export function useStockUpdates() {
-  useEffect(() => {
-    wsService.connect();
+// export function useStockUpdates() {
+//   const queryClient = useQueryClient();
+//   const updateItemStock = useItemStore((s) => s.updateItemStock);
+//   const setItems = useItemStore((s) => s.setItems);
 
-    wsService.subscribe("/topic/stock-updates", (message: unknown) => {
-      const data = message as StockUpdateMessage;
-      console.log("📦 Stock update received:", data); // ← ADD DEBUG
-      useItemStore
-        .getState()
-        .updateItemStock(data.attireCode, data.attireStock);
-    });
+//   useEffect(() => {
+//     console.log(
+//       "🌐 [WEBSOCKET] Connecting and subscribing to stock updates..."
+//     );
+//     wsService.connect();
 
-    return () => wsService.disconnect();
-  }, []);
-}
+//     wsService.subscribe("/topic/stock-updates", (message: unknown) => {
+//       const data = message as StockUpdateMessage;
+//       console.log("📦 [WEBSOCKET] Stock update received:", data);
+
+//       const { attireCode, attireStock } = data;
+
+//       if (attireCode && attireStock !== undefined) {
+//         // 1. Update Zustand store (persisted to localStorage)
+//         updateItemStock(attireCode, attireStock);
+
+//         // 2. Update React Query cache optimistically
+//         queryClient.setQueryData<Item[]>(QUERY_KEYS.ITEMS.ALL, (oldData) => {
+//           if (!oldData) return oldData;
+//           const updated = oldData.map((item) =>
+//             item.code === attireCode ? { ...item, stock: attireStock } : item
+//           );
+//           console.log("✅ [REACT QUERY] Cache updated for:", attireCode);
+//           return updated;
+//         });
+
+//         // 3. Sync React Query → Zustand
+//         const updatedData = queryClient.getQueryData<Item[]>(
+//           QUERY_KEYS.ITEMS.ALL
+//         );
+//         if (updatedData) {
+//           setItems(updatedData);
+//         }
+
+//         // ❌ REMOVED invalidateQueries - this was causing the rollback
+//       }
+//     });
+
+//     return () => {
+//       console.log("🔌 [WEBSOCKET] Disconnecting...");
+//       wsService.disconnect();
+//     };
+//   }, [queryClient, updateItemStock, setItems]);
+// }

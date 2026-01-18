@@ -15,9 +15,8 @@ type EpfRecordTableProps = {
   data: EPFFormType[];
 };
 
-export default function EpfRecordTable({ data: epfRecords }: EpfRecordTableProps) {
-  return <Table
-          columns={columns} 
-          data={epfRecords} 
-        />;
+export default function EpfRecordTable({
+  data: epfRecords,
+}: EpfRecordTableProps) {
+  return <Table columns={columns} data={epfRecords} />;
 }

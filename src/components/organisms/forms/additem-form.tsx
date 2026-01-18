@@ -1,11 +1,9 @@
 "use client";
 
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useItemStore } from "@/store/item-store";
-import { itemService } from "@/services/item.service";
-import SuccessAlert from "@/components/atoms/alert/success-alert";
-import { useState } from "react";
+import Swal from "sweetalert2";
+import { useAddItem } from "@/hooks/useItems";
+import { useAuthStore } from "@/store/user-auth-store";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -55,9 +53,6 @@ export function AddItemForm({
   itemData,
 }: AddItemFormProps) {
   const form = useAddItemForm();
-  const queryClient = useQueryClient();
-  const addItem = useItemStore((state) => state.addItem);
-  const [showSuccess, setShowSuccess] = useState(false);
   // Pre-fill form when in edit mode
   useEffect(() => {
     if (editMode && itemData) {
@@ -75,34 +70,33 @@ export function AddItemForm({
   }, [editMode, itemData, form]);
 
   const updateItemMutation = useUpdateItem();
-  const mutation = useMutation({
-    mutationFn: itemService.addItem,
-    onSuccess: (data) => {
-      // Update Zustand store
-      if (data) {
-        addItem(data);
-      }
+  const addItemMutation = useAddItem();
+  const { getTenantId, isAuthenticated } = useAuthStore();
 
-      // Invalidate and refetch queries
-      queryClient.invalidateQueries({ queryKey: ["items"] });
+  async function onSubmit(values: z.infer<typeof addItemFormSchema>) {
+    // Validate authentication and tenant ID before submitting
+    if (!isAuthenticated()) {
+      await Swal.fire({
+        icon: "error",
+        title: "Authentication Required",
+        text: "Please log in to continue.",
+      });
+      return;
+    }
 
-      // Show success alert
-      setShowSuccess(true);
+    const tenantId = getTenantId();
+    if (!tenantId) {
+      await Swal.fire({
+        icon: "error",
+        title: "Session Error",
+        text: "Tenant ID not found. Please log out and log back in.",
+      });
+      console.error("❌ Tenant ID is missing from auth store");
+      return;
+    }
 
-      // Hide success alert after 3 seconds
-      setTimeout(() => {
-        setShowSuccess(false);
-        if (onClose) onClose();
-      }, 3000);
-    },
-    onError: (error) => {
-      console.error("Error adding item:", error);
-      // Show error message to user
-      alert(`Failed to add item: ${error.message || "Unknown error"}`);
-    },
-  });
+    console.log("✅ Submitting with tenant ID:", tenantId);
 
-  function onSubmit(values: z.infer<typeof addItemFormSchema>) {
     const payload = {
       ...values,
       // ensure numeric types
@@ -116,42 +110,45 @@ export function AddItemForm({
 
     if (editMode && itemData) {
       // Update existing item
-      updateItemMutation.mutate(
-        { id: String(itemData.id), data: payload },
-        {
-          onSuccess: () => {
-            setShowSuccess(true);
-            setTimeout(() => {
-              setShowSuccess(false);
-              if (onClose) onClose();
-            }, 3000);
-          },
-          onError: (error) => {
-            console.error("Error updating item:", error);
-            alert(`Failed to update item: ${error.message || "Unknown error"}`);
-          },
-        }
-      );
+      try {
+        await updateItemMutation.mutateAsync({
+          id: String(itemData.id),
+          data: payload,
+        });
+        await Swal.fire({
+          icon: "success",
+          title: "Item updated successfully!",
+          timer: 1600,
+          showConfirmButton: false,
+        });
+        if (onClose) onClose();
+      } catch (error: unknown) {
+        console.error("Error updating item:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed to update item. Refresh the page.",
+          text: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
     } else {
       // Add new item
-      mutation.mutate(payload);
+      try {
+        await addItemMutation.mutateAsync(payload);
+        if (onClose) onClose();
+      } catch (error: unknown) {
+        console.error("Error adding item:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed to add item",
+          text: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
     }
   }
 
   return (
     <Form {...form}>
-      {showSuccess && (
-        <div className="mb-4">
-          <SuccessAlert
-            title="Success!"
-            description={
-              editMode
-                ? "Item updated successfully!"
-                : "Item added successfully!"
-            }
-          />
-        </div>
-      )}
+      {/* SweetAlert2 used for success messages; inline SuccessAlert removed */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="bg-card">
         <ScrollArea className="h-[500px] w-full pr-4 [&>div>div]:space-y-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-500">
           <div className="space-y-4">
@@ -363,20 +360,22 @@ export function AddItemForm({
                 type="button"
                 className="bg-bg-red  hover:opacity-80 hover:bg-bg-red"
                 onClick={onClose}
-                disabled={mutation.isPending}
+                disabled={addItemMutation.isPending}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className=" bg-bg-green hover:opacity-80 hover:bg-bg-green "
-                disabled={mutation.isPending || updateItemMutation.isPending}
+                disabled={
+                  addItemMutation.isPending || updateItemMutation.isPending
+                }
               >
                 {editMode
                   ? updateItemMutation.isPending
                     ? "Updating..."
                     : "Update Item"
-                  : mutation.isPending
+                  : addItemMutation.isPending
                     ? "Adding..."
                     : "Add Item"}
               </Button>

@@ -8,7 +8,8 @@ type RentalItem = {
   days: number;
   startDate?: string;
   endDate?: string;
-  customerCode?: string; // ← ADD THIS
+  customerCode?: string;
+  isCustomItem?: boolean;
 };
 
 type Customer = {
@@ -32,7 +33,6 @@ export type BillingState = {
   removeItem: (index: number) => void;
   clearItems: () => void;
   clearAll: () => void;
-  confirmOrder: () => Promise<unknown>;
   payBilling: (opts: {
     discountPercentage?: number;
     paymentMethod?: string;
@@ -57,6 +57,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
           days: Math.max(0, item.days || 0),
           startDate: item.startDate,
           endDate: item.endDate,
+          isCustomItem: item.isCustomItem || false,
         },
       ],
     })),
@@ -79,88 +80,42 @@ const useBillingStore = create<BillingState>((set, get) => ({
     }
   },
 
-  confirmOrder: async () => {
+  clearAll: () => set({ items: [], selectedCustomer: null }),
+
+  payBilling: async ({ discountPercentage = 0, paymentMethod = "cash" }) => {
     const items = get().items;
     const customer = get().selectedCustomer;
 
-    if (!items.length || !customer) return;
+    if (!items || items.length === 0) throw new Error("No items to bill");
+    if (!customer) throw new Error("No selected customer");
 
     const customerCode =
       customer.custCode ||
       customer.cust_code ||
-      (customer.cust_id !== undefined && customer.cust_id !== null
-        ? String(customer.cust_id)
-        : undefined);
-
+      (customer.cust_id ? String(customer.cust_id) : undefined);
     if (!customerCode) throw new Error("Customer code is required");
 
-    // Send all items + customer in ONE request
+    // Create billing with rentals and pay in one API call
     const payload = {
       customerCode,
       items: items.map((item) => ({
         attireCode: item.itemCode,
-        rentDate: new Date()
-          .toLocaleString("sv", { timeZone: "Asia/Colombo", hour12: false })
-          .replace(" ", "T"),
-        returnDate: item.endDate ? `${item.endDate}T23:59:59` : undefined,
+        rentDate: item.startDate || new Date().toISOString().split("T")[0],
+        returnDate: item.endDate || undefined,
+        isCustomItem: item.isCustomItem || false,
+        customItemName: item.isCustomItem ? item.name : undefined,
+        customPrice: item.isCustomItem ? item.price : undefined,
       })),
-    };
-    console.log("📤 Sending payload:", payload);
-    const resp = await billingService.createBillingWithRentals(payload);
-    // backend returns created billing; store it so summary can display
-    try {
-      // resp may be the billing object
-      const createdBilling = resp as Billing;
-      set({ currentBilling: createdBilling });
-    } catch (e) {
-      console.warn("could not store billing response", e);
-    }
-  },
-  clearAll: () => set({ items: [], selectedCustomer: null }),
-
-  payBilling: async ({ discountPercentage = 0, paymentMethod = "cash" }) => {
-    let billing = get().currentBilling;
-    // If no billing exists yet, create it from current items/customer
-    if (!billing || !billing.billingCode) {
-      const items = get().items;
-      const customer = get().selectedCustomer;
-      if (!items || items.length === 0) throw new Error("No items to bill");
-      if (!customer) throw new Error("No selected customer");
-
-      const customerCode =
-        customer.custCode ||
-        customer.cust_code ||
-        (customer.cust_id ? String(customer.cust_id) : undefined);
-      if (!customerCode) throw new Error("Customer code is required");
-
-      const payload = {
-        customerCode,
-        items: items.map((item) => ({
-          attireCode: item.itemCode,
-          rentDate: new Date()
-            .toLocaleString("sv", { timeZone: "Asia/Colombo", hour12: false })
-            .replace(" ", "T"),
-          returnDate: item.endDate ? `${item.endDate}T23:59:59` : undefined,
-        })),
-      };
-
-      const created = await billingService.createBillingWithRentals(payload);
-      const createdBilling = created as Billing;
-      billing = createdBilling;
-      set({ currentBilling: createdBilling });
-    }
-
-    const resp = await billingService.payBilling({
-      billingCode: billing.billingCode!,
       discountPercentage,
       paymentMethod,
-    });
+    };
+
+    const resp = await billingService.createBillingAndPay(payload);
 
     const respTyped = resp as
       | { billHtml?: string; billing?: Billing }
       | undefined;
 
-    // resp expected to contain billHtml and updated billing
     if (respTyped && respTyped.billHtml) {
       const w = window.open("");
       if (w) {
@@ -174,12 +129,11 @@ const useBillingStore = create<BillingState>((set, get) => ({
       }
     }
 
-    // Update local state: clear items and currentBilling
     set({
       items: [],
       currentBilling: respTyped && respTyped.billing ? respTyped.billing : null,
     });
-    // Reload the whole app to ensure all stores reset
+
     setTimeout(() => {
       try {
         window.location.reload();

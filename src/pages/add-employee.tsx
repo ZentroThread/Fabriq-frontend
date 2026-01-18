@@ -19,7 +19,10 @@ export default function AddEmployee() {
     addEmployee({ ...formData, image: imageFile });
   };
 
-  const handleChange = <K extends keyof Employee>(field: K, value: Employee[K]) => {
+  const handleChange = <K extends keyof Employee>(
+    field: K,
+    value: Employee[K]
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,

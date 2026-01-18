@@ -1,7 +1,9 @@
 import Table from "@/components/molecules/Table/table";
 import type { Attendance } from "@/schemas/attendance.schema";
 
-type AttendanceWithId = Attendance & { id: string | number } & { employeeName: string | null };
+type AttendanceWithId = Attendance & { id: string | number } & {
+  employeeName: string | null;
+};
 
 // Function to get color based on status
 const getStatusColor = (status: string) => {
@@ -21,7 +23,10 @@ const getStatusColor = (status: string) => {
 
 const columns = [
   { header: "Date", accessor: (row: AttendanceWithId) => row.date },
-  { header: "Employee Name", accessor: (row: AttendanceWithId) => row.employeeName },
+  {
+    header: "Employee Name",
+    accessor: (row: AttendanceWithId) => row.employeeName,
+  },
   {
     header: "Status",
     accessor: (row: AttendanceWithId) => (
@@ -30,13 +35,15 @@ const columns = [
       </span>
     ),
   },
-  { header: "Check-In Time", accessor: (row: AttendanceWithId) => (
-      row.checkIn === null ? "N/A" : row.checkIn
-    ),
+  {
+    header: "Check-In Time",
+    accessor: (row: AttendanceWithId) =>
+      row.checkIn === null ? "N/A" : row.checkIn,
   },
-  { header: "Check-Out Time", accessor: (row: AttendanceWithId) => (
-      row.checkOut === null ? "N/A" : row.checkOut
-    ),
+  {
+    header: "Check-Out Time",
+    accessor: (row: AttendanceWithId) =>
+      row.checkOut === null ? "N/A" : row.checkOut,
   },
 ];
 
@@ -44,6 +51,8 @@ type AttendanceTableProps = {
   data: AttendanceWithId[];
 };
 
-export default function AttendanceTable({ data: attendanceRecords }: AttendanceTableProps) {
+export default function AttendanceTable({
+  data: attendanceRecords,
+}: AttendanceTableProps) {
   return <Table columns={columns} data={attendanceRecords} />;
 }

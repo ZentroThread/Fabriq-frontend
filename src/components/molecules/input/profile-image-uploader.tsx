@@ -51,8 +51,8 @@ export default function ProfileImageUploader({
         <Button
           text="Update"
           width="w-32"
-          onClick={() =>{ 
-            inputRef.current?.click()
+          onClick={() => {
+            inputRef.current?.click();
           }}
         />
       )}

@@ -18,7 +18,7 @@ export const useUpdateEmployee = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ code, data, image }: UpdateEmployeeData) => 
+    mutationFn: ({ code, data, image }: UpdateEmployeeData) =>
       employeeService.updateEmployee(code, data, image),
 
     onSuccess: (_data, variables) => {
@@ -28,7 +28,9 @@ export const useUpdateEmployee = () => {
     },
 
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(error?.response?.data?.message || "Failed to update employee.");
+      toast.error(
+        error?.response?.data?.message || "Failed to update employee."
+      );
     },
   });
 };

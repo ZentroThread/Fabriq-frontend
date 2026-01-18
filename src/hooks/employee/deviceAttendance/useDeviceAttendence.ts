@@ -7,4 +7,4 @@ export const useTodayDeviceAttendanceLogs = () => {
     queryKey: ["device-attendance-logs", "today"],
     queryFn: () => DeviceAttendanceLogService.fetchTodayLogs(),
   });
-}
+};

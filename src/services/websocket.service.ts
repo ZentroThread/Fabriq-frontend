@@ -1,39 +1,58 @@
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+// import { Client } from "@stomp/stompjs";
+// import SockJS from "sockjs-client";
 
-class WebSocketService {
-  private client: Client | null = null;
+// class WebSocketService {
+//   private client: Client | null = null;
+//   private subscriptions: Map<string, (message: unknown) => void> = new Map();
 
-  connect() {
-    this.client = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8081/ws"),
-      debug: (str) => console.log(str),
-      reconnectDelay: 5000,
-      onConnect: () => {
-        console.log("WebSocket Connected");
-      },
-      onStompError: (frame) => {
-        console.error("STOMP error", frame);
-      },
-    });
+//   connect() {
+//     if (this.client) {
+//       console.log("WebSocket already connected");
+//       return;
+//     }
 
-    this.client.activate();
-  }
+//     this.client = new Client({
+//       webSocketFactory: () => new SockJS("http://localhost:8081/ws"),
+//       debug: (str) => console.log(str),
+//       reconnectDelay: 5000,
+//       onConnect: () => {
+//         console.log("WebSocket Connected");
+//         // Subscribe to all pending topics
+//         this.subscriptions.forEach((callback, topic) => {
+//           this.client?.subscribe(topic, (message) => {
+//             const data = JSON.parse(message.body);
+//             console.log(`📩 Received message on ${topic}:`, data);
+//             callback(data);
+//           });
+//         });
+//       },
+//       onStompError: (frame) => {
+//         console.error("STOMP error", frame);
+//       },
+//     });
 
-  subscribe(topic: string, callback: (message: unknown) => void) {
-    if (!this.client) return;
+//     this.client.activate();
+//   }
 
-    this.client.onConnect = () => {
-      this.client?.subscribe(topic, (message) => {
-        const data = JSON.parse(message.body);
-        callback(data);
-      });
-    };
-  }
+//   subscribe(topic: string, callback: (message: unknown) => void) {
+//     // Store the subscription
+//     this.subscriptions.set(topic, callback);
 
-  disconnect() {
-    this.client?.deactivate();
-  }
-}
+//     // If already connected, subscribe immediately
+//     if (this.client?.connected) {
+//       this.client.subscribe(topic, (message) => {
+//         const data = JSON.parse(message.body);
+//         console.log(`📩 Received message on ${topic}:`, data);
+//         callback(data);
+//       });
+//     }
+//   }
 
-export const wsService = new WebSocketService();
+//   disconnect() {
+//     this.subscriptions.clear();
+//     this.client?.deactivate();
+//     this.client = null;
+//   }
+// }
+
+// export const wsService = new WebSocketService();

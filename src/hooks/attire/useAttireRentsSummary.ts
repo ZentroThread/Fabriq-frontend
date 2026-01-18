@@ -17,7 +17,6 @@ type AttireRentSummaryWithCustomer = {
 };
 
 export const useAttireRentsSummary = (): AttireRentsSummary => {
-  
   const { data: attireRents } = useGetAllAttireRents();
   const { data: customers } = FetchCustomers();
 

@@ -1,70 +1,20 @@
-import { Trash2, Ruler, CheckCircle } from "lucide-react";
+import { Trash2, Ruler } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
-import CustomButton from "@/components/atoms/button/add-button";
-import { itemService as attireService } from "@/services/item.service";
-import { useReservationCleanup } from "@/hooks/useReservationCleanup";
 
 export default function RentalItemsSection() {
   const items = useBillingStore((s: BillingState) => s.items);
   const removeItem = useBillingStore((s: BillingState) => s.removeItem);
-  const confirmOrder = useBillingStore((s: BillingState) => s.confirmOrder);
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   );
+  void selectedCustomer; // Intentionally unused for now
 
-  const { markConfirming } = useReservationCleanup();
+  console.log("📦 Rental Items:", items);
 
-  async function onDelete(index: number): Promise<void> {
-    const item = items[index];
-
-    try {
-      // Call backend to unreserve (increment stock)
-      await attireService.unreserveItem({
-        attireCode: item.itemCode,
-        customerCode: item.customerCode || selectedCustomer?.custCode || "",
-      });
-
-      // Remove from UI
-      removeItem(index);
-    } catch (error) {
-      console.error("Failed to unreserve item:", error);
-      alert("Failed to remove item. Please try again.");
-    }
-  }
-
-  async function handleConfirmOrder(): Promise<void> {
-    if (items.length === 0) {
-      alert("No items to confirm");
-      return;
-    }
-
-    // Mark as confirming to prevent cleanup
-    markConfirming();
-
-    try {
-      // TODO: Call your actual confirm order API here
-      // Example:
-      // await orderService.createOrder({
-      //   customerCode: selectedCustomer?.custCode,
-      //   items: items,
-      //   totalAmount: totalAmount
-      // });
-
-      console.log("✅ Order confirmed:", {
-        customer: selectedCustomer?.custCode,
-        items: items.length,
-        total: totalAmount,
-      });
-
-      // Clear the billing after successful confirmation
-      confirmOrder();
-
-      alert("Order confirmed successfully!");
-    } catch (error) {
-      console.error("Failed to confirm order:", error);
-      alert("Failed to confirm order. Please try again.");
-    }
+  function onDelete(index: number): void {
+    // Remove from UI only - no API calls needed
+    removeItem(index);
   }
 
   function ChangeMeasurementPopup(index: number): void {
@@ -119,12 +69,12 @@ export default function RentalItemsSection() {
                       >
                         <Trash2 size={16} className="text-position-text" />
                       </button>
-                      <button
+                      {/* <button
                         className="flex items-center gap-2 text-position-text font-normal cursor-pointer"
                         onClick={() => ChangeMeasurementPopup(index)}
                       >
                         <Ruler size={16} className="text-text-active" />
-                      </button>
+                      </button> */}
                     </div>
                   </td>
                 </tr>
@@ -174,12 +124,6 @@ export default function RentalItemsSection() {
               Total: LKR {totalAmount.toLocaleString()}
             </div>
           </div>
-          <CustomButton
-            text={"Confirm Order"}
-            icon={<CheckCircle />}
-            width="w-full"
-            onClick={handleConfirmOrder}
-          />
         </>
       )}
     </div>

@@ -1,25 +1,23 @@
 import Chart from "@/components/templates/Chart";
 import { CheckCircle } from "lucide-react";
 import useEmployeeStore from "@/store/employee-store";
-import {useGetPayrollRecord} from "@/hooks/employee/payroll/usePayroll";
+import { useGetPayrollRecord } from "@/hooks/employee/payroll/usePayroll";
 import Button from "@/components/atoms/button/add-button";
-import {getMonthAsString,getYearsForRange} from "@/utils/date";
+import { getMonthAsString, getYearsForRange } from "@/utils/date";
 import SectionHeader from "@/components/molecules/header/section-header";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SalaryHistorySkeleton } from "@/components/molecules/skeletons/salary-history-skeleton";
 import { useState } from "react";
 
 export function SalaryHistory() {
-
   const today = new Date();
   const currentMonth = today.getMonth() + 1;
   const currentYear = today.getFullYear();
   const navigator = useNavigate();
-  const [year, setYear] =  useState(currentYear);
-  const {selectedEmployee} = useEmployeeStore();
+  const [year, setYear] = useState(currentYear);
+  const { selectedEmployee } = useEmployeeStore();
   const employeeId = selectedEmployee?.id || 0;
   const empName = selectedEmployee?.fullName || "Employee Name";
-
 
   // useEffect(() => {
   //   const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -32,29 +30,37 @@ export function SalaryHistory() {
 
   const handleRowClick = (month: string, year: string) => {
     navigator(`/monthly-salary/${employeeId}/${year}/${month}`);
-  }
+  };
 
   const handleAddSalary = () => {
-    if(currentMonth === 1){
-      navigator(`/monthly-salary/${employeeId}/${year -1 }/12`);
+    if (currentMonth === 1) {
+      navigator(`/monthly-salary/${employeeId}/${year - 1}/12`);
       return;
     }
-    navigator(`/monthly-salary/${employeeId}/${year}/${currentMonth -1 }`);
-  }
+    navigator(`/monthly-salary/${employeeId}/${year}/${currentMonth - 1}`);
+  };
 
-  const {data: payrollRecords, isLoading, isError} = useGetPayrollRecord(Number(employeeId),year);
+  const {
+    data: payrollRecords,
+    isLoading,
+    isError,
+  } = useGetPayrollRecord(Number(employeeId), year);
 
   const handleDisableBtn = () => {
-    if(year < currentYear){
+    if (year < currentYear) {
       return false;
     }
-    if(payrollRecords?.some(record => record.month === currentMonth-1 && record.year === year)){
+    if (
+      payrollRecords?.some(
+        (record) => record.month === currentMonth - 1 && record.year === year
+      )
+    ) {
       return false;
     }
     return true;
-  }
+  };
 
-  if(isError) {
+  if (isError) {
     return <div>Error loading salary records history.</div>;
   }
 
@@ -62,19 +68,17 @@ export function SalaryHistory() {
     return <SalaryHistorySkeleton />;
   }
 
-
   return (
     <Chart>
-      
       {/* Header */}
-      <SectionHeader 
-        title="Salary History" 
-        description="View and manage the salary history of the selected employee" 
+      <SectionHeader
+        title="Salary History"
+        description="View and manage the salary history of the selected employee"
       />
 
       <div>
         <div className="flex flex-col items-center mb-6 md:flex-row md:items-start md:gap-4 mt-5">
-          <div className="w-20 h-20 rounded-full bg-avatar-bg border-2 border-(--color-avatar-border)" >
+          <div className="w-20 h-20 rounded-full bg-avatar-bg border-2 border-(--color-avatar-border)">
             {selectedEmployee?.imgUrl ? (
               <img
                 src={selectedEmployee.imgUrl}
@@ -97,7 +101,11 @@ export function SalaryHistory() {
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col items-start">
-          <select className="p-2  rounded-lg border border-(--color-border) bg-(--color-card) text-position-text" value={year} onChange={handleYearChange}>
+          <select
+            className="p-2  rounded-lg border border-(--color-border) bg-(--color-card) text-position-text"
+            value={year}
+            onChange={handleYearChange}
+          >
             {getYearsForRange().map((yr) => (
               <option key={yr} value={yr}>
                 {yr}
@@ -126,7 +134,12 @@ export function SalaryHistory() {
               <tr
                 key={index}
                 className="bg- border-b border-(--color-border) text-position-text hover:bg-main-bg transition"
-                onClick={() => handleRowClick(salary.month.toString(), salary.year.toString())}
+                onClick={() =>
+                  handleRowClick(
+                    salary.month.toString(),
+                    salary.year.toString()
+                  )
+                }
               >
                 <td className="py-4 px-4 font-extralight  text-(--color-text)">
                   {getMonthAsString(salary.month)}
@@ -143,18 +156,19 @@ export function SalaryHistory() {
             ))}
           </tbody>
         </table>
-             {handleDisableBtn() && <Button
-              bordercolor="border-border-card3"
-              bgcolor="bg-bg-card3"
-              textcolor="text-black"
-              hoverbg="hover:bg-red"
-              hovertext="hover:text-background"
-              text="Add Salary Record"
-              width="w-full sm:w-50"
-              onClick={handleAddSalary}
-            />}
+        {handleDisableBtn() && (
+          <Button
+            bordercolor="border-border-card3"
+            bgcolor="bg-bg-card3"
+            textcolor="text-black"
+            hoverbg="hover:bg-red"
+            hovertext="hover:text-background"
+            text="Add Salary Record"
+            width="w-full sm:w-50"
+            onClick={handleAddSalary}
+          />
+        )}
       </div>
     </Chart>
   );
 }
-

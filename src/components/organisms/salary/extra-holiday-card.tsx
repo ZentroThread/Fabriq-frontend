@@ -14,7 +14,10 @@ export default function ExtraHolidayCard({ data, className = "" }: Props) {
       <h2 className="text-position-text">Extra Holiday Take</h2>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-        <ReadOnlyField label="Extra Holiday Take" value={`${data.extraHolidaysTaken}`} />
+        <ReadOnlyField
+          label="Extra Holiday Take"
+          value={`${data.extraHolidaysTaken}`}
+        />
       </div>
     </div>
   );

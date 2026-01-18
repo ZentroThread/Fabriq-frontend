@@ -11,7 +11,11 @@ interface TableProps<T> {
   actions?: (row: T) => React.ReactNode;
 }
 
-function Table<T extends { id: string | number }>({ columns, data, actions }: TableProps<T>) {
+function Table<T extends { id: string | number }>({
+  columns,
+  data,
+  actions,
+}: TableProps<T>) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
@@ -42,7 +46,9 @@ function Table<T extends { id: string | number }>({ columns, data, actions }: Ta
                 </td>
               ))}
 
-              {actions && <td className="py-4 px-2 flex gap-4">{actions(row)}</td>}
+              {actions && (
+                <td className="py-4 px-2 flex gap-4">{actions(row)}</td>
+              )}
             </tr>
           ))}
         </tbody>

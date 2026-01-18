@@ -1,4 +1,4 @@
-import { z }  from "zod";
+import { z } from "zod";
 
 export const BillSchema = z.object({
   billingId: z.number().optional(),
@@ -9,4 +9,3 @@ export const BillSchema = z.object({
   billingDate: z.string().optional(),
   custCode: z.string().optional(),
 });
-

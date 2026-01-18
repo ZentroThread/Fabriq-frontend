@@ -28,6 +28,7 @@ interface ItemCardProps {
     categoryCode: string;
     categoryName: string;
   };
+  selectedDate?: string;
 }
 
 export function ItemCard({
@@ -66,7 +67,7 @@ export function ItemCard({
                     : "bg-support-button "
             }`}
           >
-            {status}
+            #{stock} {status}
           </button>
         </div>
         <CardHeader>

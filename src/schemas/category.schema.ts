@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const CategorySchema = z.object({
   categoryId: z.number().optional(),
