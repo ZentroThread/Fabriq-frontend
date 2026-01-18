@@ -3,6 +3,7 @@
 import { z } from "zod";
 import Swal from "sweetalert2";
 import { useAddItem } from "@/hooks/useItems";
+import { useAuthStore } from "@/store/user-auth-store";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -70,8 +71,32 @@ export function AddItemForm({
 
   const updateItemMutation = useUpdateItem();
   const addItemMutation = useAddItem();
+  const { getTenantId, isAuthenticated } = useAuthStore();
 
   async function onSubmit(values: z.infer<typeof addItemFormSchema>) {
+    // Validate authentication and tenant ID before submitting
+    if (!isAuthenticated()) {
+      await Swal.fire({
+        icon: "error",
+        title: "Authentication Required",
+        text: "Please log in to continue.",
+      });
+      return;
+    }
+
+    const tenantId = getTenantId();
+    if (!tenantId) {
+      await Swal.fire({
+        icon: "error",
+        title: "Session Error",
+        text: "Tenant ID not found. Please log out and log back in.",
+      });
+      console.error("❌ Tenant ID is missing from auth store");
+      return;
+    }
+
+    console.log("✅ Submitting with tenant ID:", tenantId);
+
     const payload = {
       ...values,
       // ensure numeric types
@@ -97,12 +122,12 @@ export function AddItemForm({
           showConfirmButton: false,
         });
         if (onClose) onClose();
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error updating item:", error);
         Swal.fire({
           icon: "error",
           title: "Failed to update item. Refresh the page.",
-          text: error?.message || "Unknown error",
+          text: error instanceof Error ? error.message : "Unknown error",
         });
       }
     } else {
@@ -110,12 +135,12 @@ export function AddItemForm({
       try {
         await addItemMutation.mutateAsync(payload);
         if (onClose) onClose();
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error adding item:", error);
         Swal.fire({
           icon: "error",
           title: "Failed to add item",
-          text: error?.message || "Unknown error",
+          text: error instanceof Error ? error.message : "Unknown error",
         });
       }
     }
@@ -335,7 +360,7 @@ export function AddItemForm({
                 type="button"
                 className="bg-bg-red  hover:opacity-80 hover:bg-bg-red"
                 onClick={onClose}
-                disabled={(addItemMutation as any).isLoading}
+                disabled={addItemMutation.isPending}
               >
                 Cancel
               </Button>
@@ -343,15 +368,14 @@ export function AddItemForm({
                 type="submit"
                 className=" bg-bg-green hover:opacity-80 hover:bg-bg-green "
                 disabled={
-                  (addItemMutation as any).isLoading ||
-                  (updateItemMutation as any).isLoading
+                  addItemMutation.isPending || updateItemMutation.isPending
                 }
               >
                 {editMode
-                  ? (updateItemMutation as any).isLoading
+                  ? updateItemMutation.isPending
                     ? "Updating..."
                     : "Update Item"
-                  : (addItemMutation as any).isLoading
+                  : addItemMutation.isPending
                     ? "Adding..."
                     : "Add Item"}
               </Button>

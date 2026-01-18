@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import Chart from "@/components/templates/Chart";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
+import type { ComponentProps } from "react";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { attireRentService } from "@/services/attireRent.service";
+import { useWishlistStore } from "@/store/wishlist-store";
 import {
   Table,
   TableBody,
@@ -19,36 +20,25 @@ import {
 } from "@/components/ui/table";
 
 export default function ItemsWishlistPage() {
-  const [list, setList] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  // Zustand store
+  const {
+    list,
+    isLoading: loading,
+    currentPage,
+    rowsPerPage,
+    searchQuery,
+    selectedDate,
+    fetchWishlist,
+    setCurrentPage,
+    setRowsPerPage,
+    setSearchQuery,
+    setSelectedDate,
+    clearDateFilter,
+  } = useWishlistStore();
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const resp = await attireRentService.getAll();
-        if (!mounted) return;
-        const rows = Array.isArray(resp) ? resp : resp?.data || resp || [];
-        const today = new Date();
-        const future = rows.filter(
-          (r: any) => r.rentDate && new Date(r.rentDate) > today
-        );
-        setList(future);
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    fetchWishlist();
+  }, [fetchWishlist]);
 
   const filteredList = list.filter((it) => {
     // Filter by selected date first
@@ -108,12 +98,7 @@ export default function ItemsWishlistPage() {
       if (isNaN(d.getTime())) continue;
       const key = toKey(d);
       const bill =
-        it.billingCode ||
-        it.billing?.billingCode ||
-        it.billing ||
-        it.billing?.code ||
-        it.billingCode ||
-        it.billing;
+        it.billingCode || it.billing?.billingCode || it.billing?.code;
       const billKey = String(bill ?? "-");
       if (!map.has(key)) map.set(key, new Set());
       map.get(key)!.add(billKey);
@@ -153,18 +138,12 @@ export default function ItemsWishlistPage() {
                 type="text"
                 placeholder="Search by Customer Code, Bill Number or Item Code"
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-3 py-2 border border-(--color-border) rounded-md bg-main-bg text-position-text placeholder:text-position-text focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
               {selectedDate && (
                 <button
-                  onClick={() => {
-                    setSelectedDate(undefined);
-                    setCurrentPage(1);
-                  }}
+                  onClick={clearDateFilter}
                   className="px-3 py-2 border border-(--color-border) rounded-md bg-main-bg text-position-text hover:bg-(--color-hover-bg) transition-colors whitespace-nowrap"
                 >
                   Clear Date Filter
@@ -172,10 +151,7 @@ export default function ItemsWishlistPage() {
               )}
               <select
                 value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
+                onChange={(e) => setRowsPerPage(Number(e.target.value))}
                 className="px-3 py-2 border border-(--color-border) rounded-md bg-main-bg text-position-text focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               >
                 <option value={10}>10 rows</option>
@@ -241,7 +217,7 @@ export default function ItemsWishlistPage() {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className="px-3 py-1 border border-(--color-border) rounded-md bg-main-bg text-position-text disabled:opacity-50 disabled:cursor-not-allowed hover:bg-(--color-hover-bg) transition-colors"
                   >
@@ -252,7 +228,7 @@ export default function ItemsWishlistPage() {
                   </span>
                   <button
                     onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      setCurrentPage(Math.min(totalPages, currentPage + 1))
                     }
                     disabled={currentPage >= totalPages}
                     className="px-3 py-1 border border-(--color-border) rounded-md bg-main-bg text-position-text disabled:opacity-50 disabled:cursor-not-allowed hover:bg-(--color-hover-bg) transition-colors"
@@ -268,10 +244,7 @@ export default function ItemsWishlistPage() {
                 className="bg-card rounded-xl p-3"
                 mode="single"
                 selected={selectedDate}
-                onSelect={(date) => {
-                  setSelectedDate(date);
-                  setCurrentPage(1);
-                }}
+                onSelect={setSelectedDate}
                 disabled={{ before: todayStart }}
                 components={{
                   DayButton: ({ day, modifiers, ...props }) => {
@@ -295,7 +268,9 @@ export default function ItemsWishlistPage() {
                               onPointerLeave={() => setOpen(false)}
                             >
                               <CalendarDayButton
-                                {...(props as any)}
+                                {...(props as ComponentProps<
+                                  typeof CalendarDayButton
+                                >)}
                                 day={day}
                                 modifiers={modifiers}
                                 className={cn(
@@ -320,7 +295,7 @@ export default function ItemsWishlistPage() {
 
                     return (
                       <CalendarDayButton
-                        {...(props as any)}
+                        {...(props as ComponentProps<typeof CalendarDayButton>)}
                         day={day}
                         modifiers={modifiers}
                         className={cn(

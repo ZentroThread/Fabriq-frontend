@@ -14,6 +14,12 @@ interface StockUpdate {
   attireStock: number;
   reservedBy: string;
 }
+
+interface AttireStats {
+  rentalCount: number;
+  wishlistCount: number;
+  attireCode: string;
+}
 // Helper function to map backend response to frontend Item
 const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   id: backendItem.id,
@@ -212,8 +218,8 @@ export const itemService = {
     });
   },
   // New: fetch rental stats and wishlist for an attire code
-  getStatsByAttireCode: async (attireCode: string): Promise<any> => {
-    return apiClient.request<any>(
+  getStatsByAttireCode: async (attireCode: string): Promise<AttireStats> => {
+    return apiClient.request<AttireStats>(
       `/v1/attire-rent/stats/${encodeURIComponent(attireCode)}`
     );
   },
@@ -224,8 +230,8 @@ export const itemService = {
     rentDate?: string | Date;
     returnDate?: string | Date;
     billingCode?: string;
-  }) => {
-    return apiClient.request<any>(`/v1/attire-rent/add`, {
+  }): Promise<StockUpdate> => {
+    return apiClient.request<StockUpdate>(`/v1/attire-rent/add`, {
       method: "POST",
       data: payload,
     });

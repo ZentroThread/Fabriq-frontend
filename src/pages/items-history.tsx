@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Chart from "@/components/templates/Chart";
 import { attireRentService } from "@/services/attireRent.service";
 import {
@@ -9,45 +9,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-// Define types
-interface AttireRent {
-  id?: number;
-  attireCode?: string;
-  custCode?: string;
-  billingCode?: string;
-  rentDate?: string;
-  returnDate?: string;
-  rentDuration?: number;
-  attire?: {
-    attireCode?: string;
-    category?: {
-      categoryId?: number;
-    };
-  };
-}
-
-interface AggregatedItem {
-  code: string;
-  upcomingCount: number;
-  previousCount: number;
-  totalCount: number;
-  rents: string[];
-  categoryId?: number;
-}
+import {
+  useItemsHistoryStore,
+  type AggregatedItem,
+  type AttireRent,
+} from "@/store/items-history-store";
 
 export default function ItemsHistoryPage() {
-  const [list, setList] = useState<AttireRent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [agg, setAgg] = useState<AggregatedItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [itemQuery, setItemQuery] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [categories, setCategories] = useState<number[]>([]);
-  const [codes, setCodes] = useState<string[]>([]);
+  const {
+    list,
+    loading,
+    agg,
+    error,
+    categoryFilter,
+    currentPage,
+    rowsPerPage,
+    itemQuery,
+    showSuggestions,
+    categories,
+    codes,
+    setList,
+    setLoading,
+    setAgg,
+    setError,
+    setCategoryFilter,
+    setCurrentPage,
+    setRowsPerPage,
+    setItemQuery,
+    setShowSuggestions,
+    setCategories,
+    setCodes,
+  } = useItemsHistoryStore();
 
   function getCategoryLabel(id: number) {
     switch (id) {
@@ -68,9 +60,13 @@ export default function ItemsHistoryPage() {
       try {
         const resp = await attireRentService.getAll();
         if (!mounted) return;
-        const rows: AttireRent[] = Array.isArray(resp)
+        const rawRows = Array.isArray(resp)
           ? resp
-          : resp?.data || resp || [];
+          : (resp as { data?: AttireRent[] })?.data || [];
+        const rows: AttireRent[] = rawRows.map((row) => ({
+          ...row,
+          id: typeof row.id === "string" ? parseInt(row.id, 10) : row.id,
+        }));
         const today = new Date();
 
         // build aggregated stats by attire code
@@ -308,7 +304,7 @@ export default function ItemsHistoryPage() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
                   className="px-3 py-1 border border-(--color-border) rounded-md bg-main-bg text-position-text disabled:opacity-50 disabled:cursor-not-allowed hover:bg-(--color-hover-bg) transition-colors"
                 >
@@ -319,7 +315,7 @@ export default function ItemsHistoryPage() {
                 </span>
                 <button
                   onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
                   }
                   disabled={currentPage >= totalPages}
                   className="px-3 py-1 border border-(--color-border) rounded-md bg-main-bg text-position-text disabled:opacity-50 disabled:cursor-not-allowed hover:bg-(--color-hover-bg) transition-colors"
