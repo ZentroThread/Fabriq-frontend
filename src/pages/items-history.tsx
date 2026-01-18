@@ -206,7 +206,7 @@ export default function ItemsHistoryPage() {
                           setShowSuggestions(false);
                           setCurrentPage(1);
                         }}
-                        className="px-3 py-2 text-position-text hover:bg-support-button hover:text-support-button cursor-pointer"
+                        className="px-3 py-2 text-position-text hover:bg-support-button hover:text-support-button-text cursor-pointer"
                       >
                         {c}
                       </li>
@@ -215,7 +215,7 @@ export default function ItemsHistoryPage() {
               )}
             </div>
 
-            <select
+            {/* <select
               value={categoryFilter}
               onChange={(e) => {
                 setCategoryFilter(e.target.value);
@@ -229,7 +229,7 @@ export default function ItemsHistoryPage() {
                   {getCategoryLabel(cat)}
                 </option>
               ))}
-            </select>
+            </select> */}
 
             <select
               value={rowsPerPage}

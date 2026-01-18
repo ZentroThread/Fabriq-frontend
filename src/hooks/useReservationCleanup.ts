@@ -21,47 +21,8 @@ export function useReservationCleanup() {
 
   useEffect(() => {
     // Run cleanup ONLY when component unmounts (page navigation)
-    // Also register a beforeunload handler that uses sendBeacon / fetch keepalive
     const beforeUnloadHandler = () => {
-      const currentItems = itemsRef.current;
-
-      if (isConfirming.current || currentItems.length === 0) return;
-
-      console.log(
-        "🧹 [CLEANUP] (beforeunload) Unreserving items:",
-        currentItems.length
-      );
-
-      // Try to use navigator.sendBeacon for reliable delivery during unload
-      currentItems.forEach((item) => {
-        const payload = JSON.stringify({
-          attireCode: item.itemCode,
-          customerCode: item.customerCode || selectedCustomer?.custCode || "",
-        });
-
-        try {
-          const url = `${API_BASE_URL}${API_ENDPOINTS.ATTIRE.UNRESERVE}`;
-          const blob = new Blob([payload], { type: "application/json" });
-          const sent = navigator.sendBeacon && navigator.sendBeacon(url, blob);
-
-          if (!sent) {
-            // Fallback to fetch with keepalive
-            // Note: keepalive is supported in modern browsers and allows the request to continue
-            // even when the page is unloading.
-            fetch(url, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: payload,
-              keepalive: true,
-              credentials: "include",
-            }).catch((err) => {
-              console.error("Failed to send keepalive unreserve:", err);
-            });
-          }
-        } catch (err) {
-          console.error("Beforeunload unreserve error:", err);
-        }
-      });
+      // No unreserve calls needed - handled by frontend only
     };
 
     window.addEventListener("beforeunload", beforeUnloadHandler);
@@ -76,27 +37,13 @@ export function useReservationCleanup() {
         if (isConfirming.current || currentItems.length === 0) return;
 
         console.log(
-          "🧹 [CLEANUP] Unreserving items on unmount:",
+          "🧹 [CLEANUP] Clearing items on unmount:",
           currentItems.length
         );
 
-        // Unreserve all items in parallel
-        const promises = currentItems.map((item) =>
-          itemService
-            .unreserveItem({
-              attireCode: item.itemCode,
-              customerCode:
-                item.customerCode || selectedCustomer?.custCode || "",
-            })
-            .catch((err) => {
-              console.error("Failed to unreserve:", item.itemCode, err);
-            })
-        );
-
-        await Promise.all(promises);
-        console.log("✅ [CLEANUP] All items unreserved");
-        // Also clear billing store locally
+        // Clear billing store locally (no API calls needed)
         clearAll();
+        console.log("✅ [CLEANUP] Items cleared");
       };
 
       cleanup();

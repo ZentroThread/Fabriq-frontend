@@ -28,6 +28,7 @@ interface ItemCardProps {
     categoryCode: string;
     categoryName: string;
   };
+  selectedDate?: string;
 }
 
 export function ItemCard({

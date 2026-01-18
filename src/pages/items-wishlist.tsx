@@ -325,7 +325,7 @@ export default function ItemsWishlistPage() {
                         modifiers={modifiers}
                         className={cn(
                           props.className,
-                          modifiers.today ? "text-black" : ""
+                          modifiers.today ? "text-light-black-dark" : ""
                         )}
                       />
                     );

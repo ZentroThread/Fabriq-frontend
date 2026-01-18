@@ -12,6 +12,7 @@ import {
   Plus,
   Tag,
   History,
+  Calendar1,
 } from "lucide-react";
 import {
   Dialog,
@@ -24,17 +25,26 @@ import { AddItemForm } from "@/components/organisms/forms/additem-form";
 import { useFilteredItems } from "@/hooks/useItems";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { useStockUpdates } from "@/hooks/useStockUpdates";
+// import { useStockUpdates } from "@/hooks/useStockUpdates";
 import { useItemStore } from "@/store/item-store";
 
 function Items() {
-  useStockUpdates();
+  // useStockUpdates();
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
+  );
+
+  const displayDate = new Date(selectedDate ?? new Date()).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }
   );
 
   const allItemsFromStore = useItemStore((s) => s.items);
@@ -119,31 +129,40 @@ function Items() {
 
   return (
     <div className="p-5 flex flex-col ">
-      <div className="text-style text-[30px] font-semibold">
-        Item Management
-      </div>
-      <div className="text-position-text ">
-        Manage bridal attire and accessories inventory
-      </div>
-      <div className="flex gap-5 lg:mr-5 lg:ml-auto  sm:ml-0 sm:mr-auto">
-        <Button
-          text={"Add New Item"}
-          width="w-45"
-          icon={<Plus />}
-          onClick={() => setIsDialogOpen(true)}
-        />
-        <Button
-          text={"View Wishlist"}
-          width="w-45"
-          icon={<Heart />}
-          onClick={() => navigate("/items/wishlist")}
-        />
-        <Button
-          text={"History"}
-          width="w-45"
-          icon={<History />}
-          onClick={() => navigate("/items/history")}
-        />
+      <div className="w-full">
+        <div className="text-style text-[30px] font-semibold">
+          Item Management
+        </div>
+        <div className="text-position-text">
+          Manage bridal attire and accessories inventory
+        </div>
+
+        <div className="flex items-center justify-between mt-3 w-full">
+          <div className="flex items-center gap-2 border-2 p-2 w-40 rounded-3xl text-position-text bg-text-active/5">
+            {displayDate} <Calendar1 />
+          </div>
+
+          <div className="flex gap-5 items-center">
+            <Button
+              text={"Add New Item"}
+              width="w-45"
+              icon={<Plus />}
+              onClick={() => setIsDialogOpen(true)}
+            />
+            <Button
+              text={"View Wishlist"}
+              width="w-45"
+              icon={<Heart />}
+              onClick={() => navigate("/items/wishlist")}
+            />
+            <Button
+              text={"History"}
+              width="w-45"
+              icon={<History />}
+              onClick={() => navigate("/items/history")}
+            />
+          </div>
+        </div>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -201,19 +220,9 @@ function Items() {
             value={categoryFilter}
             onValueChange={handleCategoryChange}
           />
+          <div className="ml-auto flex items-center" />
         </div>
       </Chart>
-
-      <div className="mt-3 mb-3">
-        <label className="text-sm text-position-text mr-2">Select Date:</label>
-        <input
-          type="date"
-          value={selectedDate}
-          min={new Date().toISOString().split("T")[0]}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="border rounded px-2 py-1"
-        />
-      </div>
 
       {error ? (
         <div className="flex flex-col items-center justify-center h-64">

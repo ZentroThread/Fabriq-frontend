@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { billingService } from "@/services/billing.service";
 import { DollarSign, FileText } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
+import { formatDateTime, parseDate } from "@/utils/date";
 import {
   Dialog,
   DialogContent,
@@ -98,12 +99,12 @@ const Bills = () => {
         if (!(matchesCode || matchesName || matchesPhone)) return false;
       }
       if (filterStartDate) {
-        const bd = bill.billingDate ? new Date(bill.billingDate) : null;
+        const bd = parseDate(bill.billingDate);
         const start = new Date(filterStartDate + "T00:00:00");
         if (!bd || bd < start) return false;
       }
       if (filterEndDate) {
-        const bd = bill.billingDate ? new Date(bill.billingDate) : null;
+        const bd = parseDate(bill.billingDate);
         const end = new Date(filterEndDate + "T23:59:59");
         if (!bd || bd > end) return false;
       }
@@ -112,9 +113,11 @@ const Bills = () => {
 
     // sort descending by billingDate
     list.sort((a: Billing, b: Billing) => {
-      const da = a.billingDate ? new Date(a.billingDate).getTime() : 0;
-      const db = b.billingDate ? new Date(b.billingDate).getTime() : 0;
-      return db - da;
+      const da = parseDate(a.billingDate);
+      const db = parseDate(b.billingDate);
+      const timeA = da ? da.getTime() : 0;
+      const timeB = db ? db.getTime() : 0;
+      return timeB - timeA; // descending order (newest first)
     });
 
     return list;
@@ -300,9 +303,7 @@ const Bills = () => {
                     </TableCell>
                     <TableCell>{bill.customer?.custCode || "-"}</TableCell>
                     <TableCell>
-                      {bill.billingDate
-                        ? new Date(bill.billingDate).toLocaleString()
-                        : "-"}
+                      {formatDateTime(bill.billingDate as string | undefined)}
                     </TableCell>
                     <TableCell>{bill.billingTotal || "-"}</TableCell>
                     <TableCell>
@@ -383,9 +384,7 @@ const Bills = () => {
                 Billing Date:
               </div>
               <div className="flex-1 truncate">
-                {selected?.billingDate
-                  ? new Date(selected.billingDate).toLocaleString()
-                  : "-"}
+                {formatDateTime(selected?.billingDate as string | undefined)}
               </div>
             </div>
 
@@ -411,16 +410,8 @@ const Bills = () => {
                         <tr className="text-center" key={r.id}>
                           <td>{r.attireCode || r.attire?.attireCode || "-"}</td>
                           <td>{r.rentDuration ?? "-"}</td>
-                          <td>
-                            {r.rentDate
-                              ? new Date(r.rentDate).toLocaleString()
-                              : "-"}
-                          </td>
-                          <td>
-                            {r.returnDate
-                              ? new Date(r.returnDate).toLocaleString()
-                              : "-"}
-                          </td>
+                          <td>{formatDateTime(r.rentDate as string | null | undefined)}</td>
+                          <td>{formatDateTime(r.returnDate as string | null | undefined)}</td>
                         </tr>
                       ))}
                     </tbody>

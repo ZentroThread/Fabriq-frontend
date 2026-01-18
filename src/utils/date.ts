@@ -44,3 +44,73 @@ export const getYearsForRange = () => {
   }
   return years;
 };
+
+/**
+ * Parse date string or array from backend and format it with date and time
+ * Backend may return dates as arrays like [2024, 1, 18, 14, 30, 0] or as ISO strings
+ */
+export const formatDateTime = (
+  dateValue: string | number[] | null | undefined
+): string => {
+  if (!dateValue) return "-";
+
+  try {
+    let date: Date;
+
+    // If it's an array (Java LocalDateTime format)
+    if (Array.isArray(dateValue)) {
+      // Array format: [year, month, day, hour, minute, second, millisecond?]
+      const [year, month, day, hour = 0, minute = 0, second = 0] = dateValue;
+      // Note: JavaScript months are 0-indexed, but backend months are 1-indexed
+      date = new Date(year, month - 1, day, hour, minute, second);
+    } else {
+      // If it's a string, try to parse it
+      date = new Date(dateValue);
+    }
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "-";
+    }
+
+    // Format: "MM/DD/YYYY, HH:MM:SS AM/PM"
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error, dateValue);
+    return "-";
+  }
+};
+
+/**
+ * Parse date string or array from backend into a Date object for comparisons
+ */
+export const parseDate = (
+  dateValue: string | number[] | null | undefined
+): Date | null => {
+  if (!dateValue) return null;
+
+  try {
+    let date: Date;
+
+    // If it's an array (Java LocalDateTime format)
+    if (Array.isArray(dateValue)) {
+      const [year, month, day, hour = 0, minute = 0, second = 0] = dateValue;
+      date = new Date(year, month - 1, day, hour, minute, second);
+    } else {
+      date = new Date(dateValue);
+    }
+
+    return isNaN(date.getTime()) ? null : date;
+  } catch (error) {
+    console.error("Error parsing date:", error, dateValue);
+    return null;
+  }
+};

@@ -1,5 +1,5 @@
 import { Menu, LogOut } from "lucide-react";
-import logo from "../../../assets/images/logo.jpg";
+import logo from "../../../assets/images/logo.png";
 import { Bell, X } from "lucide-react";
 import ThemeToggle from "../../atoms/toggle/theme-toggle";
 import { useAuthStore } from "@/store/user-auth-store";
