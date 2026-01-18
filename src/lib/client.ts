@@ -89,7 +89,7 @@ axiosInstance.interceptors.response.use(
       : { message: error.message };
     try {
       console.error("❌ API Error:", JSON.stringify(errInfo));
-    } catch (jsonErr) {
+    } catch {
       console.error("❌ API Error:", errInfo);
     }
 

@@ -79,11 +79,18 @@ export default function ItemsWishlistPage() {
     );
   });
 
-  const totalPages = Math.ceil(filteredList.length / rowsPerPage);
-  const startIdx = (currentPage - 1) * rowsPerPage;
-  const paginatedList = filteredList.slice(startIdx, startIdx + rowsPerPage);
+  // Sort by rent date in ascending order
+  const sortedList = [...filteredList].sort((a, b) => {
+    const dateA = a.rentDate ? new Date(a.rentDate).getTime() : 0;
+    const dateB = b.rentDate ? new Date(b.rentDate).getTime() : 0;
+    return dateA - dateB;
+  });
 
-  const { dateCounts, dateBills } = (() => {
+  const totalPages = Math.ceil(sortedList.length / rowsPerPage);
+  const startIdx = (currentPage - 1) * rowsPerPage;
+  const paginatedList = sortedList.slice(startIdx, startIdx + rowsPerPage);
+
+  const { dateCounts } = (() => {
     const map = new Map<string, Set<string>>();
     const toKey = (d: Date) => {
       const y = d.getFullYear();
@@ -111,7 +118,7 @@ export default function ItemsWishlistPage() {
       bills.set(k, Array.from(s));
     }
 
-    return { dateCounts: counts, dateBills: bills };
+    return { dateCounts: counts };
   })();
 
   const todayStart = (() => {
@@ -257,7 +264,7 @@ export default function ItemsWishlistPage() {
                     const key = toKey(day.date);
                     const [open, setOpen] = useState(false);
                     const count = dateCounts.get(key) || 0;
-                    const bills = dateBills.get(key) || [];
+                    // const bills = dateBills.get(key) || [];
 
                     if (count > 0) {
                       return (

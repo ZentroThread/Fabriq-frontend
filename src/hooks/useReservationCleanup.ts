@@ -1,13 +1,10 @@
 import { useEffect, useRef } from "react";
 import useBillingStore from "@/store/billing-store";
-import { itemService } from "@/services/item.service";
-import { API_BASE_URL } from "@/constants/constdata";
-import { API_ENDPOINTS } from "@/constants/api.constants";
 
 export function useReservationCleanup() {
   const items = useBillingStore((s) => s.items);
   const clearAll = useBillingStore((s) => s.clearAll);
-  const selectedCustomer = useBillingStore((s) => s.selectedCustomer);
+  // const selectedCustomer = useBillingStore((s) => s.selectedCustomer);
 
   // Track if we're currently confirming an order
   const isConfirming = useRef(false);

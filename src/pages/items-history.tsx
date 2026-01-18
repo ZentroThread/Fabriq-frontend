@@ -17,7 +17,6 @@ import {
 
 export default function ItemsHistoryPage() {
   const {
-    list,
     loading,
     agg,
     error,
@@ -25,14 +24,12 @@ export default function ItemsHistoryPage() {
     currentPage,
     rowsPerPage,
     itemQuery,
-    showSuggestions,
-    categories,
     codes,
+    showSuggestions,
     setList,
     setLoading,
     setAgg,
     setError,
-    setCategoryFilter,
     setCurrentPage,
     setRowsPerPage,
     setItemQuery,
@@ -41,18 +38,18 @@ export default function ItemsHistoryPage() {
     setCodes,
   } = useItemsHistoryStore();
 
-  function getCategoryLabel(id: number) {
-    switch (id) {
-      case 1:
-        return "Saree";
-      case 2:
-        return "Nilame Costume";
-      case 3:
-        return "Jewellary";
-      default:
-        return `Category ${id}`;
-    }
-  }
+  // function getCategoryLabel(id: number) {
+  //   switch (id) {
+  //     case 1:
+  //       return "Saree";
+  //     case 2:
+  //       return "Nilame Costume";
+  //     case 3:
+  //       return "Jewellary";
+  //     default:
+  //       return `Category ${id}`;
+  //   }
+  // }
 
   useEffect(() => {
     let mounted = true;
@@ -135,7 +132,7 @@ export default function ItemsHistoryPage() {
               typeof error.response.data === "string"
                 ? error.response.data
                 : JSON.stringify(error.response.data);
-          } catch (_err) {
+          } catch {
             msg = String(error.response.data);
           }
         } else if (error?.message) {

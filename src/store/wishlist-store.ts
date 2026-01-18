@@ -31,7 +31,7 @@ interface WishlistStore {
   setError: (error: string | null) => void;
 }
 
-export const useWishlistStore = create<WishlistStore>((set, get) => ({
+export const useWishlistStore = create<WishlistStore>((set) => ({
   // Initial state
   list: [],
   isLoading: false,

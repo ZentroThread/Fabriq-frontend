@@ -34,9 +34,7 @@ function Items() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
+  const selectedDate = new Date().toISOString().split("T")[0];
 
   const displayDate = new Date(selectedDate ?? new Date()).toLocaleDateString(
     "en-US",
