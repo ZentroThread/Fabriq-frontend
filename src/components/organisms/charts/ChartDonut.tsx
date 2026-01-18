@@ -1,78 +1,72 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Pie, PieChart } from "recharts";
-import { chartDataDonut } from "@/constants/data";
-
+import { Pie, PieChart, Cell, LabelList } from "recharts";
+import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import {
   Card,
   CardContent,
-  CardFooter,
-  CardHeader,
 } from "@/components/ui/card";
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 
-export const description = "A donut chart";
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig;
+
 
 export function ChartDonut() {
-  return (
+
+   const { totalEmployees, presentCount, lateCount,absentCount } = useTodayDeviceAttendanceLogsSummary();
+
+  const attendanceData = [
+    { name: "Present", value: presentCount, color: "#B47C5A" },
+    { name: "Absent", value: absentCount, color: "#F7A1B2" },
+    { name: "Leave", value: totalEmployees - (presentCount + absentCount + lateCount), color: "#CBB2A3" },
+  ];
+   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0"></CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+      <CardContent className="flex flex-col items-center gap-6">
+        {/* Donut */}
+        <PieChart width={220} height={220}>
+          <Pie
+            data={attendanceData}
+            dataKey="value"
+            nameKey="name"
+            innerRadius={70}
+            outerRadius={90}
+            stroke="none"
+          >
+            {attendanceData.map((entry, index) => (
+              <Cell key={index} fill={entry.color} />
+            ))}
+
+            {/* Numbers on arcs */}
+            <LabelList
+              dataKey="value"
+              position="outside"
+              fill="#9a7b6a"
+              fontSize={14}
             />
-            <Pie
-              data={chartDataDonut}
-              dataKey="visitors"
-              nameKey="browser"
-              innerRadius={60}
-            />
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 leading-none font-medium text-position-text">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          </Pie>
+        </PieChart>
+
+        {/* Legend */}
+        <div className="w-full space-y-3">
+          {attendanceData.map((item) => (
+            <div
+              key={item.name}
+              className="flex items-center justify-between text-sm"
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                />
+                <span className="font-lg">{item.name}</span>
+              </div>
+              <span className="font-semibold text-muted-foreground">
+                {item.value}
+              </span>
+            </div>
+          ))}
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 }

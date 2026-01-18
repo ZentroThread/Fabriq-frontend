@@ -81,7 +81,8 @@ function Reports() {
           label={"Rentals by Category"}
           description={"Product category distribution"}
         >
-        <ChartPie data={[]} />
+          <ChartPie data={[]} />
+
         </Chart>
       </div>
       <div className="">
