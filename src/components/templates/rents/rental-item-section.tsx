@@ -5,10 +5,10 @@ import type { BillingState } from "@/store/billing-store";
 export default function RentalItemsSection() {
   const items = useBillingStore((s: BillingState) => s.items);
   const removeItem = useBillingStore((s: BillingState) => s.removeItem);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   );
+  void selectedCustomer; // Intentionally unused for now
 
   console.log("📦 Rental Items:", items);
 
