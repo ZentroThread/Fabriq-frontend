@@ -1,14 +1,24 @@
 import { useGetAllAttireRents } from "./useAttireRents";
+import {FetchCustomers} from "../customer/useCustomer";
 
 type AttireRentsSummary = {
   activeRentsCount: number;
   dueReturnsCount: number;
   overdueReturnsCount: number;
   newAttireRentsThisWeek: number;
+  rentWithCustomerDetails?: AttireRentSummaryWithCustomer[];
+};
+
+type AttireRentSummaryWithCustomer = {
+  customerName?: string;
+  attireName:string;
+  returnDate : string | null;
+  isOverdue: boolean;
 };
 
 export const useAttireRentsSummary = (): AttireRentsSummary => {
   const { data: attireRents } = useGetAllAttireRents();
+  const { data: customers } = FetchCustomers();
 
   const now = new Date();
   const oneWeekAgo = new Date();
@@ -18,6 +28,8 @@ export const useAttireRentsSummary = (): AttireRentsSummary => {
   let dueReturnsCount = 0;
   let overdueReturnsCount = 0;
   let newAttireRentsThisWeek = 0;
+
+  const rentWithCustomerDetails: AttireRentSummaryWithCustomer[] = [];
 
   attireRents?.forEach((rent) => {
     if (!rent.rentDate) return;
@@ -43,6 +55,23 @@ export const useAttireRentsSummary = (): AttireRentsSummary => {
     if (rentDate >= oneWeekAgo && rentDate <= now) {
       newAttireRentsThisWeek++;
     }
+
+    // Rent with Customer Details
+    const today = new Date();
+    const isOverdue = returnDate ? returnDate < today : false;
+    const customer = customers?.find((customer) => customer.custCode === rent.custCode);
+    const customerName = customer?.custName;
+    const attireName = rent.attireCode;
+    const returnDateStr = returnDate ? returnDate.toLocaleDateString() : null;
+    const rentWithCustomerDetail = {
+      customerName,
+      attireName,
+      returnDate: returnDateStr,
+      isOverdue,
+    };
+
+    rentWithCustomerDetails.push(rentWithCustomerDetail);
+
   });
 
   return {
@@ -50,5 +79,6 @@ export const useAttireRentsSummary = (): AttireRentsSummary => {
     dueReturnsCount,
     overdueReturnsCount,
     newAttireRentsThisWeek,
+    rentWithCustomerDetails,
   };
 };

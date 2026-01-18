@@ -9,7 +9,8 @@ import { useState, useEffect } from "react";
 import { useAttireRentsSummary } from "@/hooks/attire/useAttireRentsSummary";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
-import { useAttireRentCurrentMonthlyOverview } from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
+import {useAttireRentCurrentMonthlyOverview} from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
+import {RentDetailsSummary} from "@/components/organisms/summaries/rent-details-summary";
 
 function Dashboard() {
   const {
@@ -26,7 +27,7 @@ function Dashboard() {
       ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
       : 0;
 
-  const { monthlySummary } = useMonthlyBillSummary();
+  const { monthlySummary,summaryForThisMonth } = useMonthlyBillSummary();
 
   const currentMonthlyOverview = useAttireRentCurrentMonthlyOverview();
 
@@ -53,7 +54,7 @@ function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Revenue"}
-          lable1={"LKR 3.28M"}
+          lable1={`LKR ${((summaryForThisMonth.totalAmount/1000000).toFixed(2)).toLocaleString()}M`}
           lable2={"+15%"}
           icon={DollarSign}
         />
@@ -109,8 +110,10 @@ function Dashboard() {
 
         <Chart
           label={"Upcoming & Overdue Returns"}
-          description={"Items that need to be returned soon"}
-        />
+          description={"Rentals due for return"}
+        >
+          <RentDetailsSummary />
+        </Chart>
       </div>
     </div>
   );

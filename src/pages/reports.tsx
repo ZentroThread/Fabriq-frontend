@@ -82,6 +82,7 @@ function Reports() {
           description={"Product category distribution"}
         >
           <ChartPie data={[]} />
+
         </Chart>
       </div>
       <div className="">
