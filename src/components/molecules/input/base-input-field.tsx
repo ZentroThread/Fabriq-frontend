@@ -8,7 +8,13 @@ type Props = {
   placeholder?: string;
 };
 
-export default function BaseInputField({ label, value, readonly, onChange, placeholder }: Props) {
+export default function BaseInputField({
+  label,
+  value,
+  readonly,
+  onChange,
+  placeholder,
+}: Props) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
       <label className="text-position-text font-light w-full sm:w-32 md:w-40 text-sm sm:text-base">
@@ -24,4 +30,3 @@ export default function BaseInputField({ label, value, readonly, onChange, place
     </div>
   );
 }
-

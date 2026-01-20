@@ -5,13 +5,16 @@ export const GenderEnum = z.enum(["MALE", "FEMALE", "OTHER"]);
 export const EmployeeBankDetailsSchema = z.object({
   id: z.number(),
   bankName: z.string().min(3, "Bank name must be at least 3 characters long"),
-  branchName: z.string().min(3, "Branch name must be at least 3 characters long"),
-  accountNumber: z.string().min(5, "Account number must be at least 5 characters long"),
+  branchName: z
+    .string()
+    .min(3, "Branch name must be at least 3 characters long"),
+  accountNumber: z
+    .string()
+    .min(5, "Account number must be at least 5 characters long"),
   accountHolderName: z.string(),
 });
 
 export const EmployeeSchema = z.object({
-
   id: z.number(),
   empCode: z.string(),
 
@@ -42,7 +45,6 @@ export const EmployeeSchema = z.object({
 });
 
 export const EmployeeCreateSchema = z.object({
-
   empCode: z.string().optional(),
 
   imgUrl: z.string().optional(),
@@ -68,4 +70,3 @@ export const EmployeeCreateSchema = z.object({
 
   employeeBankDetails: EmployeeBankDetailsSchema.optional(),
 });
-

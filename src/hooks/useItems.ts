@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { itemService } from "@/services/item.service";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import { toast } from "sonner";
+import Swal from "sweetalert2";
 
 export interface Item {
   id: number;
@@ -33,7 +33,7 @@ interface AddItemPayload {
 }
 
 export const useItems = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: QUERY_KEYS.ITEMS.ALL,
     queryFn: async () => {
       console.log("🔍 TanStack Query: Starting getAllItems fetch");
@@ -50,10 +50,12 @@ export const useItems = () => {
       }
     },
     retry: 1,
-    staleTime: 30000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: "always",
   });
+
+  return query;
 };
 
 // Hook to fetch single item by ID
@@ -61,7 +63,7 @@ export const useItem = (id: string) => {
   return useQuery({
     queryKey: QUERY_KEYS.ITEMS.BY_ID(id),
     queryFn: () => itemService.getItemById(id),
-    enabled: !!id, // Only run query if id exists
+    enabled: !!id,
   });
 };
 
@@ -72,12 +74,20 @@ export const useAddItem = () => {
   return useMutation({
     mutationFn: itemService.addItem,
     onSuccess: () => {
-      // Invalidate and refetch items list
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
-      toast.success("Item added successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Item added successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to add item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add item",
+        text: error.message || "An error occurred",
+      });
     },
   });
 };
@@ -90,16 +100,20 @@ export const useUpdateItem = () => {
     mutationFn: ({ id, data }: { id: string; data: AddItemPayload }) =>
       itemService.updateItem(id, data),
     onSuccess: async (_, variables) => {
-      // Invalidate both the list and the specific item
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.ITEMS.BY_ID(variables.id),
       });
-      toast.success("Item updated successfully!");
+      // Success handling (UI notifications) should be handled by the
+      // component that triggers the mutation so it can also close dialogs.
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to update item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to update item",
+        text: error.message || "An error occurred",
+      });
     },
   });
 };
@@ -113,10 +127,19 @@ export const useDeleteItem = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
       await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
-      toast.success("Item deleted successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Item deleted successfully!",
+        timer: 1600,
+        showConfirmButton: false,
+      });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to delete item",
+        text: error.message || "An error occurred",
+      });
     },
   });
 };

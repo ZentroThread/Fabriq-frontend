@@ -25,4 +25,4 @@ export const useAddEmployee = () => {
       swalError("Error", error?.response?.data?.message || "Failed to add employee.");
     },
   });
-}
+};

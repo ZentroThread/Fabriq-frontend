@@ -1,9 +1,9 @@
-
-
 export const API_ENDPOINTS = {
   ATTIRE: {
     ADD: "/v1/attire/add",
     GET_ALL: "/v1/attire/all",
+    RESERVE: "/v1/attire/reserve",
+    UNRESERVE: "/v1/attire/unreserve",
     DELETE: (id: number) => `/v1/attire/delete/${id}`,
     UPDATE: (id: number) => `/v1/attire/update/${id}`,
   },
@@ -37,7 +37,7 @@ export const API_ENDPOINTS = {
     GET_ALL: "/v1/employees",
     DELETE: (code: string) => `/v1/employees/${code}`,
     UPDATE: (code: string) => `/v1/employees/${code}`,
-    GET_BY_CODE: (code: string ) => `/v1/employees/${code}`,
+    GET_BY_CODE: (code: string) => `/v1/employees/${code}`,
   },
 
   EMPLOYEE_PRODUCTION: {
@@ -46,7 +46,11 @@ export const API_ENDPOINTS = {
     GET_BY_EMPLOYEE: (id: number) => `/v1/production-records/employee/${id}`,
     GET_BY_DATE_RANGE: (startDate: string, endDate: string) =>
       `/v1/production-records/date-range?startDate=${startDate}&endDate=${endDate}`,
-    GET_BY_DATE_RANGE_EMPLOYEE: (id: number, startDate: string, endDate: string) =>
+    GET_BY_DATE_RANGE_EMPLOYEE: (
+      id: number,
+      startDate: string,
+      endDate: string
+    ) =>
       `/v1/production-records/employee/${id}/date-range?startDate=${startDate}&endDate=${endDate}`,
     DELETE: (id: number) => `/v1/production-records/${id}`,
     UPDATE: (id: number) => `/v1/production-records/${id}`,
@@ -56,19 +60,32 @@ export const API_ENDPOINTS = {
     ADD: "/v1/advance-payments",
     GET_ALL: "/v1/advance-payments",
     GET_BY_EMPLOYEE: (id: number) => `/v1/advance-payments/employee/${id}`,
-    GET_BY_DATE_RANGE_EMPLOYEE: (id: number, startDate: string, endDate: string) =>
+    GET_BY_DATE_RANGE_EMPLOYEE: (
+      id: number,
+      startDate: string,
+      endDate: string
+    ) =>
       `/v1/advance-payments/employee/${id}/date-range?startDate=${startDate}&endDate=${endDate}`,
     DELETE: (id: number) => `/v1/advance-payments/${id}`,
     UPDATE: (id: number) => `/v1/advance-payments/${id}`,
   },
 
-  PAYROLL:{
-    GENERATE: (empId:number,month:number,year:number) => `/v1/payroll/calculate/${empId}/${month}/${year}`,
-    GET_RECORD: (empId:number,year:number) => `/v1/payroll/${empId}/${year}`,
-    CONFIRM: (empId:number,month:number,year:number) => `/v1/payroll/confirm/${empId}/${month}/${year}`,
-    EPF_RECORD: (month:number,year:number) => `/v1/payroll/epf-record/${month}/${year}`,
-    ETF_RECORD: (month:number,year:number) => `/v1/payroll/etf-record/${month}/${year}`,
-    PRINT_PAYSLIP: (tenantId:string,empId:number,month:number,year:number) => `/v1/payroll/payslip/print/${tenantId}/${empId}/${month}/${year}`,
+  PAYROLL: {
+    GENERATE: (empId: number, month: number, year: number) =>
+      `/v1/payroll/calculate/${empId}/${month}/${year}`,
+    GET_RECORD: (empId: number, year: number) => `/v1/payroll/${empId}/${year}`,
+    CONFIRM: (empId: number, month: number, year: number) =>
+      `/v1/payroll/confirm/${empId}/${month}/${year}`,
+    EPF_RECORD: (month: number, year: number) =>
+      `/v1/payroll/epf-record/${month}/${year}`,
+    ETF_RECORD: (month: number, year: number) =>
+      `/v1/payroll/etf-record/${month}/${year}`,
+    PRINT_PAYSLIP: (
+      tenantId: string,
+      empId: number,
+      month: number,
+      year: number
+    ) => `/v1/payroll/payslip/print/${tenantId}/${empId}/${month}/${year}`,
   },
 
   DEVICE_ATTENDANCE_LOG: {
@@ -76,7 +93,6 @@ export const API_ENDPOINTS = {
   },
 
   ATTENDANCE: {
-     GET_DAILY_ATTENDANCE: (date: string) => `/v1/attendance/date?date=${date}`,
+    GET_DAILY_ATTENDANCE: (date: string) => `/v1/attendance/date?date=${date}`,
   },
-
 };

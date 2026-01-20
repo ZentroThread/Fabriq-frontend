@@ -1,5 +1,5 @@
 import InputField from "@/components/molecules/input/input-feild";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useItems } from "@/hooks/useItems";
 import { useItemStore } from "@/store/item-store";
 import type { Item } from "@/types/item.types";
@@ -31,6 +31,7 @@ interface ItemWithStock
 export default function AddItemsSection() {
   // ensure items are fetched into the local zustand store for suggestions
   useItems();
+
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   ) as CustomerData | null;
@@ -40,12 +41,18 @@ export default function AddItemsSection() {
     (s: BillingState) => s.setSelectedCustomer
   );
 
+  // Toggle between regular and customized forms
+  const [formType, setFormType] = useState<"regular" | "customized">("regular");
+
   const [itemCode, setItemCode] = useState<string | null>("");
-  const [customerCode, setCustomerCode] = useState<string>("");
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [days, setDays] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // Customized form state
+  const [customCode, setCustomCode] = useState<string>("");
+  const [customPrice, setCustomPrice] = useState<string>("");
 
   // Local item store
   const allItems = useItemStore((s) => s.items);
@@ -67,6 +74,11 @@ export default function AddItemsSection() {
         })
       : []
   ) as Item[];
+
+  const getCurrentStock = (itemCode: string): number | null => {
+    const item = allItems.find((it) => it.code === itemCode);
+    return normalizeStock(item as ItemWithStock | null);
+  };
 
   const getSuggestionCode = (item: Item): string => {
     return item.code || (item.id ? String(item.id) : "");
@@ -118,24 +130,23 @@ export default function AddItemsSection() {
     return null;
   };
 
-  // update displayed stock whenever local item changes
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDisplayedStock(normalizeStock(localItem as ItemWithStock | null));
-  }, [localItem]);
+  // Update displayed stock whenever local item OR store changes
+  // useEffect(() => {
+  //   if (localItem) {
+  //     const liveStock = getCurrentStock(localItem.code || "");
+  //     setDisplayedStock(liveStock);
+  //   } else {
+  //     setDisplayedStock(null);
+  //   }
+  // }, [localItem, allItems]);
 
-  // keep local customerCode in sync with selectedCustomer and allow edits
-  useEffect(() => {
-    if (!selectedCustomer) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCustomerCode("");
-      return;
-    }
-
-    const code =
+  // Derive customerCode from selectedCustomer
+  const customerCode = useMemo(() => {
+    if (!selectedCustomer) return "";
+    return (
       selectedCustomer.custCode ||
-      (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : "");
-    setCustomerCode(code);
+      (selectedCustomer.cust_id ? String(selectedCustomer.cust_id) : "")
+    );
   }, [selectedCustomer]);
 
   useEffect(() => {
@@ -151,25 +162,61 @@ export default function AddItemsSection() {
     const code = (itemCode ?? "").trim();
     const name = localItem?.title || itemName || "";
     if (!code || !name) return;
-    addItem({
+
+    const payload = {
       itemCode: code,
       name,
       price: price || 0,
       days,
       startDate: startDate || undefined,
       endDate: endDate || undefined,
-      customerCode: customerCode, // ← ADD THIS
-    });
-    // Decrease local displayed stock by 1 (UI only). Persist happens on confirm.
-    setDisplayedStock((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
+      customerCode: customerCode,
+    };
+
+    console.log("Rent startDate:", startDate);
+    console.log("Add item payload:", payload);
+
+    // Just add to local billing state - NO API CALLS
+    addItem(payload);
+
+    // Reset form
     setStartDate(null);
     setEndDate(null);
     setItemCode("");
     setDays(0);
   }
 
+  function onAddCustomized() {
+    const code = customCode.trim();
+    const priceValue = parseFloat(customPrice);
+
+    if (!code || !priceValue || isNaN(priceValue)) return;
+
+    const payload = {
+      itemCode: code,
+      name: `Custom Item - ${code}`,
+      price: priceValue,
+      days,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      customerCode: customerCode,
+      isCustomItem: true, // Mark as custom item
+    };
+
+    console.log("Add customized item payload:", payload);
+
+    // Add to local billing state
+    addItem(payload);
+
+    // Reset form
+    setCustomCode("");
+    setCustomPrice("");
+    setStartDate(null);
+    setEndDate(null);
+    setDays(0);
+  }
+
   const handleCustomerCodeChange = (value: string) => {
-    setCustomerCode(value);
     try {
       if (selectedCustomer) {
         setSelectedCustomer({
@@ -180,7 +227,6 @@ export default function AddItemsSection() {
         setSelectedCustomer({ custCode: value } as CustomerData);
       }
     } catch (err) {
-      // swallow; keep local value at least
       console.warn("Failed to update selected customer code", err);
     }
   };
@@ -192,6 +238,34 @@ export default function AddItemsSection() {
         description={"Select items to add to the rental"}
         height="h-auto"
       >
+        {/* Toggle between Regular and Customized */}
+        <div className="flex justify-end mb-4">
+          <div className="flex items-center gap-4 p-2 bg-muted rounded-lg">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="formType"
+                value="regular"
+                checked={formType === "regular"}
+                onChange={() => setFormType("regular")}
+                className="cursor-pointer"
+              />
+              <span className="text-sm font-medium">Regular Items</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="formType"
+                value="customized"
+                checked={formType === "customized"}
+                onChange={() => setFormType("customized")}
+                className="cursor-pointer"
+              />
+              <span className="text-sm font-medium">Customized Items</span>
+            </label>
+          </div>
+        </div>
+
         <InputField
           label="Customer Code"
           placeholder="Enter customer code"
@@ -199,95 +273,119 @@ export default function AddItemsSection() {
           onChange={(e) => handleCustomerCodeChange(e.target.value)}
         />
 
-        <div className="relative">
-          <InputField
-            label="Item Code"
-            placeholder="Enter item code"
-            value={itemCode ?? ""}
-            onChange={(e) => setItemCode(e.target.value)}
-          />
-          {isLoading && (
-            <div className="absolute right-3 top-9 text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-            </div>
-          )}
-          {/* Suggestions dropdown */}
-          {suggestions.length > 0 && itemCode && (
-            <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
-              {suggestions.map((suggestion, idx) => {
-                const code = getSuggestionCode(suggestion);
-                const name = suggestion.title || suggestion.name || "-";
-                const stock = normalizeStock(suggestion as ItemWithStock);
-                return (
-                  <li
-                    key={`${code}-${idx}`}
-                    className="px-3 py-2 hover:bg-muted cursor-pointer flex justify-between items-center"
-                    onClick={() => {
-                      if (!code) return;
-                      setItemCode(code);
-                      // set displayed stock immediately for snappy UI
-                      setDisplayedStock(
-                        normalizeStock(suggestion as ItemWithStock)
-                      );
-                    }}
-                  >
-                    <div className="text-sm">
-                      <div className="font-medium">{code}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {name}
-                      </div>
-                    </div>
-                    <div className="text-sm text-right">
-                      <div className="font-medium">
-                        Rs. {Number(suggestion.price ?? 0).toFixed(2)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {stock === null ? (
-                          <span className="italic text-muted-foreground">
-                            N/A
-                          </span>
-                        ) : stock > 0 ? (
-                          <span>{stock}</span>
-                        ) : (
-                          <span className="text-destructive">0</span>
-                        )}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
+        {formType === "regular" ? (
+          <>
+            <div className="relative">
+              <InputField
+                label="Item Code"
+                placeholder="Enter item code"
+                value={itemCode ?? ""}
+                onChange={(e) => setItemCode(e.target.value)}
+              />
+              {isLoading && (
+                <div className="absolute right-3 top-9 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              )}
 
-        {/* Show error message if lookup fails */}
-        {isError && itemCode && (
-          <div className="flex items-center gap-2 text-sm text-destructive">
-            <AlertCircle className="h-4 w-4" />
-            <span>Item not found or error loading</span>
-          </div>
-        )}
+              {/* Suggestions dropdown */}
+              {suggestions.length > 0 && itemCode && (
+                <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-auto rounded-md border bg-background">
+                  {suggestions.map((suggestion, idx) => {
+                    const code = getSuggestionCode(suggestion);
+                    const name = suggestion.title || suggestion.name || "-";
+                    const stock = getCurrentStock(code);
 
-        {/* Show item details when available locally */}
-        {localItem && !isError && (
-          <div className="rounded-md border border-border bg-muted/30 p-3 space-y-2">
-            <div className="text-sm">
-              <span className="font-medium">Item:</span> {itemName}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Price:</span> Rs. {price.toFixed(2)}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Stock:</span>{" "}
-              {displayedStock === null ? (
-                <span className="italic text-muted-foreground">N/A</span>
-              ) : displayedStock > 0 ? (
-                <span>{displayedStock} available</span>
-              ) : (
-                <span className="text-destructive">Out of stock</span>
+                    return (
+                      <li
+                        key={`${code}-${idx}`}
+                        className="px-3 py-2 hover:bg-muted cursor-pointer flex justify-between items-center"
+                        onClick={() => {
+                          if (!code) return;
+                          setItemCode(code);
+                          setDisplayedStock(getCurrentStock(code));
+                        }}
+                      >
+                        <div className="text-sm">
+                          <div className="font-medium">{code}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {name}
+                          </div>
+                        </div>
+                        <div className="text-sm text-right">
+                          <div className="font-medium">
+                            Rs. {Number(suggestion.price ?? 0).toFixed(2)}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {stock === null ? (
+                              <span className="italic text-muted-foreground">
+                                N/A
+                              </span>
+                            ) : stock > 0 ? (
+                              <span>{stock}</span>
+                            ) : (
+                              <span className="text-destructive">0</span>
+                            )}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
             </div>
-          </div>
+
+            {/* Show error message if lookup fails */}
+            {isError && itemCode && (
+              <div className="flex items-center gap-2 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4" />
+                <span>Item not found or error loading</span>
+              </div>
+            )}
+
+            {/* Show item details when available locally */}
+            {localItem && !isError && (
+              <div className="rounded-md border border-border bg-muted/30 p-3 space-y-2">
+                <div className="text-sm">
+                  <span className="font-medium">Item:</span> {itemName}
+                </div>
+                <div className="text-sm">
+                  <span className="font-medium">Price:</span> Rs.{" "}
+                  {price.toFixed(2)}
+                </div>
+                <div className="text-sm">
+                  <span className="font-medium">Stock:</span>{" "}
+                  {displayedStock === null ? (
+                    <span className="italic text-muted-foreground">N/A</span>
+                  ) : displayedStock > 0 ? (
+                    <span>{displayedStock} available</span>
+                  ) : (
+                    <span className="text-destructive">Out of stock</span>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            {/* Customized Items Form */}
+            <InputField
+              label="Item Code"
+              placeholder="Enter item code"
+              value={customCode}
+              onChange={(e) => setCustomCode(e.target.value)}
+            />
+
+            <InputField
+              label="Price"
+              type="number"
+              placeholder="Enter price"
+              value={customPrice}
+              onChange={(e) => setCustomPrice(e.target.value)}
+              step="0.01"
+              min="0"
+            />
+          </>
         )}
 
         <InputField
@@ -297,14 +395,22 @@ export default function AddItemsSection() {
           min={new Date().toISOString().split("T")[0]}
           onChange={(e) => {
             const val = e.target.value || null;
-            if (!val) return setStartDate(null);
+            if (!val) {
+              setStartDate(null);
+              console.log("Start date cleared");
+              return;
+            }
+
             const chosen = new Date(val);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (chosen < today) {
-              setStartDate(today.toISOString().split("T")[0]);
+              const sVal = today.toISOString().split("T")[0];
+              setStartDate(sVal);
+              console.log("Start date adjusted to today:", sVal);
             } else {
               setStartDate(val);
+              console.log("Start date selected:", val);
             }
           }}
         />
@@ -331,18 +437,30 @@ export default function AddItemsSection() {
         <InputField label="Days" type="number" value={days} readOnly />
 
         <div className="mt-3">
-          <Button
-            width="w-full"
-            text={"Add"}
-            icon={<Plus />}
-            onClick={onAdd}
-            disabled={
-              !itemCode ||
-              !itemName ||
-              isLoading ||
-              (displayedStock !== null && displayedStock <= 0)
-            }
-          />
+          {formType === "regular" ? (
+            <Button
+              width="w-full"
+              text={"Add"}
+              icon={<Plus />}
+              onClick={onAdd}
+              disabled={
+                !itemCode ||
+                !itemName ||
+                isLoading ||
+                (displayedStock !== null && displayedStock <= 0)
+              }
+            />
+          ) : (
+            <Button
+              width="w-full"
+              text={"Add"}
+              icon={<Plus />}
+              onClick={onAddCustomized}
+              disabled={
+                !customCode || !customPrice || isNaN(parseFloat(customPrice))
+              }
+            />
+          )}
         </div>
       </Chart>
     </div>

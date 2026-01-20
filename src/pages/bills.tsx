@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { billingService } from "@/services/billing.service";
 import { DollarSign, FileText } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
+import { formatDateTime, parseDate } from "@/utils/date";
 import {
   Dialog,
   DialogContent,
@@ -11,12 +12,22 @@ import {
 import Chart from "@/components/templates/Chart";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// Card components not used in this page; removed to fix unused import
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import useBillingStore from "@/store/billing-store";
 
 type Customer = {
   custName?: string;
   custMobileNumber?: string;
+  custCode?: string;
 };
 
 type Billing = {
@@ -48,6 +59,9 @@ const Bills = () => {
   const [filterQuery, setFilterQuery] = useState("");
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
+
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [selected, setSelected] = useState<Billing | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -85,12 +99,12 @@ const Bills = () => {
         if (!(matchesCode || matchesName || matchesPhone)) return false;
       }
       if (filterStartDate) {
-        const bd = bill.billingDate ? new Date(bill.billingDate) : null;
+        const bd = parseDate(bill.billingDate);
         const start = new Date(filterStartDate + "T00:00:00");
         if (!bd || bd < start) return false;
       }
       if (filterEndDate) {
-        const bd = bill.billingDate ? new Date(bill.billingDate) : null;
+        const bd = parseDate(bill.billingDate);
         const end = new Date(filterEndDate + "T23:59:59");
         if (!bd || bd > end) return false;
       }
@@ -99,9 +113,11 @@ const Bills = () => {
 
     // sort descending by billingDate
     list.sort((a: Billing, b: Billing) => {
-      const da = a.billingDate ? new Date(a.billingDate).getTime() : 0;
-      const db = b.billingDate ? new Date(b.billingDate).getTime() : 0;
-      return db - da;
+      const da = parseDate(a.billingDate);
+      const db = parseDate(b.billingDate);
+      const timeA = da ? da.getTime() : 0;
+      const timeB = db ? db.getTime() : 0;
+      return timeB - timeA; // descending order (newest first)
     });
 
     return list;
@@ -112,6 +128,14 @@ const Bills = () => {
     (acc, b) => acc + (parseFloat(b.billingTotal || "0") || 0),
     0
   );
+
+  // paging for table
+  const totalItems = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const paged = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, currentPage, pageSize]);
 
   function openDetails(bill: Billing) {
     setSelected(bill);
@@ -193,6 +217,22 @@ const Bills = () => {
             string3={""}
           />
 
+          <NativeSelectDemo
+            option="Show"
+            value1="10"
+            value2="15"
+            value3="20"
+            string1="10 per page"
+            string2="15 per page"
+            string3="20 per page"
+            value={String(pageSize)}
+            onValueChange={(v) => {
+              const n = Number(v) || 10;
+              setPageSize(n);
+              setCurrentPage(1);
+            }}
+          />
+
           <div className="flex items-center text-position-text  gap-2 ml-auto">
             <input
               type="date"
@@ -239,83 +279,80 @@ const Bills = () => {
         ) : filtered.length === 0 ? (
           <div className="text-position-text">No billings found</div>
         ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {filtered.map((bill) => (
-              <Card
-                key={bill.billingCode}
-                className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-101 cursor-pointer"
-                onClick={() => openDetails(bill)}
-              >
-                <CardHeader>
-                  <CardTitle className="text-lg text-text-inactive text-style">
-                    {bill.billingCode}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-24 text-left font-medium"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        Date:
-                      </div>
-                      <div
-                        className="flex-1 text-left truncate"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        {bill.billingDate
-                          ? new Date(bill.billingDate).toLocaleString()
-                          : "-"}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-24 text-left font-medium"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        Total:
-                      </div>
-                      <div
-                        className="flex-1 text-left truncate"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        {bill.billingTotal || "-"}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-24 text-left font-medium"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        Contact:
-                      </div>
-                      <div
-                        className="flex-1 text-left truncate"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        {bill.customer?.custMobileNumber || "-"}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-24 text-left font-medium"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        Type:
-                      </div>
-                      <div
-                        className="flex-1 text-left truncate"
-                        style={{ color: "var(--color-position-text)" }}
-                      >
-                        {bill.billingType || "-"}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <Chart height="h-auto" padding="p-4">
+            <Table className="text-position-text font-light">
+              <TableHeader>
+                <TableRow className="text-position-text">
+                  <TableHead className="w-[140px]">Bill No</TableHead>
+                  <TableHead>Customer Code</TableHead>
+                  <TableHead>Issued Date</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Type</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paged.map((bill) => (
+                  <TableRow
+                    key={bill.billingCode}
+                    className="cursor-pointer"
+                    onClick={() => openDetails(bill)}
+                  >
+                    <TableCell className="font-medium">
+                      {bill.billingCode}
+                    </TableCell>
+                    <TableCell>{bill.customer?.custCode || "-"}</TableCell>
+                    <TableCell>
+                      {formatDateTime(bill.billingDate as string | undefined)}
+                    </TableCell>
+                    <TableCell>{bill.billingTotal || "-"}</TableCell>
+                    <TableCell>
+                      {bill.customer?.custMobileNumber || "-"}
+                    </TableCell>
+                    <TableCell>{bill.billingType || "-"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow></TableRow>
+              </TableFooter>
+            </Table>
+
+            {/* Pagination controls */}
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-position-text">
+                Showing {(currentPage - 1) * pageSize + 1} -{" "}
+                {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  className="px-3 py-1 rounded-md border"
+                  disabled={currentPage <= 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                >
+                  Prev
+                </button>
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    className={`px-3 py-1 rounded-md border ${currentPage === i + 1 ? "bg-position-text text-white" : ""}`}
+                    onClick={() => setCurrentPage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  className="px-3 py-1 rounded-md border"
+                  disabled={currentPage >= totalPages}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </Chart>
         )}
       </div>
 
@@ -347,9 +384,7 @@ const Bills = () => {
                 Billing Date:
               </div>
               <div className="flex-1 truncate">
-                {selected?.billingDate
-                  ? new Date(selected.billingDate).toLocaleString()
-                  : "-"}
+                {formatDateTime(selected?.billingDate as string | undefined)}
               </div>
             </div>
 
@@ -375,16 +410,8 @@ const Bills = () => {
                         <tr className="text-center" key={r.id}>
                           <td>{r.attireCode || r.attire?.attireCode || "-"}</td>
                           <td>{r.rentDuration ?? "-"}</td>
-                          <td>
-                            {r.rentDate
-                              ? new Date(r.rentDate).toLocaleString()
-                              : "-"}
-                          </td>
-                          <td>
-                            {r.returnDate
-                              ? new Date(r.returnDate).toLocaleString()
-                              : "-"}
-                          </td>
+                          <td>{formatDateTime(r.rentDate as string | null | undefined)}</td>
+                          <td>{formatDateTime(r.returnDate as string | null | undefined)}</td>
                         </tr>
                       ))}
                     </tbody>

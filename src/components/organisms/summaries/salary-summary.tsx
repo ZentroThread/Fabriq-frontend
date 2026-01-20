@@ -1,37 +1,50 @@
-import {type PayRollResponseType} from "@/types/payroll-type";
-import {Label} from "@/components/ui/label";
+import { type PayRollResponseType } from "@/types/payroll-type";
+import { Label } from "@/components/ui/label";
 import Button from "@/components/atoms/button/add-button";
-import {useGetPayrollRecord} from "@/hooks/employee/payroll/usePayroll";
+import { useGetPayrollRecord } from "@/hooks/employee/payroll/usePayroll";
 import { useParams } from "react-router-dom";
-import {useConfirmPayroll} from "@/hooks/employee/payroll/usePayroll";
-import {printPayslip} from "@/services/payroll.service";
+import { useConfirmPayroll } from "@/hooks/employee/payroll/usePayroll";
+import { printPayslip } from "@/services/payroll.service";
 
- type props = {
-    data: PayRollResponseType;
-  }
+type props = {
+  data: PayRollResponseType;
+};
 
-export default function SalarySummary({data}:props) {
+export default function SalarySummary({ data }: props) {
+  const { id, year, month } = useParams();
 
-  const {id,year,month} = useParams();
+  const { data: payrollRecords } = useGetPayrollRecord(
+    Number(id),
+    Number(year)
+  );
 
-  const {data: payrollRecords} = useGetPayrollRecord(Number(id),Number(year));
-
-  const {mutate: confirmPayroll} = useConfirmPayroll(Number(id),Number(month),Number(year));
+  const { mutate: confirmPayroll } = useConfirmPayroll(
+    Number(id),
+    Number(month),
+    Number(year)
+  );
 
   const handleDisableBtn = () => {
-    if(payrollRecords?.some(record => record.month === Number(month) && record.year === Number(year) && record.confirmed === true)){
+    if (
+      payrollRecords?.some(
+        (record) =>
+          record.month === Number(month) &&
+          record.year === Number(year) &&
+          record.confirmed === true
+      )
+    ) {
       return false;
     }
     return true;
-  }
+  };
 
   const handleSubmit = () => {
     confirmPayroll();
-  }
+  };
 
   const handleGenerateSlip = () => {
     printPayslip(Number(id), Number(month), Number(year));
-  }
+  };
 
   const rows = [
     ["Basic Salary", data.basicSalary],
@@ -46,7 +59,7 @@ export default function SalarySummary({data}:props) {
     ["Net Salary", data.netSalary],
     ["ETF", data.etf],
     ["Employer EPF (12%)", data.epfEmployer],
-    ["Net Benefit",data.netSalary+ data.etf + data.epfEmployer],
+    ["Net Benefit", data.netSalary + data.etf + data.epfEmployer],
   ];
 
   return (
@@ -56,12 +69,22 @@ export default function SalarySummary({data}:props) {
       <div className="space-y-2">
         {rows.map(([label, value]) => (
           <div key={label} className="flex justify-between">
-           {label === "Gross Salary" || label === "Net Salary" || label === "Net Benefit" ? (
+            {label === "Gross Salary" ||
+            label === "Net Salary" ||
+            label === "Net Benefit" ? (
               <Label className="text-md font-medium ">{label}</Label>
             ) : (
               <span className="text-position-text">{label}</span>
             )}
-            <span className={label === "Gross Salary" || label === "Net Salary" || label === "Net Benefit" ? "text-md font-medium underline underline-offset-4" : "text-position-text"}>
+            <span
+              className={
+                label === "Gross Salary" ||
+                label === "Net Salary" ||
+                label === "Net Benefit"
+                  ? "text-md font-medium underline underline-offset-4"
+                  : "text-position-text"
+              }
+            >
               Rs.{value}
             </span>
           </div>
@@ -69,7 +92,8 @@ export default function SalarySummary({data}:props) {
       </div>
 
       <div>
-        {handleDisableBtn() && <Button 
+        {handleDisableBtn() && (
+          <Button
             bordercolor="border-border-card2"
             bgcolor="bg-bg-card3"
             hovertext="hover:text-background"
@@ -78,19 +102,19 @@ export default function SalarySummary({data}:props) {
             text="Confirm & Process Salary"
             width="w-full"
             onClick={handleSubmit}
-            />}
-        <Button 
-            bordercolor="border-border-card2"
-            bgcolor="bg-bg-card2"
-            hovertext="hover:text-background"
-            hoverbg="hover:bg-light-brown"
-            textcolor="text-black"
-            text="Generate Payslip"
-            width="w-full"
-            onClick={handleGenerateSlip}
-            />
+          />
+        )}
+        <Button
+          bordercolor="border-border-card2"
+          bgcolor="bg-bg-card2"
+          hovertext="hover:text-background"
+          hoverbg="hover:bg-light-brown"
+          textcolor="text-black"
+          text="Generate Payslip"
+          width="w-full"
+          onClick={handleGenerateSlip}
+        />
       </div>
-      
     </div>
   );
 }

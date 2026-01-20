@@ -50,9 +50,7 @@ export const useAttireRentCurrentMonthlyOverview =
     ).map(([category, rentCount]) => ({
       category: category as CategoryType,
       value: rentCount ?? 0,
-      percentage: totalRents
-        ? ((rentCount ?? 0) / totalRents) * 100
-        : 0,
+      percentage: totalRents ? ((rentCount ?? 0) / totalRents) * 100 : 0,
     }));
 
     return overview;

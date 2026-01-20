@@ -8,4 +8,3 @@ export const DeviceAttendanceLogSchema = z.object({
   }),
   direction: z.enum(["IN", "OUT"]),
 });
-

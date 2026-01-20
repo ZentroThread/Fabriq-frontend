@@ -13,9 +13,8 @@ type EtfRecordTableProps = {
   data: ETFFormType[];
 };
 
-export default function EtfRecordTable({ data: etfRecords }: EtfRecordTableProps) {
-  return <Table
-          columns={columns} 
-          data={etfRecords} 
-        />;
+export default function EtfRecordTable({
+  data: etfRecords,
+}: EtfRecordTableProps) {
+  return <Table columns={columns} data={etfRecords} />;
 }

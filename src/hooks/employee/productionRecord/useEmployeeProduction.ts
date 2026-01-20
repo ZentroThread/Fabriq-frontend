@@ -24,10 +24,20 @@ export const useEmployeeProductionsByEmployee = (employeeId: number) => {
     })
   };
 
-export const useUpdateEmployeeProduction = (employeeId: number, month: string, year: string) => {
+export const useUpdateEmployeeProduction = (
+  employeeId: number,
+  month: string,
+  year: string
+) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn : ({id, data}: {id: number; data: Partial<EmployeeProductionRequest>}) => employeeProductionService.updateProductionRecord(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: Partial<EmployeeProductionRequest>;
+    }) => employeeProductionService.updateProductionRecord(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
       swalSuccess("Success", "Production record updated successfully.");
@@ -38,10 +48,15 @@ export const useUpdateEmployeeProduction = (employeeId: number, month: string, y
   })
 };
 
-export const useDeleteEmployeeProduction = (employeeId: number, month: string, year: string) => {
+export const useDeleteEmployeeProduction = (
+  employeeId: number,
+  month: string,
+  year: string
+) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => employeeProductionService.deleteProductionRecord(id),
+    mutationFn: (id: number) =>
+      employeeProductionService.deleteProductionRecord(id),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
       swalSuccess("Success", "Production record deleted successfully.");
@@ -52,13 +67,20 @@ export const useDeleteEmployeeProduction = (employeeId: number, month: string, y
   })
 };
 
-
-export const useEmployeeProdByEmpAndMonthYear = (employeeId: number, month: string, year: string) => {
-    return useQuery<EmployeeProductionResponse[]>({
-      queryKey: ["employee-productions", employeeId, month, year],
-      queryFn: () =>{ 
-        return employeeProductionService.getByDateRangeAndEmployee(employeeId, year, month);
-      },
-      enabled: !!employeeId && !!month && !!year,
-    });    
-  };
+export const useEmployeeProdByEmpAndMonthYear = (
+  employeeId: number,
+  month: string,
+  year: string
+) => {
+  return useQuery<EmployeeProductionResponse[]>({
+    queryKey: ["employee-productions", employeeId, month, year],
+    queryFn: () => {
+      return employeeProductionService.getByDateRangeAndEmployee(
+        employeeId,
+        year,
+        month
+      );
+    },
+    enabled: !!employeeId && !!month && !!year,
+  });
+};
