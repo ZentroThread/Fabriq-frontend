@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import type { Employee } from "@/types/employee.type";
 import { employeeService } from "@/services/employee.service";
-import { toast } from "sonner";
+import {swalSuccess,swalError} from "@/utils/swal";
 
 type AddEmployeeData = Partial<Employee> & { image?: File };
 
@@ -18,8 +18,11 @@ export const useAddEmployee = () => {
       queryClient.invalidateQueries({
         queryKey: ["employees"],
       });
-      toast.success("Employee added successfully.");
+      swalSuccess("Success", "Employee added successfully.");
       navigate("/emp");
+    },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to add employee.");
     },
   });
 }

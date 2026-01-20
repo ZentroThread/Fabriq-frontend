@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { employeeService } from "@/services/employee.service";
 import type { Employee } from "@/types/employee.type";
-import { toast } from "sonner";
+import {swalSuccess,swalError} from "@/utils/swal";
 
 export const useDeleteEmployee = () => {
   const queryClient = useQueryClient();
@@ -16,7 +16,10 @@ export const useDeleteEmployee = () => {
           return oldEmployees.filter(emp => emp.empCode !== empCode);
         }
       );
-      toast.success("Employee deleted successfully.");
+      swalSuccess("Success", "Employee deleted successfully.");
+    },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to delete employee.");
     },
   });
 }

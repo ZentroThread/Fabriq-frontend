@@ -1,7 +1,7 @@
 import {employeeProductionService} from "@/services/employee-production.service";
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import type {EmployeeProductionRequest, EmployeeProductionResponse} from "@/types/employee-product.type";
-import { toast } from "sonner";
+import {swalSuccess, swalError} from "@/utils/swal";
 
 export const useEmployeeProductionsByEmployee = (employeeId: number) => {
   return useQuery<EmployeeProductionResponse[]>({
@@ -16,7 +16,10 @@ export const useEmployeeProductionsByEmployee = (employeeId: number) => {
       mutationFn: (data: Partial<EmployeeProductionRequest>) => employeeProductionService.addProductionRecord(data),
       onSuccess: () =>{
         queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
-        toast.success("Production record added successfully.");
+        swalSuccess("Success", "Production record added successfully.");
+      },
+      onError: (error: any) => {
+        swalError("Error", error?.response?.data?.message || "Failed to add production record.");
       }
     })
   };
@@ -27,7 +30,10 @@ export const useUpdateEmployeeProduction = (employeeId: number, month: string, y
     mutationFn : ({id, data}: {id: number; data: Partial<EmployeeProductionRequest>}) => employeeProductionService.updateProductionRecord(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
-      toast.success("Production record updated successfully.");
+      swalSuccess("Success", "Production record updated successfully.");
+    },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to update production record.");
     }
   })
 };
@@ -38,7 +44,10 @@ export const useDeleteEmployeeProduction = (employeeId: number, month: string, y
     mutationFn: (id: number) => employeeProductionService.deleteProductionRecord(id),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["employee-productions", employeeId, month, year]});
-      toast.success("Production record deleted successfully.");
+      swalSuccess("Success", "Production record deleted successfully.");
+    },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to delete production record.");
     }
   })
 };

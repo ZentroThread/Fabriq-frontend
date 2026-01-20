@@ -1,7 +1,7 @@
 import { employeeAdvanceService } from "@/services/employee-advance.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type AdvancePaymentResponse, type AdvancePaymentRequest } from "@/types/advance-payment.type";
-import { toast } from "sonner";
+import { swalSuccess, swalError } from "@/utils/swal";
 
 export const useAddEmployeeAdvancePayment = (empId: number, year: string, month: string) => {
   const queryClient = useQueryClient();
@@ -9,8 +9,11 @@ export const useAddEmployeeAdvancePayment = (empId: number, year: string, month:
     mutationFn: (data: Partial<AdvancePaymentRequest>) => employeeAdvanceService.addAdvancePayment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
-      toast.success("Advance payment added successfully.");
+      swalSuccess("Success", "Advance payment added successfully.");
     },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to add advance payment.");
+    }
   });
 };
 
@@ -30,8 +33,11 @@ export const useDeleteEmployeeAdvancePayment = (empId: number, year: string, mon
     mutationFn: (id: number) => employeeAdvanceService.deleteAdvancePayment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
-      toast.success("Advance payment deleted successfully.");
+      swalSuccess("Success", "Advance payment deleted successfully.");
     },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to delete advance payment.");
+    }
   });
 };
 
@@ -42,7 +48,10 @@ export const useUpdateEmployeeAdvancePayment = (empId: number, year: string, mon
       employeeAdvanceService.updateAdvancePayment(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
-      toast.success("Advance payment updated successfully.");
+      swalSuccess("Success", "Advance payment updated successfully.");
     },
+    onError: (error: any) => {
+      swalError("Error", error?.response?.data?.message || "Failed to update advance payment.");
+    }
   });
 };

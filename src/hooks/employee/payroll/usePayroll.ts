@@ -1,7 +1,7 @@
 import { payrollService } from "@/services/payroll.service";
 import { useQuery,useMutation, useQueryClient} from "@tanstack/react-query";
 import { type PayrollRecordResponseType, type PayRollResponseType } from "@/types/payroll-type";
-import { toast } from "sonner";
+import {swalSuccess,swalError} from "@/utils/swal";
 
 export const useGetPayroll = (empId: number, month: number, year: number) => {
   return useQuery<PayRollResponseType>({
@@ -25,8 +25,11 @@ export const useGetPayroll = (empId: number, month: number, year: number) => {
       mutationFn: () => payrollService.confirmPayroll(empId, month, year),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["payroll-record", empId, year] });
-        toast.success("Payroll confirmed successfully.");
+        swalSuccess("Success", "Payroll confirmed successfully.");
       },
+      onError: (error: any) => {
+        swalError("Error", error?.response?.data?.message || "Failed to confirm payroll.");
+      }
     });
   };
 

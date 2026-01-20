@@ -13,6 +13,7 @@ import {useDeleteEmployee} from "@/hooks/employee/employeeDetails/useDeleteEmplo
 import useEmployeeStore from "@/store/employee-store";
 import type { Employee } from "@/types/employee.type";
 import SectionHeader from "@/components/molecules/header/section-header";
+import {swalConfirm} from "@/utils/swal";
 //import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
@@ -74,9 +75,11 @@ export default function EmployeeOverview() {
 
   const handleDeleteEmp = (code: string ) => {
     console.log("Deleted employee ID:", code);
-    if (confirm("Are you sure you want to delete this employee?"+code)) {
-      deleteEmployee(code.toString());
-    }
+    swalConfirm("Are you sure?", "This action cannot be undone.").then((confirmed) => {
+      if (confirmed) {
+        deleteEmployee(code.toString());
+      }
+    });
   };
 
   const getIcon = (status: string) => {
