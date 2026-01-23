@@ -1,6 +1,13 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
 import { ResponsiveContainer } from "recharts";
 import {
   Card,
@@ -8,10 +15,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  type ChartConfig,
-  ChartContainer,
-} from "@/components/ui/chart";
+import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 
 export const description = "A line chart with dots";
 
@@ -67,6 +71,8 @@ export function ChartLineDots({ chartData }: ChartLineDotsProps) {
                 />
                 <YAxis stroke="var(--color-position-text)" />
   
+
+                {/* Tooltip for hover */}
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {

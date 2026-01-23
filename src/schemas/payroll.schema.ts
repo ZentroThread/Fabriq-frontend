@@ -13,7 +13,6 @@ export const payRollResponseSchema = z.object({
   totalDeductions: z.number(),
   commission: z.number(),
 
-
   doubleOTRate: z.number(),
   doubleOTAmount: z.number(),
   doubleOTHours: z.number(),
@@ -43,7 +42,7 @@ export const payrollRecordResponseSchema = z.object({
   year: z.number(),
   netSalary: z.number(),
   confirmed: z.boolean(),
-})
+});
 
 export const epfFormSchema = z.object({
   employeeName: z.string(),

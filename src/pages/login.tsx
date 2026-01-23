@@ -1,5 +1,5 @@
-import logo from "../assets/images/logo.jpg";
-import modelImg from "../assets/images/model.png";
+import logo from "@/assets/images/logo.png";
+import modelImg from "@/assets/images/model.png";
 import { User, Lock, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/user-auth-store";

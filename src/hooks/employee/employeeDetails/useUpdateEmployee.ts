@@ -18,7 +18,7 @@ export const useUpdateEmployee = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ code, data, image }: UpdateEmployeeData) => 
+    mutationFn: ({ code, data, image }: UpdateEmployeeData) =>
       employeeService.updateEmployee(code, data, image),
 
     onSuccess: (_data, variables) => {

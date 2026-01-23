@@ -58,12 +58,18 @@ export const addCustomerSchema = z.object({
   mobileNumber: z
     .string()
     .min(1, "Mobile number is required")
-    .regex(/^07\d{8}$/, "Mobile number must be in the format 07xxxxxxxx"),
+    .regex(
+      /^(07\d{8}|\+947\d{8})$/,
+      "Mobile number must be in the format 07xxxxxxxx or +947xxxxxxxx"
+    ),
   landline: z.string().optional(),
   whatsapp: z
     .string()
     .min(1, "WhatsApp number is required")
-    .regex(/^07\d{8}$/, "WhatsApp number must be in the format 07xxxxxxxx"),
+    .regex(
+      /^(07\d{8}|\+947\d{8})$/,
+      "WhatsApp number must be in the format 07xxxxxxxx or +947xxxxxxxx"
+    ),
   email: z
     .union([z.string().email("Invalid email address"), z.literal("")])
     .optional(),

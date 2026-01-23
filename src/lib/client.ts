@@ -50,9 +50,13 @@ axiosInstance.interceptors.request.use(
     try {
       const { useAuthStore } = await import("@/store/user-auth-store");
       const tenantId = useAuthStore.getState().getTenantId();
+      console.log("🔑 Tenant ID from store:", tenantId);
       if (tenantId) {
         config.headers = config.headers || {};
         config.headers["X-Tenant-ID"] = tenantId;
+        console.log("✅ Added X-Tenant-ID header:", tenantId);
+      } else {
+        console.warn("⚠️ No tenant ID found in store");
       }
     } catch (e) {
       // If store import fails for any reason, continue without tenant header
@@ -78,11 +82,20 @@ axiosInstance.interceptors.response.use(
       _skipAuthRedirect?: boolean; // Add this flag
     };
 
-    console.error("❌ API Error:", error.response?.data || error.message);
+    // Log richer error information for easier debugging
+    const resp = error.response;
+    const errInfo = resp
+      ? { status: resp.status, statusText: resp.statusText, data: resp.data }
+      : { message: error.message };
+    try {
+      console.error("❌ API Error:", JSON.stringify(errInfo));
+    } catch {
+      console.error("❌ API Error:", errInfo);
+    }
 
-    // Handle 401 - Unauthorized (token expired)
+    // Handle 401/403 - Unauthorized (token expired or tenant ID missing)
     if (
-      error.response?.status === 403 &&
+      (error.response?.status === 401 || error.response?.status === 403) &&
       originalRequest &&
       !originalRequest._retry
     ) {

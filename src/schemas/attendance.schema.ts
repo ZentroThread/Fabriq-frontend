@@ -5,17 +5,29 @@ export const AttendanceSchema = z.object({
   date: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid date format",
   }),
-  checkIn: z.string()
+  checkIn: z
+    .string()
     .nullable()
-    .refine((time) => time === null || /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/.test(time), {
-      message: "Invalid time format for check-in",
-    }),
+    .refine(
+      (time) =>
+        time === null ||
+        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/.test(time),
+      {
+        message: "Invalid time format for check-in",
+      }
+    ),
 
-  checkOut: z.string()
+  checkOut: z
+    .string()
     .nullable()
-    .refine((time) => time === null || /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/.test(time), {
-      message: "Invalid time format for check-out",
-    }),
+    .refine(
+      (time) =>
+        time === null ||
+        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/.test(time),
+      {
+        message: "Invalid time format for check-out",
+      }
+    ),
   totalHours: z.number().min(0, "Total hours must be non-negative"),
   lateMinutes: z.number().min(0, "Late minutes must be non-negative"),
   status: z.enum(["PRESENT", "ABSENT", "LATE", "ON_LEAVE"]),

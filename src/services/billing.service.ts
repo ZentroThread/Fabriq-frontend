@@ -6,7 +6,7 @@ import type {
 import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import type { AttireRent } from "@/types/attireRent.type";
-import type {Bill} from "@/types/bill.type";
+import type { Bill } from "@/types/bill.type";
 
 type AttireRentAddDto = {
   customerCode?: string;
@@ -54,9 +54,7 @@ export const billingService = {
   },
 
   async getAllBillings(): Promise<Bill[]> {
-    const resp = await apiClient.request<Bill[]>(
-      API_ENDPOINTS.BILLING.GET_ALL
-    );
+    const resp = await apiClient.request<Bill[]>(API_ENDPOINTS.BILLING.GET_ALL);
     return resp;
   },
 
@@ -82,11 +80,28 @@ export const billingService = {
       returnDate?: string;
     }>;
   }): Promise<unknown> {
-    return await apiClient.request<unknown>(
-      "/v1/billing/create-with-rentals", // or whatever endpoint
-      { method: "POST", data: payload }
-    );
+    return await apiClient.request<unknown>("/v1/billing/create-with-rentals", {
+      method: "POST",
+      data: payload,
+    });
   },
+
+  async createBillingAndPay(payload: {
+    customerCode: string;
+    items: Array<{
+      attireCode: string;
+      rentDate?: string;
+      returnDate?: string;
+    }>;
+    discountPercentage?: number;
+    paymentMethod?: string;
+  }): Promise<unknown> {
+    return await apiClient.request<unknown>("/v1/billing/create-and-pay", {
+      method: "POST",
+      data: payload,
+    });
+  },
+
   async payBilling(payload: {
     billingCode: string;
     discountPercentage?: number;
