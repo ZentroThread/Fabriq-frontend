@@ -76,4 +76,30 @@ export const loginService = {
     }
     return { success: true };
   },
+
+  /**
+   * Change user password
+   */
+  changePassword: async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<{ message: string; success: boolean }> => {
+    try {
+      const response = await apiClient.request<{
+        message: string;
+        success: boolean;
+      }>(API_ENDPOINTS.LOGIN.CHANGE_PASSWORD, {
+        method: "POST",
+        data,
+      });
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data || "Failed to change password. Try again."
+        );
+      }
+      throw error;
+    }
+  },
 };

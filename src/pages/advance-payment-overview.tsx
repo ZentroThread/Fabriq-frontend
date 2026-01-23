@@ -1,10 +1,15 @@
 import EmployeeMonthlyPageTemplate from "@/components/templates/employee/employee-monthly-page-template";
 import { AdvancePaymentForm } from "@/components/organisms/advance-payment/advance-payment-form";
+import { AdvancePaymentSkeleton } from "@/components/molecules/skeletons/advance-payment-skeleton";
 import AdvancePaymentsTable from "@/components/organisms/advance-payment/advance-payment-table";
 import useAdvancePaymentOverview from "@/hooks/employee/advancePayment/useAdvancePaymentOverview";
 
 export default function AdvancePaymentOverviewPage() {
   const { state, actions } = useAdvancePaymentOverview();
+
+  if (state.isLoading) {
+    return <AdvancePaymentSkeleton />;
+  }
 
   return (
     <EmployeeMonthlyPageTemplate

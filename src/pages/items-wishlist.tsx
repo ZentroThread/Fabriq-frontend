@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Chart from "@/components/templates/Chart";
+import { ItemsWishlistSkeleton } from "@/components/molecules/skeletons/items-wishlist-skeleton";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 import type { ComponentProps } from "react";
 import {
@@ -127,15 +128,17 @@ export default function ItemsWishlistPage() {
     return d;
   })();
 
+  if (loading) {
+    return <ItemsWishlistSkeleton />;
+  }
+
   return (
     <div className="p-5">
       <div className="text-style text-[30px] font-semibold">
         Future Reservations
       </div>
       <div className="text-position-text">Future rents / wishlist entries</div>
-      {loading ? (
-        <div>Loading...</div>
-      ) : list.length === 0 ? (
+      {list.length === 0 ? (
         <div className="text-position-text">No future reservations found.</div>
       ) : (
         <>

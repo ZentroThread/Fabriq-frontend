@@ -23,6 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Chart from "@/components/templates/Chart";
+import { CustomersSkeleton } from "@/components/molecules/skeletons/customers-skeleton";
 
 function Customers() {
   const customers = useBillingStore((s) => s.customers);
@@ -143,6 +144,10 @@ function Customers() {
     }
   };
 
+  if (isLoading) {
+    return <CustomersSkeleton />;
+  }
+
   return (
     <div className="p-5 flex flex-col">
       <div className="text-style text-[30px] font-semibold">Customers</div>
@@ -204,31 +209,7 @@ function Customers() {
 
       <div className="pt-5 flex-1 flex flex-col">
         <Chart height="h-auto" padding="p-4">
-          {isLoading ? (
-            <div className="flex-1 flex items-end justify-center pb-8">
-              <svg
-                className="animate-spin h-10 w-10"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                style={{ color: "var(--color-text-color)" }}
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
-              </svg>
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="text-position-text">No customers found</div>
           ) : (
             <>

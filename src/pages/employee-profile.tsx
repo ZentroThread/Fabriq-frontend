@@ -2,12 +2,13 @@ import Button from "@/components/atoms/button/add-button";
 import Chart from "@/components/templates/Chart";
 import EmployeeForm from "@/components/organisms/employee/employee-form";
 import useEmployeeProfile from "@/hooks/employee/employeeDetails/useEmployeeProfile";
+import LoadingFallback from "@/components/ui/loading";
 
 export default function EmployeeProfile() {
   const { states, actions } = useEmployeeProfile();
 
   if (states.isLoading) {
-    return <div className="p-4">Loading...</div>;
+    return <LoadingFallback label="Loading employee..." />;
   }
 
   if (states.isError) {

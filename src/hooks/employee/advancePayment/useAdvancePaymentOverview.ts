@@ -40,7 +40,7 @@ export default function useAdvancePaymentOverview() {
     params.year,
     params.month
   );
-  const { data: advancePayments } = useGetAdvanceByEmpAndMonthYear(
+  const { data: advancePayments, isLoading } = useGetAdvanceByEmpAndMonthYear(
     selectedEmployee ? selectedEmployee.id : 0,
     selectedYear,
     selectedMonth
@@ -101,6 +101,7 @@ export default function useAdvancePaymentOverview() {
       isUpdateMode,
       advancePaymentId,
       advancePayments,
+      isLoading,
     },
 
     actions: {
