@@ -38,7 +38,7 @@ export const useEmployeeProductionOverview = () => {
     }));
   };
 
-  const { data: prodByDate } = useEmployeeProdByEmpAndMonthYear(
+  const { data: prodByDate, isLoading } = useEmployeeProdByEmpAndMonthYear(
     selectedEmployee?.id || 0,
     selectedMonth || "",
     selectedYear || ""
@@ -104,6 +104,7 @@ export const useEmployeeProductionOverview = () => {
       formData,
       prodId,
       prodByDate,
+      isLoading,
     },
     actions: {
       setSelectedMonth,
