@@ -1,5 +1,6 @@
 import { useState } from "react";
 import EtfRecordTable from "@/components/organisms/payroll/etf-record-table";
+import { EpfEtfHistorySkeleton } from "@/components/molecules/skeletons/epf-etf-history-skeleton";
 import EpfRecordTable from "@/components/organisms/payroll/epf-record-table";
 import {
   useGetEpfRecord,
@@ -15,14 +16,18 @@ export default function EpfEtfHistoryPage() {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [activeTab, setActiveTab] = useState<"EPF" | "ETF">("EPF");
 
-  const { data: epfRecords } = useGetEpfRecord(
+  const { data: epfRecords, isLoading: epfLoading } = useGetEpfRecord(
     Number(selectedMonth),
     Number(selectedYear)
   );
-  const { data: etfRecords } = useGetEtfRecord(
+  const { data: etfRecords, isLoading: etfLoading } = useGetEtfRecord(
     Number(selectedMonth),
     Number(selectedYear)
   );
+
+  if (epfLoading || etfLoading) {
+    return <EpfEtfHistorySkeleton />;
+  }
 
   return (
     <div className="space-y-6 p-6 bg-(--color-main-bg) min-h-screen">

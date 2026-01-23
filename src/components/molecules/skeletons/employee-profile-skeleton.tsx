@@ -1,8 +1,11 @@
+import { PageHeaderSkeleton } from "@/components/molecules/skeletons/page-header-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function EmployeeProfileSkeleton() {
   return (
-    <div className="p-3 sm:p-5 flex flex-col">
+    <div className="p-5 flex flex-col">
+      <PageHeaderSkeleton />
+
       <div className="rounded-2xl shadow-md p-6 bg-card h-full flex flex-col justify-between relative">
         {/* Header */}
         <div className="mb-6 sm:mb-10">

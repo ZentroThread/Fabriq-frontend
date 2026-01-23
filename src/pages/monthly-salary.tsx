@@ -9,6 +9,7 @@ import OvertimeCard from "@/components/organisms/salary/overtime-card";
 import { useParams } from "react-router-dom";
 import { useGetPayroll } from "@/hooks/employee/payroll/usePayroll";
 import selectedEmployee from "@/store/employee-store";
+import { MonthlySalarySkeleton } from "@/components/molecules/skeletons/monthly-salary-skeleton";
 
 export default function MonthlySalary() {
   const { id, year, month } = useParams();
@@ -22,7 +23,7 @@ export default function MonthlySalary() {
   } = useGetPayroll(Number(id), Number(month), Number(year));
 
   if (isLoading) {
-    return <div>Loading salary details...</div>;
+    return <MonthlySalarySkeleton />;
   }
 
   if (isError || !salaryDetails) {

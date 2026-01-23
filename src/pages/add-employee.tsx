@@ -1,5 +1,6 @@
 import EmployeeForm from "@/components/organisms/employee/employee-form";
 import Button from "@/components/atoms/button/add-button";
+import { AddEmployeeSkeleton } from "@/components/molecules/skeletons/add-employee-skeleton";
 import type { Employee, EmployeeBankDetails } from "@/types/employee.type";
 import { useState } from "react";
 import { useAddEmployee } from "@/hooks/employee/employeeDetails/useAddEmployee";

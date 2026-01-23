@@ -1,10 +1,15 @@
 import EmployeeMonthlyPageTemplate from "@/components/templates/employee/employee-monthly-page-template";
 import EmployeeProductionTable from "@/components/organisms/employee-production/employee-production-table";
+import { ProductionOverviewSkeleton } from "@/components/molecules/skeletons/production-overview-skeleton";
 import { useEmployeeProductionOverview } from "@/hooks/employee/productionRecord/useEmployeeProductionOverview";
 import EmployeeProductionForm from "@/components/organisms/employee-production/employee-production-form";
 
 const ProductionOverview = () => {
   const { state, actions } = useEmployeeProductionOverview();
+
+  if (state.isLoading) {
+    return <ProductionOverviewSkeleton />;
+  }
 
   return (
     <EmployeeMonthlyPageTemplate

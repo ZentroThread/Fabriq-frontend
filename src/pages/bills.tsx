@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Chart from "@/components/templates/Chart";
+import { BillsSkeleton } from "@/components/molecules/skeletons/bills-skeleton";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 // Card components not used in this page; removed to fix unused import
@@ -162,13 +163,18 @@ const Bills = () => {
     return rents || [];
   }, [rents, selected]);
 
+  if (loading) {
+    return <BillsSkeleton />;
+  }
+
   return (
     <div className="p-5 flex flex-col">
       <div className="text-style text-[30px] font-semibold">All Billings</div>
       <div className="text-position-text mb-4">
         View and search billing records
       </div>
-      <div className="mt-3 mb-4 gap-6 flex items-center gap-4">
+      <div className="mt-3 mb-4 flex items-center gap-6">
+        {/*Fixed duplicate gap class*/}
         <DashboardCard
           lable="Count"
           lable1={String(countInRange)}
@@ -252,31 +258,7 @@ const Bills = () => {
       </Chart>
 
       <div className="pt-5 flex-1 flex flex-col">
-        {loading ? (
-          <div className="flex-1 flex items-end justify-center pb-8">
-            <svg
-              className="animate-spin h-10 w-10"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              style={{ color: "var(--color-text-color)" }}
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              ></path>
-            </svg>
-          </div>
-        ) : filtered.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="text-position-text">No billings found</div>
         ) : (
           <Chart height="h-auto" padding="p-4">
@@ -410,8 +392,16 @@ const Bills = () => {
                         <tr className="text-center" key={r.id}>
                           <td>{r.attireCode || r.attire?.attireCode || "-"}</td>
                           <td>{r.rentDuration ?? "-"}</td>
-                          <td>{formatDateTime(r.rentDate as string | null | undefined)}</td>
-                          <td>{formatDateTime(r.returnDate as string | null | undefined)}</td>
+                          <td>
+                            {formatDateTime(
+                              r.rentDate as string | null | undefined
+                            )}
+                          </td>
+                          <td>
+                            {formatDateTime(
+                              r.returnDate as string | null | undefined
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

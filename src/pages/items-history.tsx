@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Chart from "@/components/templates/Chart";
 import { attireRentService } from "@/services/attireRent.service";
+import { ItemsHistorySkeleton } from "@/components/molecules/skeletons/items-history-skeleton";
 import {
   Table,
   TableBody,
@@ -163,13 +164,17 @@ export default function ItemsHistoryPage() {
   const startIdx = (currentPage - 1) * rowsPerPage;
   const paginatedAgg = filteredAgg.slice(startIdx, startIdx + rowsPerPage);
 
+  if (loading) {
+    return <ItemsHistorySkeleton />;
+  }
+
   return (
     <div className="p-5">
       <div className="text-style text-[30px] font-semibold">
         Item Rental Analysis
       </div>
       <div className="text-position-text"></div>
-      {!loading && !error && (
+      {!error && (
         <Chart height="h-20" padding="p-2 pl-6">
           <div className="gap-4 flex pr-5 items-center">
             <div className="relative">
@@ -240,11 +245,7 @@ export default function ItemsHistoryPage() {
         </Chart>
       )}
       <Chart>
-        {loading ? (
-          <div className="p-4 text-position-text justify-center">
-            Loading...
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="p-4 text-red-400">Error: {error}</div>
         ) : agg.length === 0 ? (
           <div className="p-4 text-position-text">No rental history found.</div>
