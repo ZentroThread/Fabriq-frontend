@@ -1,3 +1,48 @@
+import {type CustomerWithRental } from "../components/organisms/tables/customer-with-first-fit-on-table";
+
+export const sampleRentalData: CustomerWithRental[] = [
+  {
+    rentalId: "RNT001",
+    customerName: "Alice Fernando",
+    contactNumber: "0771234567",
+    itemName: "Bridal Saree - Red Velvet",
+    rentalDate: "2026-01-20",
+    returnDate: "2026-01-25",
+    fitOnDate: "2026-01-21",
+    fitOnStatus: "Pending",
+  },
+  {
+    rentalId: "RNT002",
+    customerName: "Nimal Perera",
+    contactNumber: "0719876543",
+    itemName: "Groom Suit - Black",
+    rentalDate: "2026-01-22",
+    returnDate: "2026-01-27",
+    fitOnDate: "2026-01-23",
+    fitOnStatus: "Completed",
+  },
+  {
+    rentalId: "RNT003",
+    customerName: "Samantha Jayasuriya",
+    contactNumber: "0723456789",
+    itemName: "Bridal Saree - Cream Lace",
+    rentalDate: "2026-01-24",
+    returnDate: "2026-01-29",
+    fitOnDate: "2026-01-25",
+    fitOnStatus: "Missed",
+  },
+  {
+    rentalId: "RNT004",
+    customerName: "Kamal Silva",
+    contactNumber: "0765432198",
+    itemName: "Groom Suit - Navy Blue",
+    rentalDate: "2026-01-26",
+    returnDate: "2026-01-31",
+    fitOnDate: "2026-01-27",
+    fitOnStatus: "Pending",
+  },
+];
+
 export const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },

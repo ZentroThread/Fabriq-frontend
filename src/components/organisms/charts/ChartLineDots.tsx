@@ -31,7 +31,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type ChartDataItem = {
-  month: string; // e.g., "2026-01"
+  month: string; 
   total: number;
 };
 
@@ -40,7 +40,7 @@ interface ChartLineDotsProps {
 }
 
 export function ChartLineDots({ chartData }: ChartLineDotsProps) {
-  // Format month for X-axis (e.g., "Jan 2026")
+
   const formattedData = chartData.map((item) => {
     const date = new Date(item.month + "-01");
     const monthLabel = new Intl.DateTimeFormat("en-US", {
@@ -70,6 +70,7 @@ export function ChartLineDots({ chartData }: ChartLineDotsProps) {
                   tickMargin={5}
                 />
                 <YAxis stroke="var(--color-position-text)" />
+  
 
                 {/* Tooltip for hover */}
                 <Tooltip
@@ -87,7 +88,6 @@ export function ChartLineDots({ chartData }: ChartLineDotsProps) {
                   }}
                 />
 
-                {/* Line with dots */}
                 <Line
                   dataKey="total"
                   type="natural"

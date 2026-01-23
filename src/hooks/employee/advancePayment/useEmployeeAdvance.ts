@@ -1,10 +1,8 @@
 import { employeeAdvanceService } from "@/services/employee-advance.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  type AdvancePaymentResponse,
-  type AdvancePaymentRequest,
-} from "@/types/advance-payment.type";
-import { toast } from "sonner";
+import { type AdvancePaymentResponse, type AdvancePaymentRequest } from "@/types/advance-payment.type";
+import { swalSuccess, swalError } from "@/utils/swal";
+import type { AxiosError } from "axios";
 
 export const useAddEmployeeAdvancePayment = (
   empId: number,
@@ -16,11 +14,12 @@ export const useAddEmployeeAdvancePayment = (
     mutationFn: (data: Partial<AdvancePaymentRequest>) =>
       employeeAdvanceService.addAdvancePayment(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["employee-advance-payments", empId, month, year],
-      });
-      toast.success("Advance payment added successfully.");
+      queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
+      swalSuccess("Success", "Advance payment added successfully.");
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      swalError("Error", error?.response?.data?.message || "Failed to add advance payment.");
+    }
   });
 };
 
@@ -47,11 +46,12 @@ export const useDeleteEmployeeAdvancePayment = (
   return useMutation({
     mutationFn: (id: number) => employeeAdvanceService.deleteAdvancePayment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["employee-advance-payments", empId, month, year],
-      });
-      toast.success("Advance payment deleted successfully.");
+      queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
+      swalSuccess("Success", "Advance payment deleted successfully.");
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      swalError("Error", error?.response?.data?.message || "Failed to delete advance payment.");
+    }
   });
 };
 
@@ -70,10 +70,11 @@ export const useUpdateEmployeeAdvancePayment = (
       data: Partial<AdvancePaymentRequest>;
     }) => employeeAdvanceService.updateAdvancePayment(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["employee-advance-payments", empId, month, year],
-      });
-      toast.success("Advance payment updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ["employee-advance-payments", empId, month, year] });
+      swalSuccess("Success", "Advance payment updated successfully.");
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      swalError("Error", error?.response?.data?.message || "Failed to update advance payment.");
+    }
   });
 };
