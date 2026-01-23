@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
     LOGOUT: "/v1/user/logout",
     GETCURRENTUSER: "/v1/user/me",
     REFRESH: "/v1/user/refresh",
+    CHANGE_PASSWORD: "/v1/user/change-password",
   },
   ATTIRE_RENT: {
     ADD: "/v1/attire-rent/add",

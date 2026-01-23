@@ -1,10 +1,10 @@
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, X } from "lucide-react";
 import logo from "../../../assets/images/logo.png";
-import { Bell, X } from "lucide-react";
 import ThemeToggle from "../../atoms/toggle/theme-toggle";
 import { useAuthStore } from "@/store/user-auth-store";
 
 import { AlertDialogDemo } from "../../atoms/alert/alert-dialog";
+import { ChangePasswordDialog } from "../dialog/change-password-dialog";
 
 function Nav({
   username,
@@ -37,13 +37,18 @@ function Nav({
 
       <div className="ml-auto flex gap-6 items-center">
         <ThemeToggle />
-        <button
+        {/* <button
           className="  hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
           title="Notifications"
         >
           <Bell className="mr-3 p-0.5" />
-        </button>
-        <div className="w-12 h-12 bg-avatar-bg rounded-full border border-avatar-border" />
+        </button> */}
+        <ChangePasswordDialog>
+          <button
+            className="w-12 h-12 bg-avatar-bg rounded-full border border-avatar-border hover:opacity-80 transition-opacity cursor-pointer"
+            title="Change Password"
+          />
+        </ChangePasswordDialog>
         <div className="flex flex-col text-left">
           <span className="text-sm font-semibold">{username}</span>
           <span className="text-xs text-position-text">{position}</span>
