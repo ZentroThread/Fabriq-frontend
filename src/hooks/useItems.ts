@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { itemService } from "@/services/item.service";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import Swal from "sweetalert2";
+import { getErrorMessage } from "@/utils/swal";
 
 export interface Item {
   id: number;
@@ -82,11 +83,14 @@ export const useAddItem = () => {
         showConfirmButton: false,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
+      const errorMessage = getErrorMessage(error, "Failed to add item");
+      console.error("❌ Error adding item:", error);
       Swal.fire({
         icon: "error",
         title: "Failed to add item",
-        text: error.message || "An error occurred",
+        text: errorMessage,
+        confirmButtonColor: "#dc2626",
       });
     },
   });
@@ -108,11 +112,14 @@ export const useUpdateItem = () => {
       // Success handling (UI notifications) should be handled by the
       // component that triggers the mutation so it can also close dialogs.
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
+      const errorMessage = getErrorMessage(error, "Failed to update item");
+      console.error("❌ Error updating item:", error);
       Swal.fire({
         icon: "error",
         title: "Failed to update item",
-        text: error.message || "An error occurred",
+        text: errorMessage,
+        confirmButtonColor: "#dc2626",
       });
     },
   });
@@ -134,11 +141,14 @@ export const useDeleteItem = () => {
         showConfirmButton: false,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
+      const errorMessage = getErrorMessage(error, "Failed to delete item");
+      console.error("❌ Error deleting item:", error);
       Swal.fire({
         icon: "error",
         title: "Failed to delete item",
-        text: error.message || "An error occurred",
+        text: errorMessage,
+        confirmButtonColor: "#dc2626",
       });
     },
   });

@@ -73,7 +73,7 @@ function AppRoutes() {
           {/* Items - Owner and Sales Assistant */}
           <Route
             element={
-              <ProtectedRoute allowedRoles={["owner", "sales_assistant"]} />
+              <ProtectedRoute allowedRoles={["owner", "sales_assistant", "cashier"]} />
             }
           >
             <Route path="/items" element={<Items />} />

@@ -193,7 +193,7 @@ function Login() {
                 {isLoading ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
-                    Logging in...
+                    Loading...
                   </>
                 ) : (
                   "Login"
