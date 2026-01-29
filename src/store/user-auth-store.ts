@@ -36,13 +36,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   tenantId: null,
 
   initializeAuth: async () => {
-    set({ isLoading: true });
+    // Skip loading state for silent auth check on mount
+    set({ isLoading: false });
 
     try {
-      // Add flag to skip auto-redirect on this request
+      // Silently check for existing session
+      // This flag prevents redirect and retry logic
       const user = await loginService.getUserProfile({
         _skipAuthRedirect: true,
-      } as unknown);
+        _retry: true, // Mark as already retried to prevent refresh attempt
+      });
       set({
         user,
         isLoading: false,
@@ -50,7 +53,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         tenantId: user?.tenantId ?? null,
       });
     } catch {
-      // No valid session - this is fine on initial load
+      // No valid session - this is expected on initial load
+      // Fail silently without errors
       set({
         user: null,
         isLoading: false,

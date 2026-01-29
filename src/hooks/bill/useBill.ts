@@ -3,8 +3,13 @@ import type { Bill } from "@/types/bill.type";
 import { useQuery } from "@tanstack/react-query";
 import { getErrorMessage } from "@/utils/swal";
 import Swal from "sweetalert2";
+import { useAuthStore } from "@/store/user-auth-store";
 
 export const useGetAllBills = () => {
+  const user = useAuthStore((state) => state.user);
+  // Only allow owner and cashier to fetch bills
+  const hasAccess = user?.role === "owner" || user?.role === "cashier";
+
   return useQuery<Bill[]>({
     queryKey: ["bills"],
     queryFn: async () => {
@@ -24,5 +29,6 @@ export const useGetAllBills = () => {
       }
     },
     retry: 1,
+    enabled: hasAccess, // Only fetch if user has access
   });
 };

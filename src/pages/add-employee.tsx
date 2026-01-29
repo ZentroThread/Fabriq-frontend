@@ -14,8 +14,7 @@ export default function AddEmployee() {
   const { mutate: addEmployee } = useAddEmployee();
 
   const handleAddEmployee = () => {
-    console.log("📤 Submitting employee data:", formData);
-    console.log("📤 Image file:", imageFile);
+    
     addEmployee({ ...formData, image: imageFile });
   };
 

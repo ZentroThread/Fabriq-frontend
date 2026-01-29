@@ -32,7 +32,6 @@ function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           {/* Dashboard - All authenticated users */}
-          <Route path="/dashboard" element={<Dashboard />} />
 
           {/* Employees - Owner only */}
           <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
@@ -61,10 +60,15 @@ function AppRoutes() {
             <Route path="/attendance" element={<Attendance />} />
           </Route>
 
-          {/* Rentals & Billing - Owner and Cashier */}
+          {/* Rentals & Billing - Owner, Cashier and Sales Assistant */}
           <Route
-            element={<ProtectedRoute allowedRoles={["owner", "cashier"]} />}
+            element={
+              <ProtectedRoute
+                allowedRoles={["owner", "cashier", "sales_assistant"]}
+              />
+            }
           >
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/rent" element={<RentsAndBill />} />
             <Route path="/bills" element={<Bills />} />
             <Route path="/customers" element={<Customers />} />
@@ -73,7 +77,9 @@ function AppRoutes() {
           {/* Items - Owner and Sales Assistant */}
           <Route
             element={
-              <ProtectedRoute allowedRoles={["owner", "sales_assistant", "cashier"]} />
+              <ProtectedRoute
+                allowedRoles={["owner", "sales_assistant", "cashier"]}
+              />
             }
           >
             <Route path="/items" element={<Items />} />

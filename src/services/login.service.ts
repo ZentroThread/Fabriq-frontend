@@ -88,12 +88,17 @@ export const loginService = {
    * Get current user profile (validates JWT from HttpOnly cookie)
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getUserProfile: async (_p0: unknown): Promise<User> => {
+  getUserProfile: async (options?: {
+    _skipAuthRedirect?: boolean;
+    _retry?: boolean;
+  }): Promise<User> => {
     try {
       const user = await apiClient.request<User>(
         API_ENDPOINTS.LOGIN.GETCURRENTUSER,
         {
           method: "GET",
+          // Pass through flags to axios config
+          ...(options || {}),
         }
       );
       return user;
