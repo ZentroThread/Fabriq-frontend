@@ -7,7 +7,6 @@ import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import type { AttireRent } from "@/types/attireRent.type";
 import type { Bill } from "@/types/bill.type";
-import { getErrorMessage } from "@/utils/swal";
 
 type AttireRentAddDto = {
   customerCode?: string;
