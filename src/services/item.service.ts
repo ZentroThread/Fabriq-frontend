@@ -1,6 +1,7 @@
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
 import { useItemStore } from "@/store/item-store";
+import { getErrorMessage } from "@/utils/swal";
 
 import type { Item, BackendItem, AddItemPayload } from "@/types/item.types";
 
@@ -66,12 +67,9 @@ export const itemService = {
 
       return newItem;
     } catch (error: unknown) {
-      const errorMsg =
-        error instanceof Error && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message || "Failed to add item"
-          : "Failed to add item";
+      const errorMsg = getErrorMessage(error, "Failed to add item");
       setError(errorMsg);
+      console.error("❌ Error adding item:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -98,12 +96,9 @@ export const itemService = {
 
       return items;
     } catch (error: unknown) {
-      const errorMsg =
-        error instanceof Error && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message || "Failed to fetch items"
-          : "Failed to fetch items";
+      const errorMsg = getErrorMessage(error, "Failed to fetch items");
       setError(errorMsg);
+      console.error("❌ Error fetching items:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -123,12 +118,9 @@ export const itemService = {
 
       return mapBackendItemToItem(result);
     } catch (error: unknown) {
-      const errorMsg =
-        error instanceof Error && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message || "Failed to fetch item"
-          : "Failed to fetch item";
+      const errorMsg = getErrorMessage(error, "Failed to fetch item details");
       setError(errorMsg);
+      console.error("❌ Error fetching item by ID:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -166,12 +158,9 @@ export const itemService = {
 
       return updatedItem;
     } catch (error: unknown) {
-      const errorMsg =
-        error instanceof Error && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message || "Failed to fetch item"
-          : "Failed to fetch item";
+      const errorMsg = getErrorMessage(error, "Failed to update item");
       setError(errorMsg);
+      console.error("❌ Error updating item:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -192,12 +181,9 @@ export const itemService = {
       // Remove from Zustand store after successful deletion
       deleteItem(id);
     } catch (error: unknown) {
-      const errorMsg =
-        error instanceof Error && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message || "Failed to fetch item"
-          : "Failed to fetch item";
+      const errorMsg = getErrorMessage(error, "Failed to delete item");
       setError(errorMsg);
+      console.error("❌ Error deleting item:", error);
       throw error;
     } finally {
       setLoading(false);

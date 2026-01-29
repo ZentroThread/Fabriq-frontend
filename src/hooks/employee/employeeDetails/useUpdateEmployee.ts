@@ -1,17 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Employee } from "@/types/employee.type";
 import { employeeService } from "@/services/employee.service";
-import type { AxiosError } from "axios";
-import {swalSuccess,swalError} from "@/utils/swal";
+import { swalSuccess, swalError, getErrorMessage } from "@/utils/swal";
 
 type UpdateEmployeeData = {
   code: string;
   data: Partial<Employee>;
   image?: File;
-};
-
-type ApiErrorResponse = {
-  message?: string;
 };
 
 export const useUpdateEmployee = () => {
@@ -27,8 +22,10 @@ export const useUpdateEmployee = () => {
       swalSuccess("Success", "Employee updated successfully.");
     },
 
-    onError: (error: AxiosError<ApiErrorResponse>) => {
-      swalError("Error", error?.response?.data?.message || "Failed to update employee.");
+    onError: (error: unknown) => {
+      const errorMessage = getErrorMessage(error, "Failed to update employee");
+      console.error("❌ Error updating employee:", error);
+      swalError("Failed to update employee", errorMessage);
     },
   });
 };

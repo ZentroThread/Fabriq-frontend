@@ -99,6 +99,11 @@ axiosInstance.interceptors.response.use(
       originalRequest &&
       !originalRequest._retry
     ) {
+      // Skip refresh logic if this is a silent auth check
+      if (originalRequest._skipAuthRedirect) {
+        return Promise.reject(error);
+      }
+
       // Don't retry refresh endpoint or login endpoint
       if (
         originalRequest.url?.includes(API_ENDPOINTS.LOGIN.REFRESH) ||

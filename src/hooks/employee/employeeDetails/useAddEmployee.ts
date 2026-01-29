@@ -2,8 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import type { Employee } from "@/types/employee.type";
 import { employeeService } from "@/services/employee.service";
-import {swalSuccess,swalError} from "@/utils/swal";
-import type { AxiosError } from "axios";
+import { swalSuccess, swalError, getErrorMessage } from "@/utils/swal";
 
 type AddEmployeeData = Partial<Employee> & { image?: File };
 
@@ -22,8 +21,10 @@ export const useAddEmployee = () => {
       swalSuccess("Success", "Employee added successfully.");
       navigate("/emp");
     },
-    onError: (error: AxiosError<{ message: string }>) => {
-      swalError("Error", error?.response?.data?.message || "Failed to add employee.");
+    onError: (error: unknown) => {
+      const errorMessage = getErrorMessage(error, "Failed to add employee");
+      console.error("❌ Error adding employee:", error);
+      swalError("Failed to add employee", errorMessage);
     },
   });
 };

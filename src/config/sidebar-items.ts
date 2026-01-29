@@ -22,6 +22,7 @@ export const sidebarItems = {
   cashier: [
     { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
     { label: "Rentals & Billing", icon: ReceiptText, to: "/rent" },
+    { label: "Items", icon: Box, to: "/attire" },
   ],
 
   sales_assistant: [

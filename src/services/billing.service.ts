@@ -17,59 +17,96 @@ type AttireRentAddDto = {
 
 export const billingService = {
   async addCustomer(data: AddCustomerPayload): Promise<AddCustomerResponse> {
-    const resp = await apiClient.request<BackendCustomerPayload>(
-      API_ENDPOINTS.CUSTOMER.ADD,
-      {
-        method: "POST",
-        data,
-      }
-    );
+    try {
+      const resp = await apiClient.request<BackendCustomerPayload>(
+        API_ENDPOINTS.CUSTOMER.ADD,
+        {
+          method: "POST",
+          data,
+        }
+      );
 
-    return { success: true, value: resp };
+      return { success: true, value: resp };
+    } catch (error: unknown) {
+      console.error("❌ Error adding customer:", error);
+      throw error;
+    }
   },
 
   async getAllCustomers(): Promise<BackendCustomerPayload[]> {
-    const resp = await apiClient.request<BackendCustomerPayload[]>(
-      API_ENDPOINTS.CUSTOMER.GET_ALL
-    );
-    return resp;
+    try {
+      const resp = await apiClient.request<BackendCustomerPayload[]>(
+        API_ENDPOINTS.CUSTOMER.GET_ALL
+      );
+      return resp;
+    } catch (error: unknown) {
+      console.error("❌ Error fetching customers:", error);
+      throw error;
+    }
   },
 
   async deleteCustomer(custId: number): Promise<boolean> {
-    await apiClient.request<void>(API_ENDPOINTS.CUSTOMER.DELETE(custId), {
-      method: "DELETE",
-    });
-    return true;
+    try {
+      await apiClient.request<void>(API_ENDPOINTS.CUSTOMER.DELETE(custId), {
+        method: "DELETE",
+      });
+      return true;
+    } catch (error: unknown) {
+      console.error("❌ Error deleting customer:", error);
+      throw error;
+    }
   },
 
   async addAttireRent(payload: AttireRentAddDto): Promise<unknown> {
-    const resp = await apiClient.request<unknown>(
-      API_ENDPOINTS.ATTIRE_RENT.ADD,
-      {
-        method: "POST",
-        data: payload,
-      }
-    );
-    return resp;
+    try {
+      const resp = await apiClient.request<unknown>(
+        API_ENDPOINTS.ATTIRE_RENT.ADD,
+        {
+          method: "POST",
+          data: payload,
+        }
+      );
+      return resp;
+    } catch (error: unknown) {
+      console.error("❌ Error adding attire rent:", error);
+      throw error;
+    }
   },
 
   async getAllBillings(): Promise<Bill[]> {
-    const resp = await apiClient.request<Bill[]>(API_ENDPOINTS.BILLING.GET_ALL);
-    return resp;
+    try {
+      const resp = await apiClient.request<Bill[]>(
+        API_ENDPOINTS.BILLING.GET_ALL
+      );
+      return resp;
+    } catch (error: unknown) {
+      console.error("❌ Error fetching billings:", error);
+      throw error;
+    }
   },
 
   async getAllAttireRents(): Promise<AttireRent[]> {
-    const resp = await apiClient.request<AttireRent[]>(
-      API_ENDPOINTS.ATTIRE_RENT.GET_ALL
-    );
-    return resp;
+    try {
+      const resp = await apiClient.request<AttireRent[]>(
+        API_ENDPOINTS.ATTIRE_RENT.GET_ALL
+      );
+      return resp;
+    } catch (error: unknown) {
+      console.error("❌ Error fetching attire rents:", error);
+      throw error;
+    }
   },
 
   async getAttireRentsByBillingCode(billingCode: string): Promise<unknown[]> {
-    const resp = await apiClient.request<unknown[]>(
-      `/v1/attire-rent/by-billing/${encodeURIComponent(billingCode)}`
-    );
-    return resp;
+    try {
+      const resp = await apiClient.request<unknown[]>(
+        `/v1/attire-rent/by-billing/${encodeURIComponent(billingCode)}`
+      );
+      return resp;
+    } catch (error: unknown) {
+      console.error("❌ Error fetching attire rents by billing code:", error);
+      throw error;
+    }
   },
 
   async createBillingWithRentals(payload: {
@@ -80,10 +117,18 @@ export const billingService = {
       returnDate?: string;
     }>;
   }): Promise<unknown> {
-    return await apiClient.request<unknown>("/v1/billing/create-with-rentals", {
-      method: "POST",
-      data: payload,
-    });
+    try {
+      return await apiClient.request<unknown>(
+        "/v1/billing/create-with-rentals",
+        {
+          method: "POST",
+          data: payload,
+        }
+      );
+    } catch (error: unknown) {
+      console.error("❌ Error creating billing with rentals:", error);
+      throw error;
+    }
   },
 
   async createBillingAndPay(payload: {
@@ -96,10 +141,15 @@ export const billingService = {
     discountPercentage?: number;
     paymentMethod?: string;
   }): Promise<unknown> {
-    return await apiClient.request<unknown>("/v1/billing/create-and-pay", {
-      method: "POST",
-      data: payload,
-    });
+    try {
+      return await apiClient.request<unknown>("/v1/billing/create-and-pay", {
+        method: "POST",
+        data: payload,
+      });
+    } catch (error: unknown) {
+      console.error("❌ Error creating billing and pay:", error);
+      throw error;
+    }
   },
 
   async payBilling(payload: {
@@ -107,9 +157,14 @@ export const billingService = {
     discountPercentage?: number;
     paymentMethod?: string;
   }): Promise<unknown> {
-    return await apiClient.request<unknown>("/v1/billing/pay", {
-      method: "POST",
-      data: payload,
-    });
+    try {
+      return await apiClient.request<unknown>("/v1/billing/pay", {
+        method: "POST",
+        data: payload,
+      });
+    } catch (error: unknown) {
+      console.error("❌ Error paying billing:", error);
+      throw error;
+    }
   },
 };
