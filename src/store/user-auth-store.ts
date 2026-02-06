@@ -1,7 +1,42 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { LoginInput, User, UserRole } from "@/types/types";
 import { queryClient } from "@/main";
 import { loginService } from "@/services/login.service";
+import { extractTenantId } from "@/lib/jwt";
+
+/**
+ * Helper: Extract tenant ID from access token cookie and persist it
+ */
+const extractAndPersistTenantId = (): string | null => {
+  try {
+    // Get access token from cookies
+    const cookies = document.cookie.split(";");
+    const accessTokenCookie = cookies.find((c) =>
+      c.trim().startsWith("accessToken=")
+    );
+
+    if (!accessTokenCookie) {
+      console.warn("⚠️ No accessToken cookie found");
+      return null;
+    }
+
+    const token = accessTokenCookie.split("=")[1];
+    const tenantId = extractTenantId(token);
+
+    if (tenantId) {
+      console.log("✅ Decoded tenant ID:", tenantId);
+      localStorage.setItem("tenantId", tenantId);
+      return tenantId;
+    } else {
+      console.warn("⚠️ No tenant ID in JWT token");
+      return null;
+    }
+  } catch (error) {
+    console.error("❌ Failed to extract tenant ID from token:", error);
+    return null;
+  }
+};
 
 interface AuthState {
   user: User | null;
@@ -27,130 +62,194 @@ interface AuthState {
   getTenantId: () => string | null;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  user: null,
-  isLoading: false,
-  error: null,
-  tokenExpiryTime: null,
-  isAuthChecked: false,
-  tenantId: null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      isLoading: false,
+      error: null,
+      tokenExpiryTime: null,
+      isAuthChecked: false,
+      tenantId:
+        typeof window !== "undefined" ? localStorage.getItem("tenantId") : null,
 
-  initializeAuth: async () => {
-    // Skip loading state for silent auth check on mount
-    set({ isLoading: false });
+      initializeAuth: async () => {
+        // Skip loading state for silent auth check on mount
+        set({ isLoading: false });
 
-    try {
-      // Silently check for existing session
-      // This flag prevents redirect and retry logic
-      const user = await loginService.getUserProfile({
-        _skipAuthRedirect: true,
-        _retry: true, // Mark as already retried to prevent refresh attempt
-      });
-      set({
-        user,
-        isLoading: false,
-        isAuthChecked: true,
-        tenantId: user?.tenantId ?? null,
-      });
-    } catch {
-      // No valid session - this is expected on initial load
-      // Fail silently without errors
-      set({
-        user: null,
-        isLoading: false,
-        isAuthChecked: true,
-        tenantId: null,
-      });
+        try {
+          // Silently check for existing session
+          // This flag prevents redirect and retry logic
+          const user = await loginService.getUserProfile({
+            _skipAuthRedirect: true,
+            _retry: true, // Mark as already retried to prevent refresh attempt
+          });
+
+          // Extract tenant ID from JWT in cookie and persist it
+          const tenantId =
+            extractAndPersistTenantId() || user?.tenantId || null;
+
+          console.log("✅ Auth initialized - Tenant ID:", tenantId);
+
+          set({
+            user,
+            isLoading: false,
+            isAuthChecked: true,
+            tenantId,
+          });
+        } catch {
+          // No valid session - this is expected on initial load
+          // Fail silently without errors
+          console.log("ℹ️ No active session found");
+          set({
+            user: null,
+            isLoading: false,
+            isAuthChecked: true,
+            tenantId: null,
+          });
+        }
+      },
+
+      login: async (credentials) => {
+        set({ isLoading: true, error: null });
+
+        try {
+          console.log("🔐 Starting login...");
+          const tokenResponse = await loginService.login(credentials);
+          console.log("✅ Login response received");
+
+          const user = await loginService.getUserProfile({});
+          console.log("✅ User profile fetched:", user.username);
+
+          // Extract tenant ID from JWT token in cookie and persist it
+          const tenantId =
+            extractAndPersistTenantId() || user?.tenantId || null;
+          console.log("✅ Tenant ID stored:", tenantId);
+
+          const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
+
+          set({
+            user,
+            isLoading: false,
+            tokenExpiryTime: expiryTime,
+            tenantId,
+          });
+
+          console.log("✅ Login complete - Check localStorage for tenantId");
+          return { success: true };
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : "Login failed";
+          console.error("❌ Login failed:", message);
+          set({
+            error: message,
+            isLoading: false,
+            user: null,
+            tokenExpiryTime: null,
+            tenantId: null,
+          });
+          localStorage.removeItem("tenantId");
+          return { success: false, error: message };
+        }
+      },
+
+      logout: async () => {
+        try {
+          await loginService.logout();
+        } catch (error) {
+          console.error("Logout API call failed:", error);
+        }
+
+        await queryClient.cancelQueries();
+        queryClient.clear();
+
+        // Clear tenant ID from localStorage
+        localStorage.removeItem("tenantId");
+        console.log("🚪 Logged out - localStorage cleared");
+
+        set({ user: null, error: null, tokenExpiryTime: null, tenantId: null });
+      },
+
+      validateSession: async () => {
+        const { user } = get();
+        if (!user) return false;
+
+        set({ isLoading: true });
+
+        try {
+          const freshUser = await loginService.getUserProfile({});
+
+          // Extract tenant ID from JWT and persist
+          const tenantId =
+            extractAndPersistTenantId() || freshUser?.tenantId || null;
+
+          set({
+            user: freshUser,
+            isLoading: false,
+            tenantId,
+          });
+          return true;
+        } catch {
+          await get().logout();
+          return false;
+        }
+      },
+
+      setAuthChecked: (checked: boolean) => set({ isAuthChecked: checked }),
+
+      setLoading: (loading) => set({ isLoading: loading }),
+
+      setError: (error) => set({ error }),
+
+      clearError: () => set({ error: null }),
+
+      isAuthenticated: () => {
+        return get().user !== null;
+      },
+
+      hasRole: (role) => {
+        const { user } = get();
+        if (!user) return false;
+
+        if (Array.isArray(role)) {
+          return role.includes(user.role);
+        }
+
+        return user.role === role;
+      },
+
+      getTenantId: () => {
+        const stateTenantId = get().tenantId;
+        const userTenantId = get().user?.tenantId;
+        const localStorageTenantId =
+          typeof window !== "undefined"
+            ? localStorage.getItem("tenantId")
+            : null;
+
+        const tenantId = stateTenantId ?? userTenantId ?? localStorageTenantId;
+        console.log("🔍 Getting tenant ID:", {
+          stateTenantId,
+          userTenantId,
+          localStorageTenantId,
+          result: tenantId,
+        });
+
+        return tenantId;
+      },
+
+      setTenantId: (id) => {
+        set({ tenantId: id });
+        if (id) {
+          localStorage.setItem("tenantId", id);
+        } else {
+          localStorage.removeItem("tenantId");
+        }
+      },
+    }),
+    {
+      name: "auth-storage",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ tenantId: state.tenantId }),
     }
-  },
-
-  login: async (credentials) => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const tokenResponse = await loginService.login(credentials);
-      const user = await loginService.getUserProfile({});
-      const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
-
-      set({
-        user,
-        isLoading: false,
-        tokenExpiryTime: expiryTime,
-        tenantId: user?.tenantId ?? null,
-      });
-      return { success: true };
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Login failed";
-      set({
-        error: message,
-        isLoading: false,
-        user: null,
-        tokenExpiryTime: null,
-        tenantId: null,
-      });
-      return { success: false, error: message };
-    }
-  },
-
-  logout: async () => {
-    try {
-      await loginService.logout();
-    } catch (error) {
-      console.error("Logout API call failed:", error);
-    }
-
-    await queryClient.cancelQueries();
-    queryClient.clear();
-
-    set({ user: null, error: null, tokenExpiryTime: null, tenantId: null });
-  },
-
-  validateSession: async () => {
-    const { user } = get();
-    if (!user) return false;
-
-    set({ isLoading: true });
-
-    try {
-      const freshUser = await loginService.getUserProfile({});
-      set({
-        user: freshUser,
-        isLoading: false,
-        tenantId: freshUser?.tenantId ?? null,
-      });
-      return true;
-    } catch {
-      await get().logout();
-      return false;
-    }
-  },
-
-  setAuthChecked: (checked: boolean) => set({ isAuthChecked: checked }),
-
-  setLoading: (loading) => set({ isLoading: loading }),
-
-  setError: (error) => set({ error }),
-
-  clearError: () => set({ error: null }),
-
-  isAuthenticated: () => {
-    return get().user !== null;
-  },
-
-  hasRole: (role) => {
-    const { user } = get();
-    if (!user) return false;
-
-    if (Array.isArray(role)) {
-      return role.includes(user.role);
-    }
-
-    return user.role === role;
-  },
-
-  getTenantId: () => {
-    return get().tenantId ?? get().user?.tenantId ?? null;
-  },
-
-  setTenantId: (id) => set({ tenantId: id }),
-}));
+  )
+);
