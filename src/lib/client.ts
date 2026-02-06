@@ -46,6 +46,7 @@ axiosInstance.interceptors.request.use(
   // make interceptor async so we can dynamic-import the store (avoids circular deps)
   async (config) => {
     console.log("🌐 API Request:", config.url);
+    console.log("🍪 Cookies being sent:", document.cookie ? "Present" : "None");
 
     try {
       const { useAuthStore } = await import("@/store/user-auth-store");
