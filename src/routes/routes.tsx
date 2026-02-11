@@ -20,6 +20,7 @@ import EpfEtfHistoryPage from "@/pages/epf-etf-history";
 import AddEmployee from "@/pages/add-employee";
 import ItemsWishlist from "@/pages/items-wishlist";
 import ItemsHistory from "@/pages/items-history";
+import { Mark_Attendance } from "@/pages/mark-attendance";
 
 function AppRoutes() {
   return (
@@ -58,6 +59,7 @@ function AppRoutes() {
           {/* Attendance - Owner only */}
           <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/mark-attendance" element={<Mark_Attendance />} />
           </Route>
 
           {/* Rentals & Billing - Owner, Cashier and Sales Assistant */}
