@@ -1,144 +1,378 @@
-import { useState } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useMarkAttendance } from "@/hooks/employee/attendance/useAttendance";
 import { useEmployees } from "@/hooks/employee/employeeDetails/useEmployess";
-import { MarkAttendanceSchema, type MarkAttendance } from "@/schemas/attendance.schema";
+import {
+  MarkAttendanceSchema,
+  type MarkAttendance,
+} from "@/schemas/attendance.schema";
 import type { Employee } from "@/types/employee.type";
+import { getErrorMessage, swalSuccess, swalError } from "@/utils/swal";
 
 type Direction = "IN" | "OUT";
+type PunchedState = Record<string, Direction | undefined>;
 
+/* ─── Helpers ───────────────────────────────────────────────────────────── */
+const formatForBackend = (date: Date): string => {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+    date.getSeconds()
+  )}`;
+};
+
+const getInitials = (first: string, last: string) =>
+  `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase();
+
+/* ─── Sub Components ───────────────────────────────────────────────────── */
+interface EmployeeAvatarProps {
+  employee: Employee;
+  size?: "sm" | "md" | "lg";
+}
+
+const EmployeeAvatar = ({ employee, size = "md" }: EmployeeAvatarProps) => {
+  const sizes = {
+    sm: "h-7 w-7 text-xs",
+    md: "h-9 w-9 text-sm",
+    lg: "h-12 w-12 text-base",
+  };
+
+  return (
+    <div
+      className={`${sizes[size]} rounded-full flex items-center justify-center font-semibold text-white shrink-0`}
+      style={{
+        background: `linear-gradient(
+          135deg,
+          var(--color-avatar-gradient-from),
+          var(--color-avatar-gradient-to)
+        )`,
+        boxShadow: "0 4px 12px var(--color-shadow)",
+      }}
+    >
+      {getInitials(employee.empFirstName, employee.empLastName)}
+    </div>
+  );
+};
+
+const StatusBadge = ({ status }: { status?: Direction }) => {
+  if (!status) return null;
+  const isIn = status === "IN";
+
+  return (
+    <span
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+      style={{
+        backgroundColor: isIn
+          ? "color-mix(in srgb, var(--color-green) 15%, transparent)"
+          : "color-mix(in srgb, var(--color-red) 15%, transparent)",
+        color: isIn ? "var(--color-green)" : "var(--color-red)",
+        border: `1px solid ${
+          isIn ? "var(--color-green)" : "var(--color-red)"
+        }`,
+      }}
+    >
+      <span
+        className="h-1.5 w-1.5 rounded-full"
+        style={{
+          backgroundColor: isIn
+            ? "var(--color-green)"
+            : "var(--color-red)",
+        }}
+      />
+      {status}
+    </span>
+  );
+};
+
+/* ─── Main Component ───────────────────────────────────────────────────── */
 export const Mark_Attendance = () => {
-  const { data: employees, isLoading } = useEmployees();
+  const { data: employees = [], isLoading } = useEmployees();
   const { mutate: markAttendance, isPending } = useMarkAttendance();
 
-  const [selectedEmp, setSelectedEmp] = useState<string>("");
+  const [selectedEmp, setSelectedEmp] = useState<Employee | null>(null);
   const [direction, setDirection] = useState<Direction>("IN");
-  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [punchedMap, setPunchedMap] = useState<PunchedState>({});
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // 🔒 Track which employees have punched and their last direction
-  const [punchedMap, setPunchedMap] = useState<Record<string, Direction>>({});
+  const searchRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Format ISO for backend (remove Z and milliseconds)
-  const formatForBackend = (date: Date) => {
-    return date.toISOString().replace("Z", "").split(".")[0];
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filteredEmployees = useMemo(() => {
+    const term = search.toLowerCase().trim();
+    if (!term) return [];
+    return employees
+      .filter(
+        (e) =>
+          e.empCode.toLowerCase().includes(term) ||
+          e.empFirstName.toLowerCase().includes(term) ||
+          e.empLastName.toLowerCase().includes(term)
+      )
+      .slice(0, 8);
+  }, [search, employees]);
+
+  const selectEmployee = useCallback(
+    (emp: Employee) => {
+      setSelectedEmp(emp);
+      setSearch(`${emp.empCode} — ${emp.empFirstName} ${emp.empLastName}`);
+      setShowDropdown(false);
+      setDirection(punchedMap[emp.empCode] === "IN" ? "OUT" : "IN");
+    },
+    [punchedMap]
+  );
+
+  const clearSelection = () => {
+    setSelectedEmp(null);
+    setSearch("");
+    setShowDropdown(false);
+    searchRef.current?.focus();
   };
 
   const handleSubmit = () => {
-    setError(null);
-
-    if (!selectedEmp) {
-      setError("Please select an employee");
-      return;
-    }
+    if (!selectedEmp) return swalError("Please select an employee.");
 
     const payload: MarkAttendance = {
-      UserID: selectedEmp,
+      UserID: selectedEmp.empCode,
       LogDate: formatForBackend(new Date()),
       Direction: direction,
     };
 
     const parsed = MarkAttendanceSchema.safeParse(payload);
-
-    if (!parsed.success) {
-      setError(parsed.error.issues[0].message);
-      return;
-    }
+    if (!parsed.success)
+      return swalError(parsed.error.issues[0].message);
 
     markAttendance(parsed.data, {
       onSuccess: () => {
-        // 🔒 Save last direction for this employee
-        setPunchedMap((prev) => ({
-          ...prev,
-          [selectedEmp]: direction,
+        setPunchedMap((p) => ({
+          ...p,
+          [selectedEmp.empCode]: direction,
         }));
+        swalSuccess("Attendance marked successfully");
+        clearSelection();
       },
-      onError: (error: Error) => {
-        return setError(error.message || "Failed to mark attendance");
-      },
+      onError: (e) =>
+        swalError("Failed to mark attendance", getErrorMessage(e)),
     });
   };
 
-  // Determine if IN/OUT should be disabled
-  const isInDisabled = punchedMap[selectedEmp] === "IN";
-  const isOutDisabled = punchedMap[selectedEmp] === "OUT";
+  const canSubmit = !!selectedEmp && !isPending;
+
+  // const timeStr = now.toLocaleTimeString("en-US", {
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  //   second: "2-digit",
+  // });
+  const dateStr = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-main-bg">
-      <div className="w-full max-w-md bg-card border border-border rounded-2xl p-6 shadow-lg">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-text-color">
-          Mark Attendance
-        </h2>
-
-        {/* Error */}
-        {error && (
-          <div className="mb-4 p-3 rounded-lg bg-error/10 border border-error/30 text-error text-sm">
-            {error}
-          </div>
-        )}
-
-        {/* Employee Select */}
-        <div className="mb-4">
-          <label className="block text-sm mb-2 text-text-color">Employee</label>
-          <select
-            value={selectedEmp}
-            onChange={(e) => setSelectedEmp(e.target.value)}
-            className="w-full rounded-lg px-3 py-2 bg-input border border-input text-text-color focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            <option value="">Select employee</option>
-            {!isLoading &&
-              employees?.map((emp: Employee) => (
-                <option key={emp.id} value={emp.empCode}>
-                  {emp.empCode} — {emp.empFirstName} {emp.empLastName}
-                </option>
-              ))}
-          </select>
-        </div>
-
-        {/* Direction Buttons */}
-        <div className="mb-6">
-          <label className="block text-sm mb-2 text-text-color">Direction</label>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => setDirection("IN")}
-              disabled={isInDisabled || !selectedEmp}
-              className={`flex-1 py-2 rounded-lg font-medium transition
-                ${
-                  isInDisabled
-                    ? "bg-green/50 text-white cursor-not-allowed"
-                    : direction === "IN"
-                    ? "bg-green text-white shadow-md"
-                    : "bg-hover-bg text-text-color hover:bg-hover-bg/70"
-                }`}
-            >
-              IN
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setDirection("OUT")}
-              disabled={isOutDisabled || !selectedEmp}
-              className={`flex-1 py-2 rounded-lg font-medium transition
-                ${
-                  isOutDisabled
-                    ? "bg-red/50 text-white cursor-not-allowed"
-                    : direction === "OUT"
-                    ? "bg-red text-white shadow-md"
-                    : "bg-hover-bg text-text-color hover:bg-hover-bg/70"
-                }`}
-            >
-              OUT
-            </button>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          onClick={handleSubmit}
-          disabled={!selectedEmp || isPending || (isInDisabled && direction === "IN") || (isOutDisabled && direction === "OUT")}
-          className="w-full py-3 rounded-xl bg-button text-button-text hover:bg-button-hover transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+    <div
+      className="min-h-screen flex items-center justify-center p-8"
+      style={{ backgroundColor: "var(--color-main-bg)" }}
+    >
+      <div
+        className="w-full max-w-md rounded-3xl overflow-hidden"
+        style={{
+          backgroundColor: "var(--color-card)",
+          border: "1px solid var(--color-border)",
+          boxShadow: "0 24px 48px var(--color-shadow)",
+        }}
+      >
+        {/* Header */}
+        <div
+          className="px-7 pt-8 pb-6 flex justify-between"
+          style={{ borderBottom: "1px solid var(--color-border)" }}
         >
-          {isPending ? "Marking..." : "Mark Attendance"}
-        </button>
+          <div>
+            <p
+              className="text-[10px] font-semibold tracking-[0.25em] uppercase"
+              style={{ color: "var(--color-muted-foreground)" }}
+            >
+              HR Module
+            </p>
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: "var(--color-foreground)" }}
+            >
+              Mark Attendance
+            </h1>
+          </div>
+
+          <div className="text-right">
+            <p
+              className="text-3xl font-mono font-bold"
+              style={{ color: "var(--color-foreground)" }}
+            >
+              {/* {timeStr} */}
+            </p>
+            <p
+              className="text-xs mt-1"
+              style={{ color: "var(--color-muted-foreground)" }}
+            >
+              {dateStr}
+            </p>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="px-7 py-7 space-y-6">
+          {/* Search */}
+          <div ref={containerRef} className="relative">
+            <label className="text-[11px] font-semibold tracking-widest uppercase">
+              Employee
+            </label>
+
+            <input
+              ref={searchRef}
+              value={search}
+              disabled={isLoading}
+              placeholder="Search by ID or name"
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setSelectedEmp(null);
+                setShowDropdown(true);
+              }}
+              className="w-full mt-2 rounded-xl px-4 py-3 text-sm outline-none"
+              style={{
+                backgroundColor: "var(--color-input)",
+                border: "1px solid var(--color-input-border)",
+              }}
+            />
+
+            {showDropdown && filteredEmployees.length > 0 && (
+              <div
+                className="absolute w-full mt-2 rounded-xl overflow-hidden z-50"
+                style={{
+                  backgroundColor: "var(--color-card)",
+                  border: "1px solid var(--color-border)",
+                  boxShadow: "0 16px 32px var(--color-shadow)",
+                }}
+              >
+                {filteredEmployees.map((emp) => (
+                  <button
+                    key={emp.empCode}
+                    onClick={() => selectEmployee(emp)}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left"
+                  >
+                    <EmployeeAvatar employee={emp} size="sm" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">
+                        {emp.empFirstName} {emp.empLastName}
+                      </p>
+                      <p className="text-xs">{emp.empCode}</p>
+                    </div>
+                    <StatusBadge status={punchedMap[emp.empCode]} />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Direction */}
+          <div>
+            <label
+              className="block text-[11px] font-semibold tracking-widest uppercase mb-2"
+              style={{ color: "var(--color-muted-foreground)" }}
+            >
+              Direction
+            </label>
+
+            <div
+              className="grid grid-cols-2 gap-2 p-1 rounded-xl"
+              style={{ backgroundColor: "var(--color-muted)" }}
+            >
+              <button
+                onClick={() => setDirection("IN")}
+                disabled={
+                  selectedEmp ? punchedMap[selectedEmp.empCode] === "IN" : true
+                }
+                className="py-3 rounded-lg font-semibold text-sm transition"
+                style={{
+                  backgroundColor:
+                    direction === "IN"
+                      ? "var(--color-green)"
+                      : "transparent",
+                  color:
+                    direction === "IN"
+                      ? "var(--color-button-text)"
+                      : "var(--color-foreground)",
+                  opacity:
+                    selectedEmp &&
+                    punchedMap[selectedEmp.empCode] !== "IN"
+                      ? 1
+                      : 0.5,
+                }}
+              >
+                Clock In
+              </button>
+
+              <button
+                onClick={() => setDirection("OUT")}
+                disabled={
+                  selectedEmp ? punchedMap[selectedEmp.empCode] !== "IN" : true
+                }
+                className="py-3 rounded-lg font-semibold text-sm transition"
+                style={{
+                  backgroundColor:
+                    direction === "OUT"
+                      ? "var(--color-red)"
+                      : "transparent",
+                  color:
+                    direction === "OUT"
+                      ? "var(--color-button-text)"
+                      : "var(--color-foreground)",
+                  opacity:
+                    selectedEmp &&
+                    punchedMap[selectedEmp.empCode] === "IN"
+                      ? 1
+                      : 0.5,
+                }}
+              >
+                Clock Out
+              </button>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <button
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            className="w-full py-3.5 rounded-xl font-semibold transition"
+            style={{
+              backgroundColor: canSubmit
+                ? "var(--color-button)"
+                : "var(--color-muted)",
+              color: canSubmit
+                ? "var(--color-button-text)"
+                : "var(--color-muted-foreground)",
+            }}
+          >
+            {isPending ? "Processing…" : "Mark Attendance"}
+          </button>
+        </div>
       </div>
     </div>
   );

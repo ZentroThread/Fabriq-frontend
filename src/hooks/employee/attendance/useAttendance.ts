@@ -6,6 +6,7 @@ export const useDailyAttendance = (date: string) => {
   return useQuery<Attendance[]>({
     queryKey: ["attendance", date],
     queryFn: () => AttendanceService.fetchDailyAttendance(date),
+    enabled: !!date,
   });
 };
 

@@ -20,7 +20,7 @@ import EpfEtfHistoryPage from "@/pages/epf-etf-history";
 import AddEmployee from "@/pages/add-employee";
 import ItemsWishlist from "@/pages/items-wishlist";
 import ItemsHistory from "@/pages/items-history";
-import { Mark_Attendance } from "@/pages/mark-attendance";
+import  { Mark_Attendance }  from "@/pages/mark-attendance";
 
 function AppRoutes() {
   return (
