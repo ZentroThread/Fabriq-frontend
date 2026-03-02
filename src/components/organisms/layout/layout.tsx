@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, Outlet } from "react-router-dom";
 import Nav from "../../molecules/navigationbar/nav";
 import Sidebar from "../../molecules/sidebar/Sidebar";
+import AIAssistant from "../../molecules/chatbot/AIAssistant";
 import { useAuthStore } from "@/store/user-auth-store";
 
 function Layout() {
@@ -60,6 +61,9 @@ function Layout() {
           <Outlet />
         </main>
       </div>
+
+      {/* AI Assistant - Always available */}
+      <AIAssistant />
     </div>
   );
 }
