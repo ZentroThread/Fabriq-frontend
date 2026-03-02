@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
 import { RAG_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
+import { useAuthStore } from "@/store/user-auth-store";
 
 interface Message {
   id: string;
@@ -15,19 +17,63 @@ interface ChatBotProps {
   onClose: () => void;
 }
 
-function ChatBot({ isOpen, onClose }: ChatBotProps) {
-  const [messages, setMessages] = useState<Message[]>([
+const CHAT_STORAGE_KEY = "fabriq_chat_messages";
+
+const getInitialMessages = (): Message[] => {
+  try {
+    const stored = localStorage.getItem(CHAT_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Convert timestamp strings back to Date objects
+      return parsed.map((msg: Message) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp),
+      }));
+    }
+  } catch (error) {
+    console.error("Failed to load chat history:", error);
+  }
+
+  // Return welcome message as default
+  return [
     {
       id: "welcome",
       text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
-  ]);
+  ];
+};
+
+function ChatBot({ isOpen, onClose }: ChatBotProps) {
+  const [messages, setMessages] = useState<Message[]>(getInitialMessages);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const user = useAuthStore((state) => state.user);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  // Clear messages when user logs out
+  useEffect(() => {
+    if (!user) {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+      setMessages([
+        {
+          id: "welcome",
+          text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [user]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -100,23 +146,20 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     }
   };
 
-  return (
+  if (!isOpen) return null;
+
+  return createPortal(
     <>
       {/* Overlay - transparent, allows clicking through */}
       <div
-        className={`fixed inset-0 z-40 transition-opacity duration-300 ${
-          isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
+        className="fixed inset-0 z-9998 transition-opacity duration-300 opacity-100 pointer-events-auto"
         onClick={onClose}
       />
 
       {/* Chat Window */}
       <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-[450px] bg-layout-bg shadow-2xl z-50 
-        transform transition-transform duration-300 ease-in-out flex flex-col
-        ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className="fixed right-0 top-0 h-full w-full sm:w-112.5 bg-layout-bg shadow-2xl z-9999 
+        transform transition-transform duration-300 ease-in-out flex flex-col translate-x-0"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border bg-nav-bg">
@@ -154,7 +197,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
                     : "bg-card border border-border text-text-color"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap break-words">
+                <p className="text-sm whitespace-pre-wrap wrap-break-word">
                   {message.text}
                 </p>
                 <p
@@ -204,7 +247,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
               disabled={!inputValue.trim() || isLoading}
               className="px-4 py-3 bg-support-button hover:bg-support-button-hover 
               text-support-button-text rounded-xl transition-colors disabled:opacity-50 
-              disabled:cursor-not-allowed flex items-center justify-center min-w-[50px]"
+              disabled:cursor-not-allowed flex items-center justify-center min-w-12.5"
               aria-label="Send message"
             >
               {isLoading ? (
@@ -216,7 +259,8 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
           </div>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 }
 
