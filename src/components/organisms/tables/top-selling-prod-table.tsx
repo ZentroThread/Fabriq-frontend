@@ -24,7 +24,7 @@ export function TopSellingProdTable({ tableData }: { tableData: TopSellingProduc
 
   return (
     <Table className="w-full text-sm shadow-lg rounded-lg overflow-hidden">
-      <TableHeader className="bg-gray-100 uppercase text-gray-700">
+      <TableHeader className="bg-gray-100 uppercase  text-gray-700">
         <TableRow>
           <TableHead className="w-[150px] text-left px-4 py-2">Product</TableHead>
           <TableHead className="text-left px-4 py-2">Sales</TableHead>
