@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { RAG_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { useAuthStore } from "@/store/user-auth-store";
@@ -18,11 +19,15 @@ interface ChatBotProps {
 }
 
 const CHAT_STORAGE_KEY = "fabriq_chat_messages";
+const CHAT_USER_KEY = "fabriq_chat_user_id";
 
-const getInitialMessages = (): Message[] => {
+const getInitialMessages = (userId: string | null): Message[] => {
   try {
     const stored = localStorage.getItem(CHAT_STORAGE_KEY);
-    if (stored) {
+    const storedUserId = localStorage.getItem(CHAT_USER_KEY);
+
+    // Only load messages if they belong to the current user
+    if (stored && storedUserId === userId && userId !== null) {
       const parsed = JSON.parse(stored);
       // Convert timestamp strings back to Date objects
       return parsed.map((msg: Message) => ({
@@ -46,19 +51,22 @@ const getInitialMessages = (): Message[] => {
 };
 
 function ChatBot({ isOpen, onClose }: ChatBotProps) {
-  const [messages, setMessages] = useState<Message[]>(getInitialMessages);
+  const user = useAuthStore((state) => state.user);
+  const [messages, setMessages] = useState<Message[]>(() =>
+    getInitialMessages(user?.id.toString() || null)
+  );
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const user = useAuthStore((state) => state.user);
 
-  // Save messages to localStorage whenever they change
+  // Save messages to localStorage whenever they change (only if user is logged in)
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > 0 && user) {
       localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+      localStorage.setItem(CHAT_USER_KEY, user.id.toString());
     }
-  }, [messages]);
+  }, [messages, user]);
 
   // Clear messages when user logs out
   useEffect(() => {
@@ -169,7 +177,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-nav-text">
-                Fabriq AI Assistant
+                AI Assistant
               </h2>
               <p className="text-xs text-support-text">Always here to help</p>
             </div>
@@ -197,9 +205,9 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
                     : "bg-card border border-border text-text-color"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap wrap-break-word">
-                  {message.text}
-                </p>
+                <div className="text-sm whitespace-pre-wrap wrap-break-word prose prose-sm max-w-none dark:prose-invert">
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
+                </div>
                 <p
                   className={`text-xs mt-1 ${
                     message.sender === "user"
