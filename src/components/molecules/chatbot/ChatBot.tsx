@@ -52,7 +52,7 @@ const clearChatStorage = (): void => {
 
 function ChatBot({ isOpen, onClose }: ChatBotProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user = useAuthStore((state: any) => state.user);
+  const authUser = useAuthStore((state: any) => state.user);
   const prevUserIdRef = useRef<string | null>(null);
   const isFirstLoadRef = useRef(true);
 
@@ -61,9 +61,11 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const user = useState("dummyUser")[0];
 
   useEffect(() => {
-    const currentUserId = user?.id.toString() || null;
+    // Fallback to dummy user if authUser has no ID
+    const currentUserId = authUser?.id?.toString() || user || null;
     const previousUserId = prevUserIdRef.current;
 
     // User logged out
@@ -112,7 +114,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
       isFirstLoadRef.current = false;
     }
 
-    if (!user) {
+    if (!currentUserId) {
       localStorage.removeItem(CHAT_STORAGE_KEY);
       setMessages([
         {
@@ -125,7 +127,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     }
 
     prevUserIdRef.current = currentUserId;
-  }, [user]);
+  }, [authUser, user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
