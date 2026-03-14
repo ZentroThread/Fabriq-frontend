@@ -9,6 +9,7 @@ import { useDailyAttendanceTableSummary } from "@/hooks/employee/attendance/useD
 import { useState } from "react";
 import { formatDate } from "@/utils/date";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 function Attendance() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -26,6 +27,9 @@ function Attendance() {
   if (isLoading) {
     return <AttendanceSkeleton />;
   }
+
+  console.log(dailyAttendance);
+  console.log(selectedDate)
 
   return (
     <div className="p-5 flex flex-col ">
@@ -45,13 +49,14 @@ function Attendance() {
             <div className="flex justify-center items-center">
               <FingerprintPattern className="text-text-active bg-pie-3 w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-60 lg:h-60 p-8 m-6 sm:p-10 rounded-full shadow-2xl" />
             </div>
-            <button
+            <Link
               className="flex justify-center items-center mx-auto px-10 py-4 bg-support-button 
       hover:bg-support-button-hover text-support-button-text 
       font-semibold rounded-2xl text-[20px] mb-5"
+              to="/mark-attendance"
             >
               Scan Fingerprint
-            </button>
+            </Link>
           </Chart>
         </div>
 

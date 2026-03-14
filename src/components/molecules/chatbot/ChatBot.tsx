@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import { RAG_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
+import { apiClient } from "@/lib/client";
 import { useAuthStore } from "@/store/user-auth-store";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
@@ -21,7 +21,20 @@ interface ChatBotProps {
 const CHAT_STORAGE_KEY = "fabriq_chat_messages";
 const CHAT_USER_KEY = "fabriq_chat_user_id";
 
-const getWelcomeMessage = (): Message[] => {
+const getInitialMessages = (): Message[] => {
+  try {
+    const stored = localStorage.getItem(CHAT_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.map((msg: Message) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp),
+      }));
+    }
+  } catch (error) {
+    console.error("Failed to load chat history:", error);
+  }
+
   return [
     {
       id: "welcome",
@@ -32,32 +45,23 @@ const getWelcomeMessage = (): Message[] => {
   ];
 };
 
-const saveMessagesToStorage = (messages: Message[], userId: string): void => {
-  try {
-    sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
-    sessionStorage.setItem(CHAT_USER_KEY, userId);
-  } catch (error) {
-    console.error("Failed to save chat messages:", error);
-  }
-};
-
 const clearChatStorage = (): void => {
   sessionStorage.removeItem(CHAT_STORAGE_KEY);
   sessionStorage.removeItem(CHAT_USER_KEY);
 };
 
 function ChatBot({ isOpen, onClose }: ChatBotProps) {
-  const user = useAuthStore((state) => state.user);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const user = useAuthStore((state: any) => state.user);
   const prevUserIdRef = useRef<string | null>(null);
   const isFirstLoadRef = useRef(true);
 
-  const [messages, setMessages] = useState<Message[]>(getWelcomeMessage());
+  const [messages, setMessages] = useState<Message[]>(getInitialMessages());
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Handle user login/logout changes
   useEffect(() => {
     const currentUserId = user?.id.toString() || null;
     const previousUserId = prevUserIdRef.current;
@@ -65,13 +69,13 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     // User logged out
     if (!currentUserId && previousUserId) {
       clearChatStorage();
-      setMessages(getWelcomeMessage());
+      setMessages(getInitialMessages());
       isFirstLoadRef.current = true;
     }
     // User just logged in (was not logged in before)
     else if (currentUserId && !previousUserId) {
       clearChatStorage();
-      setMessages(getWelcomeMessage());
+      setMessages(getInitialMessages());
       isFirstLoadRef.current = true;
     }
     // Different user logged in
@@ -81,7 +85,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
       currentUserId !== previousUserId
     ) {
       clearChatStorage();
-      setMessages(getWelcomeMessage());
+      setMessages(getInitialMessages());
       isFirstLoadRef.current = true;
     }
     // Same user, load chat history if available
@@ -94,7 +98,6 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
       try {
         const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
         const storedUserId = sessionStorage.getItem(CHAT_USER_KEY);
-
         if (stored && storedUserId === currentUserId) {
           const parsed = JSON.parse(stored);
           const messagesWithDates = parsed.map((msg: Message) => ({
@@ -109,22 +112,25 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
       isFirstLoadRef.current = false;
     }
 
+    if (!user) {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+      setMessages([
+        {
+          id: "welcome",
+          text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+    }
+
     prevUserIdRef.current = currentUserId;
   }, [user]);
 
-  // Save messages to sessionStorage whenever they change (only if user is logged in)
-  useEffect(() => {
-    if (messages.length > 0 && user && !isFirstLoadRef.current) {
-      saveMessagesToStorage(messages, user.id.toString());
-    }
-  }, [messages, user]);
-
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when chatbot opens
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
@@ -146,20 +152,10 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     setIsLoading(true);
 
     try {
-      // Call the RAG API
-      const response = await fetch(`${RAG_BASE_URL}${API_ENDPOINTS.RAG.CHAT}`, {
+      const data = (await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ question: inputValue }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get response from AI");
-      }
-
-      const data = await response.json();
+        data: { question: inputValue },
+      })) as { answer: string };
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),

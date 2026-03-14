@@ -95,9 +95,11 @@ export const API_ENDPOINTS = {
 
   ATTENDANCE: {
     GET_DAILY_ATTENDANCE: (date: string) => `/v1/attendance/date?date=${date}`,
+    MARK_ATTENDANCE: "/v1/device-attendance/punch",
   },
 
   RAG: {
     CHAT: "/api/chat",
+    BACKEND_CHAT: "/v1/rag/chat"
   },
 };

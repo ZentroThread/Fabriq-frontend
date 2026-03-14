@@ -33,4 +33,17 @@ export const AttendanceSchema = z.object({
   status: z.enum(["PRESENT", "ABSENT", "LATE", "ON_LEAVE"]),
 });
 
+export const MarkAttendanceSchema = z.object({
+  UserID: z.string().min(1, "UserID is required"),
+
+  LogDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid datetime format",
+  }),
+
+  Direction: z.enum(["IN", "OUT"]),
+});
+
+
 export type Attendance = z.infer<typeof AttendanceSchema>;
+export type MarkAttendance = z.infer<typeof MarkAttendanceSchema>;
+

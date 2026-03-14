@@ -3,6 +3,8 @@
 /* Tailwind CSS v4 @theme directive - ignore CSS validator warning */
 /* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
+  --color-avatar-gradient-from: #b77e66;
+  --color-avatar-gradient-to: #ab7057;
   --font-family-sans:
     "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
