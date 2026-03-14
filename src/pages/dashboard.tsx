@@ -73,7 +73,7 @@ function Dashboard() {
         <DashboardCard
           lable={"Attendance Rate"}
           lable1={`${attendanceRate}%`}
-          lable2={`${presentCount}/${totalEmployees} present`}
+          lable2={`${presentCount+lateCount}/${totalEmployees} present`}
           icon={Users}
           iconbg="var(--color-dbcard)"
         />
