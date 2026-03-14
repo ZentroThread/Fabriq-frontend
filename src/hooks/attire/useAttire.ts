@@ -15,12 +15,14 @@ export const useGetAllAttire = () => {
           "Failed to fetch attire items"
         );
         console.error("❌ Error fetching attire items:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load attire",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        if (!Swal.isVisible()) {
+          Swal.fire({
+            icon: "error",
+            title: "Failed to load attire",
+            text: errorMessage,
+            confirmButtonColor: "#dc2626",
+          });
+        }
         throw error;
       }
     },

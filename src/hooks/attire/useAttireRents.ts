@@ -21,12 +21,14 @@ export const useGetAllAttireRents = () => {
           "Failed to fetch attire rentals"
         );
         console.error("❌ Error fetching attire rentals:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load rentals",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        if (!Swal.isVisible()) {
+          Swal.fire({
+            icon: "error",
+            title: "Failed to load rentals",
+            text: errorMessage,
+            confirmButtonColor: "#dc2626",
+          });
+        }
         throw error;
       }
     },

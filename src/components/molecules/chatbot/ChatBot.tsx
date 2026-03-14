@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
 import { API_ENDPOINTS } from "@/constants/api.constants";
-import {apiClient} from "@/lib/client";
+import { apiClient } from "@/lib/client";
+import { useAuthStore } from "@/store/user-auth-store";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
@@ -17,6 +19,7 @@ interface ChatBotProps {
 }
 
 const CHAT_STORAGE_KEY = "fabriq_chat_messages";
+const CHAT_USER_KEY = "fabriq_chat_user_id";
 
 const getInitialMessages = (): Message[] => {
   try {
@@ -35,15 +38,25 @@ const getInitialMessages = (): Message[] => {
   return [
     {
       id: "welcome",
-      text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
+      text: "Hello! I'm your  AI assistant. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
   ];
 };
 
+const clearChatStorage = (): void => {
+  sessionStorage.removeItem(CHAT_STORAGE_KEY);
+  sessionStorage.removeItem(CHAT_USER_KEY);
+};
+
 function ChatBot({ isOpen, onClose }: ChatBotProps) {
-  const [messages, setMessages] = useState<Message[]>(getInitialMessages);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const authUser = useAuthStore((state: any) => state.user);
+  const prevUserIdRef = useRef<string | null>(null);
+  const isFirstLoadRef = useRef(true);
+
+  const [messages, setMessages] = useState<Message[]>(getInitialMessages());
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -51,13 +64,57 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const user = useState("dummyUser")[0];
 
   useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
-    }
-  }, [messages]);
+    // Fallback to dummy user if authUser has no ID
+    const currentUserId = authUser?.id?.toString() || user || null;
+    const previousUserId = prevUserIdRef.current;
 
-  useEffect(() => {
-    if (!user) {
+    // User logged out
+    if (!currentUserId && previousUserId) {
+      clearChatStorage();
+      setMessages(getInitialMessages());
+      isFirstLoadRef.current = true;
+    }
+    // User just logged in (was not logged in before)
+    else if (currentUserId && !previousUserId) {
+      clearChatStorage();
+      setMessages(getInitialMessages());
+      isFirstLoadRef.current = true;
+    }
+    // Different user logged in
+    else if (
+      currentUserId &&
+      previousUserId &&
+      currentUserId !== previousUserId
+    ) {
+      clearChatStorage();
+      setMessages(getInitialMessages());
+      isFirstLoadRef.current = true;
+    }
+    // Same user, load chat history if available
+    else if (
+      currentUserId &&
+      previousUserId &&
+      currentUserId === previousUserId &&
+      isFirstLoadRef.current
+    ) {
+      try {
+        const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
+        const storedUserId = sessionStorage.getItem(CHAT_USER_KEY);
+        if (stored && storedUserId === currentUserId) {
+          const parsed = JSON.parse(stored);
+          const messagesWithDates = parsed.map((msg: Message) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp),
+          }));
+          setMessages(messagesWithDates);
+        }
+      } catch (error) {
+        console.error("Failed to load chat history:", error);
+      }
+      isFirstLoadRef.current = false;
+    }
+
+    if (!currentUserId) {
       localStorage.removeItem(CHAT_STORAGE_KEY);
       setMessages([
         {
@@ -68,7 +125,9 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
         },
       ]);
     }
-  }, [user]);
+
+    prevUserIdRef.current = currentUserId;
+  }, [authUser, user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -95,10 +154,10 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     setIsLoading(true);
 
     try {
-      const data = await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
+      const data = (await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
         method: "POST",
-        data: { question: inputValue }
-      }) as { answer: string };
+        data: { question: inputValue },
+      })) as { answer: string };
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -152,7 +211,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-nav-text">
-                Fabriq AI Assistant
+                AI Assistant
               </h2>
               <p className="text-xs text-support-text">Always here to help</p>
             </div>
@@ -180,9 +239,9 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
                     : "bg-card border border-border text-text-color"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap wrap-break-word">
-                  {message.text}
-                </p>
+                <div className="text-sm whitespace-pre-wrap wrap-break-word prose prose-sm max-w-none dark:prose-invert">
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
+                </div>
                 <p
                   className={`text-xs mt-1 ${
                     message.sender === "user"

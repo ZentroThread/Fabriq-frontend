@@ -22,12 +22,14 @@ export const FetchCustomers = () => {
         );
         console.error("❌ Error fetching customers:", error);
         // Show error to user
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load customers",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        if (!Swal.isVisible()) {
+          Swal.fire({
+            icon: "error",
+            title: "Failed to load customers",
+            text: errorMessage,
+            confirmButtonColor: "#dc2626",
+          });
+        }
         throw error;
       }
     },
