@@ -15,12 +15,14 @@ export const useGetAllCategories = () => {
           "Failed to fetch categories"
         );
         console.error("❌ Error fetching categories:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load categories",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        if (!Swal.isVisible()) {
+          Swal.fire({
+            icon: "error",
+            title: "Failed to load categories",
+            text: errorMessage,
+            confirmButtonColor: "#dc2626",
+          });
+        }
         throw error;
       }
     },

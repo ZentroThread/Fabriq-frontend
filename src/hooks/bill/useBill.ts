@@ -18,13 +18,15 @@ export const useGetAllBills = () => {
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error, "Failed to fetch bills");
         console.error("❌ Error fetching bills:", error);
-        // Show error to user
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load bills",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        // Show error to user only if we really need to (but prefer component-level error handling)
+        if (!Swal.isVisible()) {
+          Swal.fire({
+            icon: "error",
+            title: "Failed to load bills",
+            text: errorMessage,
+            confirmButtonColor: "#dc2626",
+          });
+        }
         throw error;
       }
     },

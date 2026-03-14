@@ -21,67 +21,103 @@ interface ChatBotProps {
 const CHAT_STORAGE_KEY = "fabriq_chat_messages";
 const CHAT_USER_KEY = "fabriq_chat_user_id";
 
-const getInitialMessages = (userId: string | null): Message[] => {
-  try {
-    const stored = localStorage.getItem(CHAT_STORAGE_KEY);
-    const storedUserId = localStorage.getItem(CHAT_USER_KEY);
-
-    // Only load messages if they belong to the current user
-    if (stored && storedUserId === userId && userId !== null) {
-      const parsed = JSON.parse(stored);
-      // Convert timestamp strings back to Date objects
-      return parsed.map((msg: Message) => ({
-        ...msg,
-        timestamp: new Date(msg.timestamp),
-      }));
-    }
-  } catch (error) {
-    console.error("Failed to load chat history:", error);
-  }
-
-  // Return welcome message as default
+const getWelcomeMessage = (): Message[] => {
   return [
     {
       id: "welcome",
-      text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
+      text: "Hello! I'm your  AI assistant. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
   ];
 };
 
+const saveMessagesToStorage = (messages: Message[], userId: string): void => {
+  try {
+    sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    sessionStorage.setItem(CHAT_USER_KEY, userId);
+  } catch (error) {
+    console.error("Failed to save chat messages:", error);
+  }
+};
+
+const clearChatStorage = (): void => {
+  sessionStorage.removeItem(CHAT_STORAGE_KEY);
+  sessionStorage.removeItem(CHAT_USER_KEY);
+};
+
 function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const user = useAuthStore((state) => state.user);
-  const [messages, setMessages] = useState<Message[]>(() =>
-    getInitialMessages(user?.id.toString() || null)
-  );
+  const prevUserIdRef = useRef<string | null>(null);
+  const isFirstLoadRef = useRef(true);
+
+  const [messages, setMessages] = useState<Message[]>(getWelcomeMessage());
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Save messages to localStorage whenever they change (only if user is logged in)
+  // Handle user login/logout changes
   useEffect(() => {
-    if (messages.length > 0 && user) {
-      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
-      localStorage.setItem(CHAT_USER_KEY, user.id.toString());
+    const currentUserId = user?.id.toString() || null;
+    const previousUserId = prevUserIdRef.current;
+
+    // User logged out
+    if (!currentUserId && previousUserId) {
+      clearChatStorage();
+      setMessages(getWelcomeMessage());
+      isFirstLoadRef.current = true;
+    }
+    // User just logged in (was not logged in before)
+    else if (currentUserId && !previousUserId) {
+      clearChatStorage();
+      setMessages(getWelcomeMessage());
+      isFirstLoadRef.current = true;
+    }
+    // Different user logged in
+    else if (
+      currentUserId &&
+      previousUserId &&
+      currentUserId !== previousUserId
+    ) {
+      clearChatStorage();
+      setMessages(getWelcomeMessage());
+      isFirstLoadRef.current = true;
+    }
+    // Same user, load chat history if available
+    else if (
+      currentUserId &&
+      previousUserId &&
+      currentUserId === previousUserId &&
+      isFirstLoadRef.current
+    ) {
+      try {
+        const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
+        const storedUserId = sessionStorage.getItem(CHAT_USER_KEY);
+
+        if (stored && storedUserId === currentUserId) {
+          const parsed = JSON.parse(stored);
+          const messagesWithDates = parsed.map((msg: Message) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp),
+          }));
+          setMessages(messagesWithDates);
+        }
+      } catch (error) {
+        console.error("Failed to load chat history:", error);
+      }
+      isFirstLoadRef.current = false;
+    }
+
+    prevUserIdRef.current = currentUserId;
+  }, [user]);
+
+  // Save messages to sessionStorage whenever they change (only if user is logged in)
+  useEffect(() => {
+    if (messages.length > 0 && user && !isFirstLoadRef.current) {
+      saveMessagesToStorage(messages, user.id.toString());
     }
   }, [messages, user]);
-
-  // Clear messages when user logs out
-  useEffect(() => {
-    if (!user) {
-      localStorage.removeItem(CHAT_STORAGE_KEY);
-      setMessages([
-        {
-          id: "welcome",
-          text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
-          sender: "bot",
-          timestamp: new Date(),
-        },
-      ]);
-    }
-  }, [user]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
