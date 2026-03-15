@@ -38,7 +38,7 @@ export const RentsAndBill = () => {
       <div className="text-position-text ">
         Create rental agreements and process payments
       </div>
-      <div className="flex flex-2 gap-6 lg:mr-5 lg:ml-auto justify-end">
+      <div className="flex flex-wrap gap-4 lg:gap-6 lg:mr-5 mt-4 lg:mt-0 lg:ml-auto justify-start sm:justify-end">
         <CustomButton
           text={"Register Customer"}
           width="w-auto"

@@ -135,30 +135,36 @@ function Items() {
           Manage bridal attire and accessories inventory
         </div>
 
-        <div className="flex items-center justify-between mt-3 w-full">
-          <div className="flex items-center gap-2 border-2 p-2 w-40 rounded-3xl text-position-text bg-text-active/5">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-3 w-full gap-4">
+          <div className="flex items-center justify-center gap-2 border-2 p-2 w-full md:w-40 rounded-3xl text-position-text bg-text-active/5">
             {displayDate} <Calendar1 />
           </div>
 
-          <div className="flex gap-5 items-center">
-            <Button
-              text={"Add New Item"}
-              width="w-45"
-              icon={<Plus />}
-              onClick={() => setIsDialogOpen(true)}
-            />
-            <Button
-              text={"View Wishlist"}
-              width="w-45"
-              icon={<Heart />}
-              onClick={() => navigate("/items/wishlist")}
-            />
-            <Button
-              text={"History"}
-              width="w-45"
-              icon={<History />}
-              onClick={() => navigate("/items/history")}
-            />
+          <div className="flex flex-wrap md:flex-nowrap gap-3 md:gap-5 items-center w-full md:w-auto">
+            <div className="w-full sm:w-auto flex-1">
+              <Button
+                text={"Add New Item"}
+                width="w-full md:w-45"
+                icon={<Plus />}
+                onClick={() => setIsDialogOpen(true)}
+              />
+            </div>
+            <div className="w-full sm:w-auto flex-1">
+              <Button
+                text={"View Wishlist"}
+                width="w-full md:w-45"
+                icon={<Heart />}
+                onClick={() => navigate("/items/wishlist")}
+              />
+            </div>
+            <div className="w-full sm:w-auto flex-1">
+              <Button
+                text={"History"}
+                width="w-full md:w-45"
+                icon={<History />}
+                onClick={() => navigate("/items/history")}
+              />
+            </div>
           </div>
         </div>
       </div>
