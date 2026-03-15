@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
 import { API_ENDPOINTS } from "@/constants/api.constants";
-import {apiClient} from "@/lib/client";
+import { apiClient } from "@/lib/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
@@ -48,7 +49,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const user = useState("dummyUser")[0];
+  const { user } = useAuth();
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -95,10 +96,10 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     setIsLoading(true);
 
     try {
-      const data = await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
+      const data = (await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
         method: "POST",
-        data: { question: inputValue }
-      }) as { answer: string };
+        data: { question: inputValue },
+      })) as { answer: string };
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
