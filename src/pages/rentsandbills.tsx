@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
+<script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
 
 export const RentsAndBill = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
