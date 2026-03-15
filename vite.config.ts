@@ -12,7 +12,13 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: [
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+        "ring192.png",
+        "ring512.png",
+      ],
       manifest: {
         name: "Hiru Sandu Bridal Wears ERP",
         short_name: "Hiru Sandu",
@@ -23,12 +29,12 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "@/assets/images/ring192.png",
+            src: "/ring192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "@/assets/images/ring512.png",
+            src: "/ring512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
