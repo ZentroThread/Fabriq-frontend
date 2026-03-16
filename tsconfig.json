@@ -7,8 +7,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "types": ["cypress", "node"]
     },
+    "types": ["cypress", "node"],
     "noUnusedLocals": false,
     "noUnusedParameters": false
   }
