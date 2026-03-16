@@ -135,15 +135,14 @@ function Items() {
           Manage bridal attire and accessories inventory
         </div>
 
-        <div className="flex items-center justify-between mt-3 w-full">
-          <div className="flex items-center gap-2 border-2 p-2 w-40 rounded-3xl text-position-text bg-text-active/5">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-3 w-full gap-4">
+          <div className="flex items-center justify-center gap-2 border-2 p-2 w-full md:w-40 rounded-3xl text-position-text bg-text-active/5">
             {displayDate} <Calendar1 />
           </div>
 
           <div className="flex gap-5 items-center">
             <Button
               text={"Add New Item"}
-              data-cy="add-item-btn"              
               width="w-45"
               icon={<Plus />}
               onClick={() => setIsDialogOpen(true)}

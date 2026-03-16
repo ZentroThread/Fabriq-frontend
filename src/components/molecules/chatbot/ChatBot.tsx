@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
-import { RAG_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
-import { useAuthStore } from "@/store/user-auth-store";
+import { apiClient } from "@/lib/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
@@ -24,7 +24,6 @@ const getInitialMessages = (): Message[] => {
     const stored = localStorage.getItem(CHAT_STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      // Convert timestamp strings back to Date objects
       return parsed.map((msg: Message) => ({
         ...msg,
         timestamp: new Date(msg.timestamp),
@@ -34,7 +33,6 @@ const getInitialMessages = (): Message[] => {
     console.error("Failed to load chat history:", error);
   }
 
-  // Return welcome message as default
   return [
     {
       id: "welcome",
@@ -51,16 +49,14 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const user = useAuthStore((state) => state.user);
+  const { user } = useAuth();
 
-  // Save messages to localStorage whenever they change
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
     }
   }, [messages]);
 
-  // Clear messages when user logs out
   useEffect(() => {
     if (!user) {
       localStorage.removeItem(CHAT_STORAGE_KEY);
@@ -75,12 +71,10 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     }
   }, [user]);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when chatbot opens
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
@@ -102,20 +96,10 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     setIsLoading(true);
 
     try {
-      // Call the RAG API
-      const response = await fetch(`${RAG_BASE_URL}${API_ENDPOINTS.RAG.CHAT}`, {
+      const data = (await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ question: inputValue }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get response from AI");
-      }
-
-      const data = await response.json();
+        data: { question: inputValue },
+      })) as { answer: string };
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),

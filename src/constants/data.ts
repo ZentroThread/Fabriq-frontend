@@ -6,9 +6,9 @@ export const sampleRentalData: CustomerWithRental[] = [
     customerName: "Alice Fernando",
     contactNumber: "0771234567",
     itemName: "Bridal Saree - Red Velvet",
-    rentalDate: "2026-01-20",
-    returnDate: "2026-01-25",
-    fitOnDate: "2026-01-21",
+    rentalDate: "2026-03-18",
+    returnDate: "2026-03-23",
+    fitOnDate: "2026-03-16",
     fitOnStatus: "Pending",
   },
   {
@@ -16,9 +16,9 @@ export const sampleRentalData: CustomerWithRental[] = [
     customerName: "Nimal Perera",
     contactNumber: "0719876543",
     itemName: "Groom Suit - Black",
-    rentalDate: "2026-01-22",
-    returnDate: "2026-01-27",
-    fitOnDate: "2026-01-23",
+    rentalDate: "2026-03-14",
+    returnDate: "2026-03-19",
+    fitOnDate: "2026-03-12",
     fitOnStatus: "Completed",
   },
   {
@@ -26,9 +26,9 @@ export const sampleRentalData: CustomerWithRental[] = [
     customerName: "Samantha Jayasuriya",
     contactNumber: "0723456789",
     itemName: "Bridal Saree - Cream Lace",
-    rentalDate: "2026-01-24",
-    returnDate: "2026-01-29",
-    fitOnDate: "2026-01-25",
+    rentalDate: "2026-03-20",
+    returnDate: "2026-03-25",
+    fitOnDate: "2026-03-18",
     fitOnStatus: "Missed",
   },
   {
@@ -36,11 +36,11 @@ export const sampleRentalData: CustomerWithRental[] = [
     customerName: "Kamal Silva",
     contactNumber: "0765432198",
     itemName: "Groom Suit - Navy Blue",
-    rentalDate: "2026-01-26",
-    returnDate: "2026-01-31",
-    fitOnDate: "2026-01-27",
+    rentalDate: "2026-03-22",
+    returnDate: "2026-03-27",
+    fitOnDate: "2026-03-21",
     fitOnStatus: "Pending",
-  },
+  }
 ];
 
 export const chartData = [
