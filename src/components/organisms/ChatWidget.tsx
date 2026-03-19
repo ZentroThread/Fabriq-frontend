@@ -10,7 +10,7 @@ import {
   CardFooter,
 } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
-import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 interface ChatWidgetProps {
   myRole: string;
@@ -26,6 +26,17 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
   const { messages, sendMessage, unreadCount, clearUnread, isConnected } =
     useChatSocket(myRole);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Reset height to auto to get the correct scrollHeight on shrink
+      textareaRef.current.style.height = "auto";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      // Set to scrollHeight, but cap at a max height (e.g. 120px)
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 120)}px`;
+    }
+  }, [inputText, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -47,7 +58,8 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       handleSend();
     }
   };
@@ -128,12 +140,14 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
           </CardContent>
 
           <CardFooter className="p-3 border-t border-border gap-2">
-            <Input
+            <Textarea
+              ref={textareaRef}
               placeholder="Type a message..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="flex-1"
+              className="flex-1 min-h-[40px] max-h-[120px] resize-none"
+              rows={1}
             />
             <Button
               size="icon"
