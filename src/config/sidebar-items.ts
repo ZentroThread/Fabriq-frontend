@@ -26,7 +26,7 @@ export const sidebarItems = {
   ],
 
   sales_assistant: [
-    { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
+    // { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
     { label: "Items", icon: Box, to: "/attire" },
   ],
 };

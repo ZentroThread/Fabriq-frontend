@@ -1,0 +1,92 @@
+import { useState, useEffect, useRef } from "react";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { useChatStore, type ChatMessage } from "../store/chat-store";
+import { useAuthStore } from "@/store/user-auth-store";
+
+export const useChatSocket = (myRole: string) => {
+  // Use Zustand store instead of local state
+  const { messages, unreadCount, addMessage, clearUnread, cleanupOldMessages } =
+    useChatStore();
+  const tenantId = useAuthStore((state) => state.tenantId);
+
+  const [isConnected, setIsConnected] = useState(false);
+  const clientRef = useRef<Client | null>(null);
+
+  useEffect(() => {
+    if (!myRole) return;
+
+    // Cleanup old messages on mount
+    cleanupOldMessages();
+
+    console.log("Connecting to WebSocket with role:", myRole);
+
+    const wsUrl = tenantId
+      ? `http://localhost:8081/ws?tenantId=${tenantId}`
+      : "http://localhost:8081/ws";
+
+    const socket = new SockJS(wsUrl);
+    const client = new Client({
+      webSocketFactory: () => socket,
+      debug: () => {
+        // console.log(str); // reduce noise
+      },
+      onConnect: () => {
+        console.log("Connected to WebSocket");
+        setIsConnected(true);
+
+        // Subscribe to my role's topic
+        client.subscribe(`/topic/${myRole}`, (message) => {
+          if (message.body) {
+            const receivedMsg: ChatMessage = JSON.parse(message.body);
+            // Ensure timestamp exists
+            if (!receivedMsg.timestamp) {
+              receivedMsg.timestamp = new Date().toISOString();
+            }
+            // Add to persistent store
+            addMessage(receivedMsg, myRole);
+          }
+        });
+      },
+      onDisconnect: () => {
+        console.log("Disconnected from WebSocket");
+        setIsConnected(false);
+      },
+      onStompError: (frame) => {
+        console.error("Broker reported error: " + frame.headers["message"]);
+        console.error("Additional details: " + frame.body);
+      },
+    });
+
+    client.activate();
+    clientRef.current = client;
+
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
+    };
+  }, [myRole, addMessage, cleanupOldMessages, tenantId]);
+
+  const sendMessage = (targetRole: string, content: string) => {
+    if (clientRef.current && clientRef.current.connected) {
+      const chatMessage: ChatMessage = {
+        senderRole: myRole,
+        receiverRole: targetRole,
+        content: content,
+        // Backend sets timestamp usually, but for local store consistency we might want it?
+        // Actually, backend broadcasts back to sender. We rely on that echo to add to store.
+        // So we don't add to store here manually.
+      };
+
+      clientRef.current.publish({
+        destination: "/app/chat.sendMessage",
+        body: JSON.stringify(chatMessage),
+      });
+    } else {
+      console.error("STOMP client is not connected");
+    }
+  };
+
+  return { messages, sendMessage, unreadCount, clearUnread, isConnected };
+};
