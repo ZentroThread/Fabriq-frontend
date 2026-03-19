@@ -94,9 +94,10 @@ axiosInstance.interceptors.response.use(
       console.error("❌ API Error:", errInfo);
     }
 
-    // Handle 401/403 - Unauthorized (token expired or tenant ID missing)
+    // Handle 401 - Unauthorized (token expired)
+    // Note: We do NOT refresh on 403 (Forbidden) as that implies valid token but insufficient permissions
     if (
-      (error.response?.status === 401 || error.response?.status === 403) &&
+      error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry
     ) {
