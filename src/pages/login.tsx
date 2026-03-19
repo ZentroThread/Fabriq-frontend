@@ -17,6 +17,7 @@ function Login() {
 
   // const { mutate: login, isPending } = useLogin();
   const {
+    user,
     login,
     isAuthenticated,
     isLoading,
@@ -39,15 +40,25 @@ function Login() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate("/dashboard");
+      if (user?.role === "sales_assistant") {
+        navigate("/attire");
+      } else {
+        navigate("/dashboard");
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [user, isAuthenticated, navigate]);
 
   const onSubmit = async (data: LoginInput) => {
     const result = await login(data);
 
     if (result.success) {
-      navigate("/dashboard");
+      // Get fresh state after login
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser?.role === "sales_assistant") {
+        navigate("/attire");
+      } else {
+        navigate("/dashboard");
+      }
     }
     // Error is automatically set in store, no need to handle here
   };

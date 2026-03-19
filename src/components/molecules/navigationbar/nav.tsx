@@ -2,6 +2,7 @@ import { Menu, LogOut, X } from "lucide-react";
 import logo from "../../../assets/images/logo.png";
 import ThemeToggle from "../../atoms/toggle/theme-toggle";
 import { useAuthStore } from "@/store/user-auth-store";
+import ChatWidget from "../../organisms/ChatWidget";
 
 import { AlertDialogDemo } from "../../atoms/alert/alert-dialog";
 import { ChangePasswordDialog } from "../dialog/change-password-dialog";
@@ -18,6 +19,16 @@ function Nav({
   setSidebarOpen: (v: boolean) => void;
 }) {
   const logout = useAuthStore((state) => state.logout);
+
+  // Normalize position to role
+  const getRole = (pos: string) => {
+    const p = pos.toLowerCase();
+    if (p.includes("sales")) return "SALES_ASSISTANT";
+    if (p.includes("cashier")) return "CASHIER";
+    return "UNKNOWN";
+  };
+
+  const myRole = getRole(position);
 
   const handleLogout = () => {
     logout();
@@ -37,12 +48,10 @@ function Nav({
 
       <div className="ml-auto flex gap-2 sm:gap-4 md:gap-6 items-center">
         <ThemeToggle />
-        {/* <button
-          className="  hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          title="Notifications"
-        >
-          <Bell className="mr-3 p-0.5" />
-        </button> */}
+
+        {/* Chat Widget replaces the static bell icon */}
+        <ChatWidget myRole={myRole} />
+
         <ChangePasswordDialog>
           <button
             className="w-9 h-9 sm:w-12 sm:h-12 bg-avatar-bg rounded-full border border-avatar-border hover:opacity-80 transition-opacity cursor-pointer"
