@@ -16,8 +16,8 @@ export default defineConfig({
         "favicon.ico",
         "robots.txt",
         "apple-touch-icon.png",
-        "ring192.png",
-        "ring512.png",
+        "launchericon-192x192.png",
+        "launchericon-512x512.png",
       ],
       manifest: {
         name: "Hiru Sandu Bridal Wears ERP",
@@ -29,12 +29,12 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "/ring192.png",
+            src: "/launchericon-192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/ring512.png",
+            src: "/launchericon-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
