@@ -4,6 +4,7 @@ import { X, Send, Bot, Loader2 } from "lucide-react";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/user-auth-store";
 
 interface Message {
   id: string;
@@ -50,6 +51,8 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
+  const tenantId = useAuthStore((state) => state.tenantId);
+
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -58,18 +61,19 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   }, [messages]);
 
   useEffect(() => {
-    if (!user) {
-      localStorage.removeItem(CHAT_STORAGE_KEY);
-      setMessages([
-        {
-          id: "welcome",
-          text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
-          sender: "bot",
-          timestamp: new Date(),
-        },
-      ]);
-    }
-  }, [user]);
+  if (!user || !tenantId) {
+    localStorage.removeItem(CHAT_STORAGE_KEY);
+
+    setMessages([
+      {
+        id: "welcome",
+        text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
+        sender: "bot",
+        timestamp: new Date(),
+      },
+    ]);
+  }
+}, [user, tenantId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
