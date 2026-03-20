@@ -22,6 +22,7 @@ import ItemsWishlist from "@/pages/items-wishlist";
 import ItemsHistory from "@/pages/items-history";
 import { Mark_Attendance } from "@/pages/mark-attendance";
 import Feedback from "@/pages/Feedback";
+import Bookings from "@/pages/bookings";
 
 function AppRoutes() {
   return (
@@ -96,6 +97,7 @@ function AppRoutes() {
             <Route path="/attire" element={<Items />} />
             <Route path="/items/wishlist" element={<ItemsWishlist />} />
             <Route path="/items/history" element={<ItemsHistory />} />
+            <Route path="/bookings" element={<Bookings />} />
           </Route>
 
           {/* Reports - Owner only */}

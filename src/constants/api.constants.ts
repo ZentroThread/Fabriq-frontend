@@ -106,5 +106,11 @@ export const API_ENDPOINTS = {
     All: "/v1/feedback/all",
     Approve: (id: number) => `/v1/feedback/approve/${id}`, 
     Delete: (id: number) => `/v1/feedback/delete/${id}`,
+  },
+  BOOKINGS:{
+    All: "/v1/bookings",
+    ByTenant: (tenantId: string) => `/v1/bookings/tenant/${tenantId}`,
+    Approve: (requestId: number) => `/v1/bookings/${requestId}/approve`,
+    Reject: (requestId: number) => `/v1/bookings/${requestId}/reject`,
   }
 };
