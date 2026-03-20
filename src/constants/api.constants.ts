@@ -102,4 +102,9 @@ export const API_ENDPOINTS = {
     CHAT: "/api/chat",
     BACKEND_CHAT: "/v1/rag/chat"
   },
+  FEEDBACK:{
+    All: "/v1/feedback/all",
+    Approve: (id: number) => `/v1/feedback/approve/${id}`, 
+    Delete: (id: number) => `/v1/feedback/delete/${id}`,
+  }
 };

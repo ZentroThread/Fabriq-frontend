@@ -17,6 +17,7 @@ export const sidebarItems = {
     { label: "Rentals & Billing", icon: ReceiptText, to: "/rent" },
     { label: "Items", icon: Box, to: "/attire" },
     { label: "Reports", icon: NotebookText, to: "/reports" },
+    { label: "Feedback", icon: NotebookText, to: "/feedback" },
   ],
 
   cashier: [
