@@ -8,8 +8,19 @@ export default function Feedback() {
 
   const { data, isLoading, isError } = feedbackQuery;
 
-  if (isLoading) return <p>Loading feedback...</p>;
-  if (isError) return <p>Error loading feedback</p>;
+  if (isLoading)
+    return (
+      <p className="text-center py-10 text-[var(--color-text-color)]">
+        Loading feedback...
+      </p>
+    );
+
+  if (isError)
+    return (
+      <p className="text-center py-10 text-[var(--color-error)]">
+        Error loading feedback
+      </p>
+    );
 
   const handleDelete = (id: number) => {
     Swal.fire({
@@ -27,37 +38,44 @@ export default function Feedback() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Feedback Management</h1>
+    <div className="p-6 bg-[var(--color-main-bg)] min-h-screen">
+      <h1 className="text-2xl font-bold mb-4 text-[var(--color-text-color)]">
+        Feedback Management
+      </h1>
 
       <div className="grid gap-4">
         {data?.map((feedback: Feedback) => (
           <div
             key={feedback.id}
-            className="border rounded-xl p-4 shadow-md bg-white"
+            className="border rounded-xl p-4 shadow-md 
+            bg-[var(--color-card)] 
+            border-[var(--color-border)] 
+            shadow-[0_2px_6px_var(--color-shadow)]"
           >
             {/* Message */}
-            <p className="text-gray-800 mb-2">{feedback.message}</p>
+            <p className="text-[var(--color-text-color)] mb-2">
+              {feedback.message}
+            </p>
 
             {/* Rating */}
-            <p className="text-yellow-500 mb-2">
-               {feedback.rating} / 5
+            <p className="text-[var(--color-pie-2)] font-semibold mb-2">
+              {feedback.rating} / 5
             </p>
 
             {/* Email */}
-            <p className="text-sm text-gray-500 mb-2">
+            <p className="text-sm text-[var(--color-muted-foreground)] mb-2">
               {feedback.userEmail}
             </p>
 
             {/* Status */}
-            <p className="mb-3">
+            <p className="mb-3 text-[var(--color-text-color)]">
               Status:{" "}
               {feedback.approved ? (
-                <span className="text-green-600 font-semibold">
+                <span className="text-[var(--color-green)] font-semibold">
                   Approved
                 </span>
               ) : (
-                <span className="text-red-500 font-semibold">
+                <span className="text-[var(--color-error)] font-semibold">
                   Pending
                 </span>
               )}
@@ -68,7 +86,11 @@ export default function Feedback() {
               {!feedback.approved && feedback.id !== undefined && (
                 <button
                   onClick={() => approveFeedback(feedback.id!)}
-                  className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  className="px-4 py-2 rounded-lg 
+                  bg-[var(--color-green)] 
+                  text-[var(--color-button-text)] 
+                  hover:opacity-90 
+                  transition"
                 >
                   Approve
                 </button>
@@ -76,7 +98,11 @@ export default function Feedback() {
 
               <button
                 onClick={() => handleDelete(feedback.id!)}
-                className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg 
+                bg-[var(--color-error)] 
+                text-[var(--color-button-text)] 
+                hover:opacity-90 
+                transition"
               >
                 <Trash2 size={18} />
                 Delete

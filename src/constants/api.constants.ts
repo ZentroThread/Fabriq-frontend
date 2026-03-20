@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
     UNRESERVE: "/v1/attire/unreserve",
     DELETE: (id: number) => `/v1/attire/delete/${id}`,
     UPDATE: (id: number) => `/v1/attire/update/${id}`,
+    GET_BY_ID: (id: number) => `/v1/attire/${id}`,
   },
   CUSTOMER: {
     ADD: "/v1/customer/add-customer",
