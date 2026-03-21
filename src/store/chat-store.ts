@@ -28,13 +28,18 @@ export const useChatStore = create<ChatStore>()(
       addMessage: (message, myRole) =>
         set((state) => {
           // Avoid duplicates
-          const exists = state.messages.some(
-            (m) =>
-              m.id === message.id ||
-              (m.content === message.content &&
-                m.timestamp === message.timestamp &&
-                m.senderRole === message.senderRole)
-          );
+          const exists = state.messages.some((m) => {
+            // Only check ID if both have one defined
+            if (m.id !== undefined && message.id !== undefined) {
+              return m.id === message.id;
+            }
+            // Fallback to content + timestamp checks
+            return (
+              m.content === message.content &&
+              m.timestamp === message.timestamp &&
+              m.senderRole === message.senderRole
+            );
+          });
           if (exists) return state;
 
           const isIncoming = message.senderRole !== myRole;
