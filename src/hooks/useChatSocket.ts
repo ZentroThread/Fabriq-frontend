@@ -3,6 +3,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useChatStore, type ChatMessage } from "../store/chat-store";
 import { useAuthStore } from "@/store/user-auth-store";
+import { API_BASE_URL } from "@/constants/constdata";
 
 export const useChatSocket = (myRole: string) => {
   // Use Zustand store instead of local state
@@ -22,8 +23,8 @@ export const useChatSocket = (myRole: string) => {
     console.log("Connecting to WebSocket with role:", myRole);
 
     const wsUrl = tenantId
-      ? `http://localhost:8081/ws?tenantId=${tenantId}`
-      : "http://localhost:8081/ws";
+      ? `${API_BASE_URL}/ws?tenantId=${tenantId}`
+      : `${API_BASE_URL}/ws`;
 
     const socket = new SockJS(wsUrl);
     const client = new Client({
