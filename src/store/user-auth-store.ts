@@ -165,6 +165,7 @@ export const useAuthStore = create<AuthState>()(
 
         // Clear tenant ID from localStorage
         localStorage.removeItem("tenantId");
+        localStorage.removeItem("fabriq_chat_messages");
         console.log("🚪 Logged out - localStorage cleared");
 
         set({ user: null, error: null, tokenExpiryTime: null, tenantId: null });

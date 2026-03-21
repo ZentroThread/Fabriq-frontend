@@ -21,6 +21,8 @@ import AddEmployee from "@/pages/add-employee";
 import ItemsWishlist from "@/pages/items-wishlist";
 import ItemsHistory from "@/pages/items-history";
 import { Mark_Attendance } from "@/pages/mark-attendance";
+import Feedback from "@/pages/Feedback";
+import Bookings from "@/pages/bookings";
 
 function AppRoutes() {
   return (
@@ -36,6 +38,7 @@ function AppRoutes() {
 
           {/* Employees - Owner only */}
           <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="/emp" element={<EmployeeOverview />} />
             <Route path="/emp/:id" element={<EmployeeProfile />} />
             <Route path="/salary-history/:id" element={<SalaryHistory />} />
@@ -94,6 +97,7 @@ function AppRoutes() {
             <Route path="/attire" element={<Items />} />
             <Route path="/items/wishlist" element={<ItemsWishlist />} />
             <Route path="/items/history" element={<ItemsHistory />} />
+            <Route path="/bookings" element={<Bookings />} />
           </Route>
 
           {/* Reports - Owner only */}

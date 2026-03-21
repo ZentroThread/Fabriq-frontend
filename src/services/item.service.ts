@@ -127,6 +127,28 @@ export const itemService = {
     }
   },
 
+  getItemByAttireId: async (id: string): Promise<Item> => {
+    const { setLoading, setError } = useItemStore.getState();
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await apiClient.request<BackendItem>(
+        `${API_ENDPOINTS.ATTIRE.GET_BY_ID(Number(id))}`
+      );
+
+      return mapBackendItemToItem(result);
+    } catch (error: unknown) {
+      const errorMsg = getErrorMessage(error, "Failed to fetch item details");
+      setError(errorMsg);
+      console.error("❌ Error fetching item by ID:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  },
+
   updateItem: async (id: string, data: AddItemPayload): Promise<Item> => {
     const { setLoading, setError, updateItem } = useItemStore.getState();
 

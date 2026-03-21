@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
     UNRESERVE: "/v1/attire/unreserve",
     DELETE: (id: number) => `/v1/attire/delete/${id}`,
     UPDATE: (id: number) => `/v1/attire/update/${id}`,
+    GET_BY_ID: (id: number) => `/v1/attire/${id}`,
   },
   CUSTOMER: {
     ADD: "/v1/customer/add-customer",
@@ -102,4 +103,15 @@ export const API_ENDPOINTS = {
     CHAT: "/api/chat",
     BACKEND_CHAT: "/v1/rag/chat"
   },
+  FEEDBACK:{
+    All: "/v1/feedback/all",
+    Approve: (id: number) => `/v1/feedback/approve/${id}`, 
+    Delete: (id: number) => `/v1/feedback/delete/${id}`,
+  },
+  BOOKINGS:{
+    All: "/v1/bookings",
+    ByTenant: (tenantId: string) => `/v1/bookings/tenant/${tenantId}`,
+    Approve: (requestId: number) => `/v1/bookings/${requestId}/approve`,
+    Reject: (requestId: number) => `/v1/bookings/${requestId}/reject`,
+  }
 };

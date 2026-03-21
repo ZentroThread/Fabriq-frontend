@@ -27,3 +27,28 @@ export const useGetAllAttire = () => {
     retry: 1,
   });
 };
+
+export const useAttireGetById = (id: string) => {
+  return useQuery({
+    queryKey: ["attire", id], 
+    queryFn: async () => {
+      try {
+        return await itemService.getItemByAttireId(id);
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(
+          error,
+          "Failed to fetch attire item"
+        );
+        console.error("❌ Error fetching attire item:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed to load attire",
+          text: errorMessage,
+          confirmButtonColor: "#dc2626",
+        });
+        throw error;
+      }
+    },
+    retry: 1,
+  });
+};
