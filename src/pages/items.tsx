@@ -126,7 +126,7 @@ function Items() {
   }
 
   return (
-    <div className="p-5 flex flex-col ">
+    <div className="p-5 flex flex-col " data-cy="items-page">
       <div className="w-full">
         <div className="text-style text-[30px] font-semibold">
           Item Management
@@ -140,37 +140,31 @@ function Items() {
             {displayDate} <Calendar1 />
           </div>
 
-          <div className="flex flex-wrap md:flex-nowrap gap-3 md:gap-5 items-center w-full md:w-auto">
-            <div className="w-full sm:w-auto flex-1">
-              <Button
-                text={"Add New Item"}
-                width="w-full md:w-45"
-                icon={<Plus />}
-                onClick={() => setIsDialogOpen(true)}
-              />
-            </div>
-            <div className="w-full sm:w-auto flex-1">
-              <Button
-                text={"View Wishlist"}
-                width="w-full md:w-45"
-                icon={<Heart />}
-                onClick={() => navigate("/items/wishlist")}
-              />
-            </div>
-            <div className="w-full sm:w-auto flex-1">
-              <Button
-                text={"History"}
-                width="w-full md:w-45"
-                icon={<History />}
-                onClick={() => navigate("/items/history")}
-              />
-            </div>
+          <div className="flex gap-5 items-center">
+            <Button
+              text={"Add New Item"}
+              width="w-45"
+              icon={<Plus />}
+              onClick={() => setIsDialogOpen(true)}
+            />
+            <Button
+              text={"View Wishlist"}
+              width="w-45"
+              icon={<Heart />}
+              onClick={() => navigate("/items/wishlist")}
+            />
+            <Button
+              text={"History"}
+              width="w-45"
+              icon={<History />}
+              onClick={() => navigate("/items/history")}
+            />
           </div>
         </div>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card ">
+        <DialogContent data-cy="add-item-dialog" className="max-w-xl max-h-[90vh] overflow-y-auto bg-card ">
           <DialogHeader className="flex items-center">
             <DialogTitle className="text-style font-extrabold text-xl">
               Add New Item
@@ -183,7 +177,7 @@ function Items() {
         </DialogContent>
       </Dialog>
 
-      <div className="grid lg:grid-cols-3  sm:grid-cols-1  md:grid-cols-2 gap-6 mt-5 mb-5">
+      <div data-cy="items-grid" className="grid lg:grid-cols-3  sm:grid-cols-1  md:grid-cols-2 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Items"}
           lable1={String(totalItems)}
@@ -206,6 +200,7 @@ function Items() {
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
           <ItemSearchFilter
+            data-cy="item-search"
             items={(allItems || []).map((item) => ({
               ...item,
               id: String(item.id),
@@ -255,6 +250,7 @@ function Items() {
         >
           {filteredItems.map((item) => (
             <ItemCard
+              data-cy="item-card"
               key={item.id}
               id={item.id}
               code={item.code}

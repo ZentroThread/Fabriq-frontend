@@ -132,6 +132,7 @@ function Login() {
                   <User size={18} className="text-gray-500" />
 
                   <input
+                    data-cy="username-input"
                     type="text"
                     className="flex-1 p-2 bg-transparent outline-none"
                     placeholder="Enter your username"
@@ -165,6 +166,7 @@ function Login() {
 
                   <input
                     type="password"
+                    data-cy="password-input"
                     className="flex-1 p-2 bg-transparent outline-none"
                     placeholder="Enter your password"
                     {...register("password")}
@@ -188,6 +190,7 @@ function Login() {
               {/* LOGIN BUTTON */}
               <button
                 type="submit"
+                data-cy="login-btn"
                 disabled={isLoading}
                 className="
                   w-full 
