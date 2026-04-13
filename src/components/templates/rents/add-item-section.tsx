@@ -173,8 +173,6 @@ export default function AddItemsSection() {
       customerCode: customerCode,
     };
 
-    console.log("Rent startDate:", startDate);
-    console.log("Add item payload:", payload);
 
     // Just add to local billing state - NO API CALLS
     addItem(payload);
@@ -203,7 +201,6 @@ export default function AddItemsSection() {
       isCustomItem: true, // Mark as custom item
     };
 
-    console.log("Add customized item payload:", payload);
 
     // Add to local billing state
     addItem(payload);
@@ -397,7 +394,6 @@ export default function AddItemsSection() {
             const val = e.target.value || null;
             if (!val) {
               setStartDate(null);
-              console.log("Start date cleared");
               return;
             }
 
@@ -407,10 +403,8 @@ export default function AddItemsSection() {
             if (chosen < today) {
               const sVal = today.toISOString().split("T")[0];
               setStartDate(sVal);
-              console.log("Start date adjusted to today:", sVal);
             } else {
               setStartDate(val);
-              console.log("Start date selected:", val);
             }
           }}
         />

@@ -49,7 +49,6 @@ export const useItemStore = create<ItemStore>()(
         })),
 
       setItems: (items) => {
-        console.log("📥 [STORE] setItems called with:", items.length);
         set({ items });
       },
 
@@ -71,9 +70,6 @@ export const useItemStore = create<ItemStore>()(
 
       updateItemStock: (attireCode: string, newStock: number) =>
         set((state) => {
-          console.log(
-            `🔄 [STORE] Updating stock for ${attireCode}: ${newStock}`
-          );
           const updatedItems = state.items.map((item) =>
             item.code === attireCode
               ? {
@@ -85,7 +81,6 @@ export const useItemStore = create<ItemStore>()(
                 }
               : item
           );
-          console.log(`✅ [STORE] Stock updated, saving to localStorage`);
           return { items: updatedItems };
         }),
     }),

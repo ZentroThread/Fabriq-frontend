@@ -29,7 +29,7 @@
 //       // Log time remaining (for debugging)
 //       const minutesRemaining = Math.floor(timeUntilExpiry / 60000);
 //       if (minutesRemaining <= 5) {
-//         console.log(`⏰ Token expires in ${minutesRemaining} minutes`);
+//         
 //       }
 //     };
 

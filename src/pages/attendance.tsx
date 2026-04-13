@@ -28,8 +28,6 @@ function Attendance() {
     return <AttendanceSkeleton />;
   }
 
-  console.log(dailyAttendance);
-  console.log(selectedDate)
 
   return (
     <div className="p-5 flex flex-col ">

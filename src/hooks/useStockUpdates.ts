@@ -16,14 +16,12 @@
 //   const setItems = useItemStore((s) => s.setItems);
 
 //   useEffect(() => {
-//     console.log(
-//       "🌐 [WEBSOCKET] Connecting and subscribing to stock updates..."
-//     );
+//     
 //     wsService.connect();
 
 //     wsService.subscribe("/topic/stock-updates", (message: unknown) => {
 //       const data = message as StockUpdateMessage;
-//       console.log("📦 [WEBSOCKET] Stock update received:", data);
+//       
 
 //       const { attireCode, attireStock } = data;
 
@@ -37,7 +35,7 @@
 //           const updated = oldData.map((item) =>
 //             item.code === attireCode ? { ...item, stock: attireStock } : item
 //           );
-//           console.log("✅ [REACT QUERY] Cache updated for:", attireCode);
+//           
 //           return updated;
 //         });
 
@@ -54,7 +52,7 @@
 //     });
 
 //     return () => {
-//       console.log("🔌 [WEBSOCKET] Disconnecting...");
+//       
 //       wsService.disconnect();
 //     };
 //   }, [queryClient, updateItemStock, setItems]);

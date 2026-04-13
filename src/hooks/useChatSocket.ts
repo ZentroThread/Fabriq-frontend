@@ -20,7 +20,6 @@ export const useChatSocket = (myRole: string) => {
     // Cleanup old messages on mount
     cleanupOldMessages();
 
-    console.log("Connecting to WebSocket with role:", myRole);
 
     const wsUrl = tenantId
       ? `${API_BASE_URL}/ws?tenantId=${tenantId}`
@@ -30,10 +29,9 @@ export const useChatSocket = (myRole: string) => {
     const client = new Client({
       webSocketFactory: () => socket,
       debug: () => {
-        // console.log(str); // reduce noise
+        //  // reduce noise
       },
       onConnect: () => {
-        console.log("Connected to WebSocket");
         setIsConnected(true);
 
         // Subscribe to my role's topic
@@ -50,7 +48,6 @@ export const useChatSocket = (myRole: string) => {
         });
       },
       onDisconnect: () => {
-        console.log("Disconnected from WebSocket");
         setIsConnected(false);
       },
       onStompError: (frame) => {

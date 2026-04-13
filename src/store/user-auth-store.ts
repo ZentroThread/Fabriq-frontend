@@ -25,7 +25,6 @@ const extractAndPersistTenantId = (): string | null => {
     const tenantId = extractTenantId(token);
 
     if (tenantId) {
-      console.log("✅ Decoded tenant ID:", tenantId);
       localStorage.setItem("tenantId", tenantId);
       return tenantId;
     } else {
@@ -89,7 +88,6 @@ export const useAuthStore = create<AuthState>()(
           const tenantId =
             extractAndPersistTenantId() || user?.tenantId || null;
 
-          console.log("✅ Auth initialized - Tenant ID:", tenantId);
 
           set({
             user,
@@ -100,7 +98,6 @@ export const useAuthStore = create<AuthState>()(
         } catch {
           // No valid session - this is expected on initial load
           // Fail silently without errors
-          console.log("ℹ️ No active session found");
           set({
             user: null,
             isLoading: false,
@@ -114,17 +111,13 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          console.log("🔐 Starting login...");
           const tokenResponse = await loginService.login(credentials);
-          console.log("✅ Login response received");
 
           const user = await loginService.getUserProfile({});
-          console.log("✅ User profile fetched:", user.username);
 
           // Extract tenant ID from JWT token in cookie and persist it
           const tenantId =
             extractAndPersistTenantId() || user?.tenantId || null;
-          console.log("✅ Tenant ID stored:", tenantId);
 
           const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
 
@@ -135,7 +128,6 @@ export const useAuthStore = create<AuthState>()(
             tenantId,
           });
 
-          console.log("✅ Login complete - Check localStorage for tenantId");
           return { success: true };
         } catch (error) {
           const message =
@@ -166,7 +158,6 @@ export const useAuthStore = create<AuthState>()(
         // Clear tenant ID from localStorage
         localStorage.removeItem("tenantId");
         localStorage.removeItem("fabriq_chat_messages");
-        console.log("🚪 Logged out - localStorage cleared");
 
         set({ user: null, error: null, tokenExpiryTime: null, tenantId: null });
       },
@@ -228,12 +219,6 @@ export const useAuthStore = create<AuthState>()(
             : null;
 
         const tenantId = stateTenantId ?? userTenantId ?? localStorageTenantId;
-        console.log("🔍 Getting tenant ID:", {
-          stateTenantId,
-          userTenantId,
-          localStorageTenantId,
-          result: tenantId,
-        });
 
         return tenantId;
       },

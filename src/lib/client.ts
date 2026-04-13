@@ -45,17 +45,13 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   // make interceptor async so we can dynamic-import the store (avoids circular deps)
   async (config) => {
-    console.log("🌐 API Request:", config.url);
-    console.log("🍪 Cookies being sent:", document.cookie ? "Present" : "None");
 
     try {
       const { useAuthStore } = await import("@/store/user-auth-store");
       const tenantId = useAuthStore.getState().getTenantId();
-      console.log("🔑 Tenant ID from store:", tenantId);
       if (tenantId) {
         config.headers = config.headers || {};
         config.headers["X-Tenant-ID"] = tenantId;
-        console.log("✅ Added X-Tenant-ID header:", tenantId);
       } else {
         console.warn("⚠️ No tenant ID found in store");
       }
@@ -154,7 +150,6 @@ axiosInstance.interceptors.response.use(
         await axiosInstance.post(API_ENDPOINTS.LOGIN.REFRESH, undefined, {
           headers: refreshHeaders,
         });
-        console.log("✅ Token refreshed successfully");
 
         processQueue(null);
         isRefreshing = false;

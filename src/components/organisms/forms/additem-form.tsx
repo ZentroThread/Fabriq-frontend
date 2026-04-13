@@ -95,7 +95,6 @@ export function AddItemForm({
       return;
     }
 
-    console.log("✅ Submitting with tenant ID:", tenantId);
 
     const payload = {
       ...values,

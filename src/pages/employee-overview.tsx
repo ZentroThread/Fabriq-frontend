@@ -75,7 +75,6 @@ export default function EmployeeOverview() {
   };
 
   const handleDeleteEmp = (code: string) => {
-    console.log("Deleted employee ID:", code);
     swalConfirm("Are you sure?", "This action cannot be undone.").then((confirmed) => {
       if (confirmed) {
         deleteEmployee(code.toString());

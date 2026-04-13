@@ -10,7 +10,6 @@ export default function RentalItemsSection() {
   );
   void selectedCustomer; // Intentionally unused for now
 
-  console.log("📦 Rental Items:", items);
 
   function onDelete(index: number): void {
     // Remove from UI only - no API calls needed
@@ -18,7 +17,7 @@ export default function RentalItemsSection() {
   }
 
   function ChangeMeasurementPopup(index: number): void {
-    console.log("Change measurement for item at index:", index);
+    void index;
   }
 
   const totalAmount = items.reduce((acc, it) => acc + (it.price || 0), 0);

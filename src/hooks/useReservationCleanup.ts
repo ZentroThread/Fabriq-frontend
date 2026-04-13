@@ -33,14 +33,9 @@ export function useReservationCleanup() {
         // Don't cleanup if user is confirming order
         if (isConfirming.current || currentItems.length === 0) return;
 
-        console.log(
-          "🧹 [CLEANUP] Clearing items on unmount:",
-          currentItems.length
-        );
 
         // Clear billing store locally (no API calls needed)
         clearAll();
-        console.log("✅ [CLEANUP] Items cleared");
       };
 
       cleanup();

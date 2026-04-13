@@ -61,7 +61,6 @@ function Items() {
       fetchedItems.length > 0 &&
       allItemsFromStore.length === 0
     ) {
-      console.log("📥 [INITIAL LOAD] Syncing database to Zustand");
       setItems(fetchedItems);
     }
   }, [fetchedItems]);
@@ -99,7 +98,6 @@ function Items() {
     return result;
   }, [allItems, searchQuery, categoryFilter]);
 
-  console.log("📦 All Items from Zustand:", allItems.length);
 
   const handleItemAdded = () => {
     setIsDialogOpen(false);
@@ -118,7 +116,6 @@ function Items() {
 
   const handleCategoryChange = (category: string) => {
     setCategoryFilter(category);
-    console.log("Category changed to:", category);
   };
 
   if (isLoading && allItems.length === 0) {

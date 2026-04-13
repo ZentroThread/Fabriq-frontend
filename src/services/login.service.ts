@@ -67,7 +67,6 @@ export const loginService = {
    */
   login: async (credentials: LoginInput): Promise<TokenResponse> => {
     try {
-      console.log("🔐 Sending login request...");
       const response = await apiClient.request<TokenResponse>(
         API_ENDPOINTS.LOGIN.LOGIN,
         {
@@ -75,8 +74,6 @@ export const loginService = {
           data: credentials,
         }
       );
-      console.log("✅ Login successful - tokens should be in HttpOnly cookies");
-      console.log("🍪 Current cookies:", document.cookie);
       return response;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -95,7 +92,6 @@ export const loginService = {
     _retry?: boolean;
   }): Promise<User> => {
     try {
-      console.log("👤 Fetching user profile...");
       const user = await apiClient.request<User>(
         API_ENDPOINTS.LOGIN.GETCURRENTUSER,
         {
@@ -104,10 +100,6 @@ export const loginService = {
           ...(options || {}),
         }
       );
-      console.log("✅ User profile received:", {
-        username: user.username,
-        tenantId: user.tenantId,
-      });
       return user;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -126,16 +118,12 @@ export const loginService = {
    */
   refreshToken: async (): Promise<TokenResponse> => {
     try {
-      console.log("🔄 Attempting token refresh...");
-      console.log("🍪 Current cookies before refresh:", document.cookie);
       const response = await apiClient.request<TokenResponse>(
         API_ENDPOINTS.LOGIN.REFRESH,
         {
           method: "POST",
         }
       );
-      console.log("✅ Token refresh successful");
-      console.log("🍪 Current cookies after refresh:", document.cookie);
       return response;
     } catch (error) {
       console.error("❌ Token refresh failed:", error);

@@ -7,21 +7,21 @@
 
 //   connect() {
 //     if (this.client) {
-//       console.log("WebSocket already connected");
+//       
 //       return;
 //     }
 
 //     this.client = new Client({
 //       webSocketFactory: () => new SockJS("http://localhost:8081/ws"),
-//       debug: (str) => console.log(str),
+//       debug: (str) => ,
 //       reconnectDelay: 5000,
 //       onConnect: () => {
-//         console.log("WebSocket Connected");
+//         
 //         // Subscribe to all pending topics
 //         this.subscriptions.forEach((callback, topic) => {
 //           this.client?.subscribe(topic, (message) => {
 //             const data = JSON.parse(message.body);
-//             console.log(`📩 Received message on ${topic}:`, data);
+//             
 //             callback(data);
 //           });
 //         });
@@ -42,7 +42,7 @@
 //     if (this.client?.connected) {
 //       this.client.subscribe(topic, (message) => {
 //         const data = JSON.parse(message.body);
-//         console.log(`📩 Received message on ${topic}:`, data);
+//         
 //         callback(data);
 //       });
 //     }
