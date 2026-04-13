@@ -43,7 +43,7 @@ export const getYearsForRange = () => {
     years.push(currentYear - i);
   }
   return years;
-}
+};
 
 export const getStartDateFromRange = (range?: string) => {
   const now = new Date();
@@ -138,7 +138,6 @@ export const formatDateTime = (
       hour12: true,
     });
   } catch (error) {
-    console.error("Error formatting date:", error, dateValue);
     return "-";
   }
 };
@@ -164,7 +163,6 @@ export const parseDate = (
 
     return isNaN(date.getTime()) ? null : date;
   } catch (error) {
-    console.error("Error parsing date:", error, dateValue);
     return null;
   }
 };

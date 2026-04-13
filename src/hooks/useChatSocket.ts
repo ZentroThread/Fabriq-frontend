@@ -20,7 +20,6 @@ export const useChatSocket = (myRole: string) => {
     // Cleanup old messages on mount
     cleanupOldMessages();
 
-
     const wsUrl = tenantId
       ? `${API_BASE_URL}/ws?tenantId=${tenantId}`
       : `${API_BASE_URL}/ws`;
@@ -50,10 +49,7 @@ export const useChatSocket = (myRole: string) => {
       onDisconnect: () => {
         setIsConnected(false);
       },
-      onStompError: (frame) => {
-        console.error("Broker reported error: " + frame.headers["message"]);
-        console.error("Additional details: " + frame.body);
-      },
+      onStompError: (frame) => {},
     });
 
     client.activate();
@@ -81,9 +77,7 @@ export const useChatSocket = (myRole: string) => {
         destination: "/app/chat.sendMessage",
         body: JSON.stringify(chatMessage),
       });
-    } else {
-      console.error("STOMP client is not connected");
-    }
+    } else { /* empty */ }
   };
 
   return { messages, sendMessage, unreadCount, clearUnread, isConnected };

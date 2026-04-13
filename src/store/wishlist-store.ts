@@ -46,7 +46,9 @@ export const useWishlistStore = create<WishlistStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const resp = await attireRentService.getAll();
-      const rows = Array.isArray(resp) ? resp : (resp as unknown as { data?: AttireRent[] })?.data || resp || [];
+      const rows = Array.isArray(resp)
+        ? resp
+        : (resp as unknown as { data?: AttireRent[] })?.data || resp || [];
       const today = new Date();
       const future = rows.filter(
         (r: AttireRent) => r.rentDate && new Date(r.rentDate) > today
@@ -55,7 +57,6 @@ export const useWishlistStore = create<WishlistStore>((set) => ({
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       set({ error: msg, isLoading: false, list: [] });
-      console.warn(e);
     }
   },
 

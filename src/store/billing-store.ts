@@ -75,7 +75,6 @@ const useBillingStore = create<BillingState>((set, get) => ({
       const list = (resp as Billing[]) || [];
       set({ billings: list });
     } catch (e) {
-      console.warn("fetchBillings failed", e);
       set({ billings: [] });
     }
   },
@@ -137,9 +136,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
     setTimeout(() => {
       try {
         window.location.reload();
-      } catch (e) {
-        console.warn("reload failed", e);
-      }
+      } catch (e) {}
     }, 1000);
   },
 }));

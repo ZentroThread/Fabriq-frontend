@@ -17,7 +17,7 @@ export const useGetAllBills = () => {
         return await billingService.getAllBillings();
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error, "Failed to fetch bills");
-        console.error("❌ Error fetching bills:", error);
+
         // Show error to user
         Swal.fire({
           icon: "error",

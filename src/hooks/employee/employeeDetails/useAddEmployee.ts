@@ -23,7 +23,7 @@ export const useAddEmployee = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to add employee");
-      console.error("❌ Error adding employee:", error);
+
       swalError("Failed to add employee", errorMessage);
     },
   });

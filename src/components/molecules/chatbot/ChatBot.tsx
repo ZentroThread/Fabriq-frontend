@@ -30,9 +30,7 @@ const getInitialMessages = (): Message[] => {
         timestamp: new Date(msg.timestamp),
       }));
     }
-  } catch (error) {
-    console.error("Failed to load chat history:", error);
-  }
+  } catch (error) {}
 
   return [
     {
@@ -53,7 +51,6 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const { user } = useAuth();
   const tenantId = useAuthStore((state) => state.tenantId);
 
-
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
@@ -61,19 +58,19 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   }, [messages]);
 
   useEffect(() => {
-  if (!user || !tenantId) {
-    localStorage.removeItem(CHAT_STORAGE_KEY);
+    if (!user || !tenantId) {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
 
-    setMessages([
-      {
-        id: "welcome",
-        text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
-        sender: "bot",
-        timestamp: new Date(),
-      },
-    ]);
-  }
-}, [user, tenantId]);
+      setMessages([
+        {
+          id: "welcome",
+          text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [user, tenantId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -121,7 +118,6 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
-      console.error("Chat error:", error);
     } finally {
       setIsLoading(false);
     }

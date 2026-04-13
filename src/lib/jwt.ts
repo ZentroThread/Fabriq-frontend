@@ -26,7 +26,6 @@ export function decodeJWT(token: string): JWTPayload | null {
 
     return decoded as JWTPayload;
   } catch (error) {
-    console.error("Failed to decode JWT:", error);
     return null;
   }
 }

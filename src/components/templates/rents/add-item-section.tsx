@@ -17,11 +17,10 @@ interface CustomerData {
 }
 
 // Type for items that might have different stock field names
-interface ItemWithStock
-  extends Omit<
-    Partial<Item>,
-    "stock" | "quantity" | "availableQty" | "attire_stock"
-  > {
+interface ItemWithStock extends Omit<
+  Partial<Item>,
+  "stock" | "quantity" | "availableQty" | "attire_stock"
+> {
   stock?: number | string;
   quantity?: number | string;
   availableQty?: number | string;
@@ -173,7 +172,6 @@ export default function AddItemsSection() {
       customerCode: customerCode,
     };
 
-
     // Just add to local billing state - NO API CALLS
     addItem(payload);
 
@@ -201,7 +199,6 @@ export default function AddItemsSection() {
       isCustomItem: true, // Mark as custom item
     };
 
-
     // Add to local billing state
     addItem(payload);
 
@@ -223,9 +220,7 @@ export default function AddItemsSection() {
       } else {
         setSelectedCustomer({ custCode: value } as CustomerData);
       }
-    } catch (err) {
-      console.warn("Failed to update selected customer code", err);
-    }
+    } catch (err) {}
   };
 
   return (

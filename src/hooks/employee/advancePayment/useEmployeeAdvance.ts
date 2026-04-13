@@ -26,7 +26,7 @@ export const useAddEmployeeAdvancePayment = (
         error,
         "Failed to add advance payment"
       );
-      console.error("❌ Error adding advance payment:", error);
+
       swalError("Failed to add advance payment", errorMessage);
     },
   });
@@ -65,7 +65,7 @@ export const useDeleteEmployeeAdvancePayment = (
         error,
         "Failed to delete advance payment"
       );
-      console.error("❌ Error deleting advance payment:", error);
+
       swalError("Failed to delete advance payment", errorMessage);
     },
   });
@@ -96,7 +96,7 @@ export const useUpdateEmployeeAdvancePayment = (
         error,
         "Failed to update advance payment"
       );
-      console.error("❌ Error updating advance payment:", error);
+
       swalError("Failed to update advance payment", errorMessage);
     },
   });

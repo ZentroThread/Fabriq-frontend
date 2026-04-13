@@ -14,7 +14,7 @@ export const useGetAllCategories = () => {
           error,
           "Failed to fetch categories"
         );
-        console.error("❌ Error fetching categories:", error);
+
         Swal.fire({
           icon: "error",
           title: "Failed to load categories",

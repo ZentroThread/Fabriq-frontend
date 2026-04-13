@@ -28,7 +28,6 @@ export const billingService = {
 
       return { success: true, value: resp };
     } catch (error: unknown) {
-      console.error("❌ Error adding customer:", error);
       throw error;
     }
   },
@@ -40,7 +39,6 @@ export const billingService = {
       );
       return resp;
     } catch (error: unknown) {
-      console.error("❌ Error fetching customers:", error);
       throw error;
     }
   },
@@ -52,7 +50,6 @@ export const billingService = {
       });
       return true;
     } catch (error: unknown) {
-      console.error("❌ Error deleting customer:", error);
       throw error;
     }
   },
@@ -68,7 +65,6 @@ export const billingService = {
       );
       return resp;
     } catch (error: unknown) {
-      console.error("❌ Error adding attire rent:", error);
       throw error;
     }
   },
@@ -80,7 +76,6 @@ export const billingService = {
       );
       return resp;
     } catch (error: unknown) {
-      console.error("❌ Error fetching billings:", error);
       throw error;
     }
   },
@@ -92,7 +87,6 @@ export const billingService = {
       );
       return resp;
     } catch (error: unknown) {
-      console.error("❌ Error fetching attire rents:", error);
       throw error;
     }
   },
@@ -104,7 +98,6 @@ export const billingService = {
       );
       return resp;
     } catch (error: unknown) {
-      console.error("❌ Error fetching attire rents by billing code:", error);
       throw error;
     }
   },
@@ -126,7 +119,6 @@ export const billingService = {
         }
       );
     } catch (error: unknown) {
-      console.error("❌ Error creating billing with rentals:", error);
       throw error;
     }
   },
@@ -147,7 +139,6 @@ export const billingService = {
         data: payload,
       });
     } catch (error: unknown) {
-      console.error("❌ Error creating billing and pay:", error);
       throw error;
     }
   },
@@ -163,7 +154,6 @@ export const billingService = {
         data: payload,
       });
     } catch (error: unknown) {
-      console.error("❌ Error paying billing:", error);
       throw error;
     }
   },

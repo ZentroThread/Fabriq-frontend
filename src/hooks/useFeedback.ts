@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import { getErrorMessage,swalSuccess } from "@/utils/swal";
+import { getErrorMessage, swalSuccess } from "@/utils/swal";
 import { feedbackService } from "@/services/feedback.service";
 
 export const useFeedback = () => {
@@ -12,7 +12,6 @@ export const useFeedback = () => {
       try {
         return await feedbackService.getAll();
       } catch (error) {
-        console.error("Error fetching feedback:", error);
         throw error;
       }
     },
@@ -27,7 +26,6 @@ export const useFeedback = () => {
       try {
         return await feedbackService.approveFeedback(id);
       } catch (error) {
-        console.error("Error approving feedback:", error);
         throw error;
       }
     },
@@ -45,7 +43,6 @@ export const useFeedback = () => {
       try {
         await feedbackService.deleteFeedback(id);
       } catch (error) {
-        console.error("Error deleting feedback:", error);
         throw error;
       }
     },
@@ -62,6 +59,5 @@ export const useFeedback = () => {
     feedbackQuery,
     approveFeedback: approveMutation.mutate,
     deleteFeedback: deleteMutation.mutate,
-  };  
-
+  };
 };

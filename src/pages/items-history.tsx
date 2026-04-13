@@ -140,7 +140,6 @@ export default function ItemsHistoryPage() {
           msg = error.message;
         }
 
-        console.warn("items-history.tsx error:", msg);
         setError(msg);
       } finally {
         if (mounted) setLoading(false);

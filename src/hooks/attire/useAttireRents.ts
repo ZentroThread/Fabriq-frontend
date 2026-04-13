@@ -20,7 +20,7 @@ export const useGetAllAttireRents = () => {
           error,
           "Failed to fetch attire rentals"
         );
-        console.error("❌ Error fetching attire rentals:", error);
+
         Swal.fire({
           icon: "error",
           title: "Failed to load rentals",

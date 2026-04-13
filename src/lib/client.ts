@@ -35,7 +35,7 @@ const processQueue = (error: Error | null = null) => {
 // Create axios instance
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // ✅ CRITICAL: Browser sends HttpOnly cookie
+  withCredentials: true, 
   headers: {
     "Content-Type": "application/json",
   },
@@ -63,7 +63,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error("❌ Request Error:", error);
+    console.error( error);
     return Promise.reject(error);
   }
 );
@@ -85,9 +85,9 @@ axiosInstance.interceptors.response.use(
       ? { status: resp.status, statusText: resp.statusText, data: resp.data }
       : { message: error.message };
     try {
-      console.error("❌ API Error:", JSON.stringify(errInfo));
+      console.error(JSON.stringify(errInfo));
     } catch {
-      console.error("❌ API Error:", errInfo);
+      console.error( errInfo);
     }
 
     // Handle 401 - Unauthorized (token expired)
@@ -107,8 +107,7 @@ axiosInstance.interceptors.response.use(
         originalRequest.url?.includes(API_ENDPOINTS.LOGIN.REFRESH) ||
         originalRequest.url?.includes(API_ENDPOINTS.LOGIN.LOGIN)
       ) {
-        // Refresh token expired - redirect to login ONLY if not already on login page
-        console.error("🚫 Refresh token expired");
+        
 
         // Check if we should skip redirect (for initial auth check)
         if (
@@ -156,7 +155,6 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance.request(originalRequest);
       } catch (refreshError) {
-        console.error("❌ Token refresh failed");
         processQueue(refreshError as Error);
         isRefreshing = false;
 
@@ -171,9 +169,7 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    if (error.response?.status === 403) {
-      console.error("🚫 Forbidden - insufficient permissions");
-    }
+    if (error.response?.status === 403) { /* empty */ }
 
     return Promise.reject(error);
   }

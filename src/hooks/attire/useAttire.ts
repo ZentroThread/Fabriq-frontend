@@ -14,7 +14,7 @@ export const useGetAllAttire = () => {
           error,
           "Failed to fetch attire items"
         );
-        console.error("❌ Error fetching attire items:", error);
+
         Swal.fire({
           icon: "error",
           title: "Failed to load attire",
@@ -30,7 +30,7 @@ export const useGetAllAttire = () => {
 
 export const useAttireGetById = (id: string) => {
   return useQuery({
-    queryKey: ["attire", id], 
+    queryKey: ["attire", id],
     queryFn: async () => {
       try {
         return await itemService.getItemByAttireId(id);
@@ -39,7 +39,7 @@ export const useAttireGetById = (id: string) => {
           error,
           "Failed to fetch attire item"
         );
-        console.error("❌ Error fetching attire item:", error);
+
         Swal.fire({
           icon: "error",
           title: "Failed to load attire",

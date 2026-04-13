@@ -91,10 +91,9 @@ export function AddItemForm({
         title: "Session Error",
         text: "Tenant ID not found. Please log out and log back in.",
       });
-      console.error("❌ Tenant ID is missing from auth store");
+
       return;
     }
-
 
     const payload = {
       ...values,
@@ -122,7 +121,6 @@ export function AddItemForm({
         });
         if (onClose) onClose();
       } catch (error: unknown) {
-        console.error("Error updating item:", error);
         Swal.fire({
           icon: "error",
           title: "Failed to update item. Refresh the page.",
@@ -135,7 +133,6 @@ export function AddItemForm({
         await addItemMutation.mutateAsync(payload);
         if (onClose) onClose();
       } catch (error: unknown) {
-        console.error("Error adding item:", error);
         Swal.fire({
           icon: "error",
           title: "Failed to add item",

@@ -27,7 +27,6 @@ export default function MonthlySalary() {
   }
 
   if (isError || !salaryDetails) {
-    console.error("Error fetching salary details:", error);
     return <div>Failed to load salary details</div>;
   }
 

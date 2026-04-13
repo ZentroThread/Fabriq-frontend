@@ -126,7 +126,6 @@ export const loginService = {
       );
       return response;
     } catch (error) {
-      console.error("❌ Token refresh failed:", error);
       throw error;
     }
   },
@@ -139,9 +138,7 @@ export const loginService = {
       await apiClient.request(API_ENDPOINTS.LOGIN.LOGOUT, {
         method: "POST",
       });
-    } catch {
-      console.error("Logout request failed, but clearing local state anyway");
-    }
+    } catch {}
     return { success: true };
   },
 

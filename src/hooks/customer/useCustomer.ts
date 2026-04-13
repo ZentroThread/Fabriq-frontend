@@ -20,7 +20,7 @@ export const FetchCustomers = () => {
           error,
           "Failed to fetch customers"
         );
-        console.error("❌ Error fetching customers:", error);
+
         // Show error to user
         Swal.fire({
           icon: "error",

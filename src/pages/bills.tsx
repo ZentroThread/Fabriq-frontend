@@ -72,9 +72,7 @@ const Bills = () => {
       setLoading(true);
       try {
         if (fetchBillings) await fetchBillings();
-      } catch (e) {
-        console.error(e);
-      } finally {
+      } catch (e) { /* empty */ } finally {
         setLoading(false);
       }
     }
@@ -152,7 +150,6 @@ const Bills = () => {
         );
         setRents((items as RentItem[]) || []);
       } catch (e) {
-        console.error(e);
         setRents([]);
       }
     })();

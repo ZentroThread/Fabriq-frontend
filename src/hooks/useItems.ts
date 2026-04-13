@@ -41,7 +41,6 @@ export const useItems = () => {
         const result = await itemService.getAllItems();
         return result;
       } catch (error) {
-        console.error("❌ TanStack Query: getAllItems failed:", error);
         throw error;
       }
     },
@@ -80,7 +79,7 @@ export const useAddItem = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to add item");
-      console.error("❌ Error adding item:", error);
+
       Swal.fire({
         icon: "error",
         title: "Failed to add item",
@@ -109,7 +108,7 @@ export const useUpdateItem = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to update item");
-      console.error("❌ Error updating item:", error);
+
       Swal.fire({
         icon: "error",
         title: "Failed to update item",
@@ -138,7 +137,7 @@ export const useDeleteItem = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to delete item");
-      console.error("❌ Error deleting item:", error);
+
       Swal.fire({
         icon: "error",
         title: "Failed to delete item",

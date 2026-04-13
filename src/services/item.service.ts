@@ -69,7 +69,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to add item");
       setError(errorMsg);
-      console.error("❌ Error adding item:", error);
+
       throw error;
     } finally {
       setLoading(false);
@@ -98,7 +98,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to fetch items");
       setError(errorMsg);
-      console.error("❌ Error fetching items:", error);
+
       throw error;
     } finally {
       setLoading(false);
@@ -120,7 +120,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to fetch item details");
       setError(errorMsg);
-      console.error("❌ Error fetching item by ID:", error);
+
       throw error;
     } finally {
       setLoading(false);
@@ -142,7 +142,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to fetch item details");
       setError(errorMsg);
-      console.error("❌ Error fetching item by ID:", error);
+
       throw error;
     } finally {
       setLoading(false);
@@ -182,7 +182,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to update item");
       setError(errorMsg);
-      console.error("❌ Error updating item:", error);
+
       throw error;
     } finally {
       setLoading(false);
@@ -205,7 +205,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to delete item");
       setError(errorMsg);
-      console.error("❌ Error deleting item:", error);
+
       throw error;
     } finally {
       setLoading(false);
