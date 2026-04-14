@@ -4,7 +4,7 @@ import AddItemsSection from "@/components/templates/rents/add-item-section";
 import RentalItemsSection from "@/components/templates/rents/rental-item-section";
 import { RentsAndBillsSkeleton } from "@/components/molecules/skeletons/rents-bills-skeleton";
 import { useState, useEffect } from "react";
-import CustomButton from "@/components/atoms/button/add-button";
+import CustomButton from "@/components/atoms/button/custom-button";
 import { useNavigate } from "react-router-dom";
 import { Eye, Plus, Users } from "lucide-react";
 import {

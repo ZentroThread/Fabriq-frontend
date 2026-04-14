@@ -9,7 +9,7 @@ import {
 import MonthYearSelect from "@/components/organisms/selection/month-years-select";
 import SectionHeader from "@/components/molecules/header/section-header";
 import { currentMonth, currentYear } from "@/utils/date";
-import CustomButton from "@/components/atoms/button/add-button";
+import CustomButton from "@/components/atoms/button/custom-button";
 
 export default function EpfEtfHistoryPage() {
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);

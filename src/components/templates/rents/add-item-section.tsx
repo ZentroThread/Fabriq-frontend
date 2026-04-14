@@ -4,7 +4,7 @@ import { useItems } from "@/hooks/useItems";
 import { useItemStore } from "@/store/item-store";
 import type { Item } from "@/types/item.types";
 import Chart from "../Chart";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";

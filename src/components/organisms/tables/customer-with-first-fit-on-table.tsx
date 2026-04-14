@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 
 import { exportUpcomingRentalsExcel } from "@/utils/exportExcel";
-import AddButton from "@/components/atoms/button/add-button";
+import AddButton from "@/components/atoms/button/custom-button";
 import { Download } from "lucide-react";
 
 export type CustomerWithRental = {
@@ -16,24 +16,25 @@ export type CustomerWithRental = {
   customerName: string;
   contactNumber: string;
   itemName: string;
-  rentalDate: string;   
+  rentalDate: string;
   returnDate: string;
-  fitOnDate?: string;        
-  fitOnStatus?: "Pending" | "Completed" | "Missed"; 
+  fitOnDate?: string;
+  fitOnStatus?: "Pending" | "Completed" | "Missed";
 };
 
 export function CustomerWithFirstFitOnTable({
   tableData,
-  timeRange, 
+  timeRange,
 }: {
   tableData: CustomerWithRental[];
   timeRange?: string;
 }) {
   return (
     <>
-     
       <div className="flex justify-end mb-2">
-        <AddButton text="Export" icon={<Download />} 
+        <AddButton
+          text="Export"
+          icon={<Download />}
           onClick={() => exportUpcomingRentalsExcel(tableData, timeRange)}
         />
       </div>
@@ -68,14 +69,30 @@ export function CustomerWithFirstFitOnTable({
                   idx % 2 === 0 ? "bg-white" : "bg-gray-50"
                 } border-accent`}
               >
-                <TableCell className="px-4 py-2 font-medium text-position-text">{item.rentalId}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.customerName}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.contactNumber}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.itemName}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.rentalDate}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.returnDate}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.fitOnDate ?? "N/A"}</TableCell>
-                <TableCell className="px-4 py-2 text-position-text">{item.fitOnStatus ?? "Pending"}</TableCell>
+                <TableCell className="px-4 py-2 font-medium text-position-text">
+                  {item.rentalId}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.customerName}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.contactNumber}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.itemName}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.rentalDate}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.returnDate}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.fitOnDate ?? "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-2 text-position-text">
+                  {item.fitOnStatus ?? "Pending"}
+                </TableCell>
               </TableRow>
             ))
           )}

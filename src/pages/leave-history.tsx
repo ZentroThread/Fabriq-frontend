@@ -1,4 +1,4 @@
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import Chart from "@/components/templates/Chart";
 import { Calendar } from "@/components/ui/calendar";
 import { leaveRecords } from "@/constants/data";

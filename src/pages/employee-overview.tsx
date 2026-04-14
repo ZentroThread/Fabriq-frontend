@@ -1,4 +1,4 @@
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { Calendar, Plus, Search, XCircle } from "lucide-react";
 import { CheckCircle, Trash2, Notebook } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import { useDeleteEmployee } from "@/hooks/employee/employeeDetails/useDeleteEmp
 import useEmployeeStore from "@/store/employee-store";
 import type { Employee } from "@/types/employee.type";
 import SectionHeader from "@/components/molecules/header/section-header";
-import {swalConfirm} from "@/utils/swal";
+import { swalConfirm } from "@/utils/swal";
 //import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
@@ -75,11 +75,13 @@ export default function EmployeeOverview() {
   };
 
   const handleDeleteEmp = (code: string) => {
-    swalConfirm("Are you sure?", "This action cannot be undone.").then((confirmed) => {
-      if (confirmed) {
-        deleteEmployee(code.toString());
+    swalConfirm("Are you sure?", "This action cannot be undone.").then(
+      (confirmed) => {
+        if (confirmed) {
+          deleteEmployee(code.toString());
+        }
       }
-    });
+    );
   };
 
   const getIcon = (status: string) => {

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Wallet, CreditCard, Banknote } from "lucide-react";
 import Chart from "../Chart";
-import CustomButton from "@/components/atoms/button/add-button";
+import CustomButton from "@/components/atoms/button/custom-button";
 import useBillingStore from "@/store/billing-store";
 
 type BillingItem = {

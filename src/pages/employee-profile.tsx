@@ -1,4 +1,4 @@
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import Chart from "@/components/templates/Chart";
 import EmployeeForm from "@/components/organisms/employee/employee-form";
 import useEmployeeProfile from "@/hooks/employee/employeeDetails/useEmployeeProfile";

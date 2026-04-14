@@ -1,5 +1,5 @@
 import EmployeeForm from "@/components/organisms/employee/employee-form";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import type { Employee, EmployeeBankDetails } from "@/types/employee.type";
 import { useState } from "react";
 import { useAddEmployee } from "@/hooks/employee/employeeDetails/useAddEmployee";
@@ -14,7 +14,6 @@ export default function AddEmployee() {
   const { mutate: addEmployee } = useAddEmployee();
 
   const handleAddEmployee = () => {
-    
     addEmployee({ ...formData, image: imageFile });
   };
 

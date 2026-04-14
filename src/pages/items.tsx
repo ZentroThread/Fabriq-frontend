@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { useNavigate } from "react-router-dom";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
@@ -98,7 +98,6 @@ function Items() {
     return result;
   }, [allItems, searchQuery, categoryFilter]);
 
-
   const handleItemAdded = () => {
     setIsDialogOpen(false);
   };
@@ -132,7 +131,7 @@ function Items() {
           Manage bridal attire and accessories inventory
         </div>
 
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-3 w-full gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-3 w-full gap-4">
           <div className="flex items-center justify-center gap-2 border-2 p-2 w-full md:w-40 rounded-3xl text-position-text bg-text-active/5">
             {displayDate} <Calendar1 />
           </div>

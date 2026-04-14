@@ -136,7 +136,7 @@ const useBillingStore = create<BillingState>((set, get) => ({
     setTimeout(() => {
       try {
         window.location.reload();
-      } catch (e) {}
+      } catch (e) { /* empty */ }
     }, 1000);
   },
 }));

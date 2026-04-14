@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import ImageInput from "@/components/atoms/input/image-input";
 
 interface Props {

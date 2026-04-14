@@ -1,6 +1,6 @@
 import { type PayRollResponseType } from "@/types/payroll-type";
 import { Label } from "@/components/ui/label";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { useGetPayrollRecord } from "@/hooks/employee/payroll/usePayroll";
 import { useParams } from "react-router-dom";
 import { useConfirmPayroll } from "@/hooks/employee/payroll/usePayroll";

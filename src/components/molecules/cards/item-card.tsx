@@ -1,5 +1,5 @@
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {

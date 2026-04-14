@@ -1,5 +1,5 @@
 import BaseInputField from "@/components/molecules/input/base-input-field";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { type EmployeeProductionRequest } from "@/types/employee-product.type";
 
 type EmployeeProductionFormProps = {
