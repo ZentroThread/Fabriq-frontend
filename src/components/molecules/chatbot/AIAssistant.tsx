@@ -7,13 +7,11 @@ function AIAssistant() {
 
   return (
     <>
-      {/* Floating Chat Icon - appears when chat is closed */}
       <FloatingChatIcon
         onClick={() => setIsChatOpen(true)}
         isVisible={!isChatOpen}
       />
 
-      {/* Chat Window */}
       <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </>
   );

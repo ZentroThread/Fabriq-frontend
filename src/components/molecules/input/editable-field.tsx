@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 
-type Props = {
+interface Props {
   label: string;
   value: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;

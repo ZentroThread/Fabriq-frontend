@@ -3,13 +3,13 @@ import { Input } from "@/components/ui/input";
 type Props = {
   label: string;
   value: string | number;
-  readonly?: boolean;
+  readOnly?: boolean;
 };
 
 export default function ReadOnlyField({
   label,
   value,
-  readonly = true,
+  readOnly = true,
 }: Props) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
@@ -19,7 +19,7 @@ export default function ReadOnlyField({
       <Input
         className="w-full sm:flex-1 max-w-full sm:max-w-80"
         value={value}
-        readOnly={readonly}
+        readOnly={readOnly}
       />
     </div>
   );
