@@ -1,5 +1,6 @@
 import { Sun, Moon } from "lucide-react";
 import { useThemeStore } from "@/store/theme-store";
+import { cn } from "@/utils/style";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useThemeStore();
@@ -9,6 +10,7 @@ export default function ThemeToggle() {
   const toggleTheme = () => {
     setTheme(isDark ? "light" : "dark");
   };
+  const iconClass = "w-5 h-5";
 
   return (
     <button
@@ -16,9 +18,9 @@ export default function ThemeToggle() {
       className="p-2 rounded-full transition-all hover:bg-button-hover"
     >
       {isDark ? (
-        <Sun className="w-5 h-5 text-yellow-400 hover:text-icon-hover" />
+        <Sun className={cn(iconClass, "text-yellow-400 hover:text-icon-hover")} />
       ) : (
-        <Moon className="w-5 h-5 text-icon-dark hover:text-icon-hover" />
+        <Moon className={cn(iconClass, "text-icon-dark hover:text-icon-hover")} />
       )}
     </button>
   );

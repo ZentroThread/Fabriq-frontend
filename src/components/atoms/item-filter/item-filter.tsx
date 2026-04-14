@@ -34,8 +34,6 @@ export function ItemSearchFilter({
   } = useItemFilterStore();
 
   const listboxRef = useRef<HTMLDivElement>(null);
-
-  // Get search suggestions based on input
   const suggestions = useMemo(() => {
     if (!searchValue.trim()) return [];
 
@@ -57,7 +55,6 @@ export function ItemSearchFilter({
   }, [searchValue, items]);
 
   const handleBlur = (e: React.FocusEvent) => {
-    // If the new focus is NOT inside this component's container, close suggestions
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setShowSuggestions(false);
     }
@@ -79,7 +76,6 @@ export function ItemSearchFilter({
     onSearchChange("");
   };
 
-  // Highlight matching text using the precompiled regex stored on the mapped suggestion
   const highlightMatch = (text: string, regex: RegExp | undefined) => {
     if (!regex || !text) return text;
 
@@ -104,7 +100,6 @@ export function ItemSearchFilter({
 
   return (
     <div className="w-full mr-3 relative" onBlur={handleBlur} tabIndex={-1}>
-      {/* Search Input */}
       <div
         className="relative"
         role="combobox"
@@ -133,7 +128,6 @@ export function ItemSearchFilter({
         )}
       </div>
 
-      {/* Autocomplete Suggestions */}
       {showSuggestions && suggestions.length > 0 && (
         <div
           id="search-suggestions"
@@ -147,7 +141,7 @@ export function ItemSearchFilter({
                 key={item.id}
                 role="option"
                 onMouseDown={(e) => {
-                  e.preventDefault(); // Prevents losing focus before click fires
+                  e.preventDefault();
                   handleSuggestionClick(item.title);
                 }}
                 className="w-full px-4 py-3 text-left transition-colors flex items-start gap-3 border-b border-border hover:bg-accent last:border-b-0"
@@ -175,8 +169,6 @@ export function ItemSearchFilter({
           </div>
         </div>
       )}
-
-      {/* No results message */}
       {showSuggestions && searchValue.trim() && suggestions.length === 0 && (
         <div className="absolute z-50 w-full mt-2 bg-popover border rounded-lg shadow-lg">
           <div className="py-8 text-center text-muted-foreground text-sm">

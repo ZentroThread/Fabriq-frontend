@@ -11,6 +11,7 @@ import useBillingStore from "@/store/customer-store";
 import Swal from "sweetalert2";
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
 import type { BackendCustomerPayload } from "@/types/item.types";
+import { InfoRow } from "@/components/atoms/label/info-row";
 
 function toTitleCase(name?: string) {
   if (!name) return "";
@@ -32,16 +33,17 @@ interface UpdateCustomerFormData {
 }
 interface CustomerCardProps {
   customer: {
-    custLandLine: string | undefined;
     custCode: string;
     custName: string;
     custMobileNumber: string;
+    custLandLine?: string;
     custWhatsappNumber?: string;
     custEmail?: string;
     custAddress?: string;
     custRegistrationDate?: string | Date;
   };
 }
+
 
 export default function CustomerCard({ customer }: CustomerCardProps) {
   const [open, setOpen] = useState(false);
@@ -63,7 +65,6 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
   };
 
   const handleUpdate = async (data: UpdateCustomerFormData) => {
-    // Map AddCustomerForm values back to backend payload shape
     const payload: Partial<BackendCustomerPayload> = {
       custCode: data.custCode,
       custName: data.fullName ?? "",
@@ -88,98 +89,39 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-2">
-            <div className="flex items-center gap-2">
-              <div
-                className="w-24 text-left font-medium"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                Code:
-              </div>
-              <div
-                className="flex-1 text-left truncate"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                {customer.custCode}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div
-                className="w-24 text-left font-medium"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                Address:
-              </div>
-              <div
-                className="flex-1 text-left truncate"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                {customer.custAddress || "-"}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div
-                className="w-24 text-left font-medium"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                Mobile:
-              </div>
-              <div
-                className="flex-1 text-left truncate"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                {customer.custMobileNumber || "-"}
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div
-                className="w-24 text-left font-medium"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                WhatsApp:
-              </div>
-              <div
-                className="flex-1 text-left truncate"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                {customer.custWhatsappNumber || "-"}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div
-                className="w-24 text-left font-medium"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                Registered:
-              </div>
-              <div
-                className="flex-1 text-left truncate"
-                style={{ color: "var(--color-position-text)" }}
-              >
-                {customer.custRegistrationDate
+            <InfoRow label="Code:" value={customer.custCode} />
+            <InfoRow label="Address:" value={customer.custAddress} />
+            <InfoRow label="Mobile:" value={customer.custMobileNumber} />
+            <InfoRow label="WhatsApp:" value={customer.custWhatsappNumber} />
+            <InfoRow
+              label="Registered:"
+              value={
+                customer.custRegistrationDate
                   ? new Date(customer.custRegistrationDate).toLocaleDateString()
-                  : "-"}
-              </div>
-            </div>
+                  : "-"
+              }
+            />
           </div>
           <div className="flex justify-end mt-4 gap-2">
             <button
-              className="px-3 py-1 rounded bg-bg-green text-light-white"
+              className="px-3 py-1 rounded bg-bg-green text-light-white hover:opacity-90 transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-none"
               onClick={() => setOpen(true)}
+              aria-label={`Edit ${customer.custName}`}
             >
               Edit
             </button>
             <AlertDialogDemo
-              title={"Delete Customer"}
-              description={"Are you sure you want to delete this customer?"}
-              cancel={"Cancel"}
-              yes={"Delete"}
-              yesColor="bg-red border-1 "
+              title="Delete Customer"
+              description={`Are you sure you want to delete ${toTitleCase(customer.custName)}? This action cannot be undone.`}
+              cancel="Cancel"
+              yes="Delete"
+              yesColor="bg-red border-1"
               onConfirm={deleteCustomer}
             >
-              <button className="px-3 py-1 rounded bg-bg-red text-light-white">
+              <button
+                className="px-3 py-1 rounded bg-bg-red text-light-white hover:opacity-90 transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                aria-label={`Delete ${customer.custName}`}
+              >
                 Delete
               </button>
             </AlertDialogDemo>

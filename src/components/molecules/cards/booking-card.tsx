@@ -2,8 +2,9 @@ import { useAttireGetById } from "@/hooks/attire/useAttire";
 import type { Booking } from "@/schemas/booking.shema";
 import type { UseMutationResult } from "@tanstack/react-query";
 
-type Props = {
+interface Props {
   b: Booking;
+
   approveMutation: UseMutationResult<
     Booking,
     Error,
@@ -17,7 +18,7 @@ type Props = {
     number,
     unknown
   >;
-};
+}
 
 export default function BookingCard({
   b,
@@ -37,7 +38,6 @@ export default function BookingCard({
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        {/* LEFT SIDE */}
         <div className="flex flex-col gap-2">
           <p className="text-(--color-text-color)">
             <strong>Booking ID:</strong> {b.id}
@@ -77,11 +77,8 @@ export default function BookingCard({
               : "N/A"}
           </p>
         </div>
-
-        {/* RIGHT SIDE */}
         <div className="flex flex-col gap-3">
           
-          {/* Attire Info */}
           <div>
             <p className="text-(--color-text-color)">
               <strong>Attire:</strong>{" "}
@@ -90,8 +87,6 @@ export default function BookingCard({
                 : attireData?.name || attireData?.code || "N/A"}
             </p>
           </div>
-
-          {/* Image */}
           {attireData?.image && (
             <img
               src={
@@ -103,8 +98,6 @@ export default function BookingCard({
               className="w-full max-w-[200px] h-40 object-cover rounded-lg border"
             />
           )}
-
-          {/* ACTION BUTTONS */}
           {b.status === "PENDING" && b.id && (
             <div className="flex flex-wrap gap-3 mt-2">
               <button

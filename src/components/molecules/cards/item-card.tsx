@@ -10,8 +10,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDeleteItem } from "@/hooks/useItems";
+import { useItemStore } from "@/store/item-store";
+import { cn } from "@/utils/style";
 import { SquarePen, Trash2 } from "lucide-react";
-import { useState } from "react";
 
 interface ItemCardProps {
   id: number;
@@ -42,7 +43,8 @@ export function ItemCard({
   status,
   categoryId,
 }: ItemCardProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const editingItemCode = useItemStore((state) => state.editingItemCode);
+  const setEditingItemCode = useItemStore((state) => state.setEditingItemCode);
   const deleteItemMutation = useDeleteItem();
 
   const handleDelete = () => {
@@ -51,21 +53,22 @@ export function ItemCard({
 
   return (
     <>
-      <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-105 ">
+      <Card className="w-auto overflow-hidden shadow-md bg-card rounded-xl hover:scale-105">
         <div className="relative">
           <img src={image} alt="attire" className="w-full h-70 object-cover" />
 
           {/* Corner Button */}
           <button
-            className={`absolute top-2 right-2  border px-3 py-1 rounded-xl text-xs shadow hover:opacity-90 ${
+            className={cn(
+              "absolute top-2 right-2 border px-3 py-1 rounded-xl text-xs shadow hover:opacity-90",
               status === "Available"
-                ? "bg-support-button text-support-button-text "
+                ? "bg-support-button text-support-button-text"
                 : status === "In Laundry"
                   ? "bg-bg-green text-light-white"
                   : status === "Rented"
                     ? "bg-bg-red text-light-white"
-                    : "bg-support-button "
-            }`}
+                    : "bg-support-button"
+            )}
           >
             #{stock} {status}
           </button>
@@ -110,7 +113,7 @@ export function ItemCard({
               padding="p-4"
               textcolor={"text-icon-card1"}
               bordercolor={"border-border-card1"}
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => setEditingItemCode(code)}
               icon={<SquarePen className="w-4" />}
             />
             <AlertDialogDemo
@@ -136,8 +139,11 @@ export function ItemCard({
         </CardContent>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-xl max-h-[90vh]  bg-card ">
+      <Dialog
+        open={editingItemCode === code}
+        onOpenChange={(isOpen) => setEditingItemCode(isOpen ? code : null)}
+      >
+        <DialogContent className="max-w-xl max-h-[90vh] bg-card">
           <DialogHeader className="flex items-center">
             <DialogTitle className="text-style font-extrabold text-xl">
               Edit Item
@@ -165,7 +171,7 @@ export function ItemCard({
               },
               image,
             }}
-            onClose={() => setIsDialogOpen(false)}
+            onClose={() => setEditingItemCode(null)}
           />
         </DialogContent>
       </Dialog>

@@ -26,6 +26,7 @@ interface ItemStore {
   items: Item[];
   isLoading: boolean;
   error: string | null;
+  editingItemCode: string | null;
 
   setItems: (items: Item[]) => void;
   addItem: (item: Item) => void;
@@ -34,6 +35,7 @@ interface ItemStore {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   updateItemStock: (attireCode: string, newStock: number) => void;
+  setEditingItemCode: (code: string | null) => void;
 }
 
 export const useItemStore = create<ItemStore>()(
@@ -42,6 +44,9 @@ export const useItemStore = create<ItemStore>()(
       items: [],
       isLoading: false,
       error: null,
+      editingItemCode: null,
+
+      setEditingItemCode: (code) => set({ editingItemCode: code }),
 
       addItem: (item) =>
         set((state) => ({
