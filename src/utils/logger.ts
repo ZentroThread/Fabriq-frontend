@@ -19,7 +19,7 @@ export const logger = {
     }
   },
 
-  warn: (message: string, data?: unknown, showToast = false) => {
+  warn: (message: string, _data?: unknown, showToast = false) => {
     if (showToast) {
       Swal.fire({
         position: "top-end",
@@ -32,7 +32,7 @@ export const logger = {
     }
   },
 
-  info: (message: string, data?: unknown, showToast = false) => {
+  info: (message: string, _data?: unknown, showToast = false) => {
     if (showToast) {
       Swal.fire({
         position: "top-end",

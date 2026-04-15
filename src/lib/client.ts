@@ -5,6 +5,7 @@ import axios, {
 } from "axios";
 import { API_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
+import { logger } from "@/utils/logger";
 
 /**
  * 🔒 API Client with Axios and HttpOnly Cookie Authentication
@@ -53,17 +54,17 @@ axiosInstance.interceptors.request.use(
         config.headers = config.headers || {};
         config.headers["X-Tenant-ID"] = tenantId;
       } else {
-        console.warn("⚠️ No tenant ID found in store");
+        logger.warn("⚠️ No tenant ID found in store");
       }
     } catch (e) {
       // If store import fails for any reason, continue without tenant header
-      console.warn("Could not load auth store for tenant header:", e);
+      logger.warn("Could not load auth store for tenant header:", e);
     }
 
     return config;
   },
   (error) => {
-    console.error( error);
+    logger.error("Axios request interceptor error", error);
     return Promise.reject(error);
   }
 );
@@ -85,9 +86,9 @@ axiosInstance.interceptors.response.use(
       ? { status: resp.status, statusText: resp.statusText, data: resp.data }
       : { message: error.message };
     try {
-      console.error(JSON.stringify(errInfo));
+      logger.error("API Error Response", errInfo);
     } catch {
-      console.error( errInfo);
+      logger.error("API Error Response", errInfo);
     }
 
     // Handle 401 - Unauthorized (token expired)
@@ -143,7 +144,7 @@ axiosInstance.interceptors.response.use(
           const tenantId = useAuthStore.getState().getTenantId();
           if (tenantId) refreshHeaders["X-Tenant-ID"] = tenantId;
         } catch (e) {
-          console.warn("Could not load auth store for refresh header:", e);
+          logger.warn("Could not load auth store for refresh header:", e);
         }
 
         await axiosInstance.post(API_ENDPOINTS.LOGIN.REFRESH, undefined, {

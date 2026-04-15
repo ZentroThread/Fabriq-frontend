@@ -14,8 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import Swal from "sweetalert2";
+import { logger } from "@/utils/logger";
 import {
   Dialog,
   DialogContent,
@@ -131,16 +132,11 @@ function Customers() {
     if (updated) {
       // updateCustomer already updates local state; avoid refetch
       // which would re-load backend data and discard local changes
-      Swal.fire({
-        icon: "success",
-        title: "Customer updated",
-        timer: 1200,
-        showConfirmButton: false,
-      });
+      logger.info("Customer updated", undefined, true);
       setIsEditDialogOpen(false);
       setSelectedCustomer(null);
     } else {
-      Swal.fire({ icon: "error", title: "Update failed" });
+      logger.error("Update failed", undefined, true);
     }
   };
 
@@ -262,16 +258,15 @@ function Customers() {
                                 confirmButtonText: "Delete",
                               });
                               if (res.isConfirmed) {
-                                await useBillingStore
-                                  .getState()
-                                  .deleteCustomer(c.custCode);
-                                await fetchCustomers();
-                                Swal.fire({
-                                  icon: "success",
-                                  title: "Deleted",
-                                  timer: 1200,
-                                  showConfirmButton: false,
-                                });
+                                try {
+                                  await useBillingStore
+                                    .getState()
+                                    .deleteCustomer(c.custCode);
+                                  await fetchCustomers();
+                                  logger.info("Deleted", undefined, true);
+                                } catch (err) {
+                                  logger.error("Failed to delete customer", err, true);
+                                }
                               }
                             }}
                           />

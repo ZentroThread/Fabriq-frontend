@@ -4,6 +4,7 @@ import type { LoginInput, User, UserRole } from "@/types/types";
 import { queryClient } from "@/main";
 import { loginService } from "@/services/login.service";
 import { extractTenantId } from "@/lib/jwt";
+import { logger } from "@/utils/logger";
 
 /**
  * Helper: Extract tenant ID from access token cookie and persist it
@@ -17,7 +18,7 @@ const extractAndPersistTenantId = (): string | null => {
     );
 
     if (!accessTokenCookie) {
-      console.warn("⚠️ No accessToken cookie found");
+      logger.warn("⚠️ No accessToken cookie found");
       return null;
     }
 
@@ -28,11 +29,11 @@ const extractAndPersistTenantId = (): string | null => {
       localStorage.setItem("tenantId", tenantId);
       return tenantId;
     } else {
-      console.warn("⚠️ No tenant ID in JWT token");
+      logger.warn("⚠️ No tenant ID in JWT token");
       return null;
     }
   } catch (error) {
-    console.error("❌ Failed to extract tenant ID from token:", error);
+    logger.error("❌ Failed to extract tenant ID from token:", error);
     return null;
   }
 };
@@ -148,7 +149,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           await loginService.logout();
         } catch (error) {
-          console.error("Logout API call failed:", error);
+          logger.error("Logout API call failed:", error);
         }
 
         await queryClient.cancelQueries();

@@ -1,5 +1,6 @@
 import { Frown } from "lucide-react";
 import React from "react";
+import { cn } from "@/utils/style";
 
 interface ChartProps {
   label?: string;
@@ -20,16 +21,17 @@ function Chart({
 }: ChartProps) {
   return (
     <div
-      className={`mt-5 w-full ${height} bg-card flex flex-col rounded-2xl ${padding} shadow-md${className ? ` ${className}` : ""}`}
+      className={cn(
+        "mt-5 w-full bg-card flex flex-col rounded-2xl shadow-md",
+        height,
+        padding,
+        className
+      )}
     >
-      <div
-        className={`text-style text-[20px] font-semibold ${className ? ` ${className}` : ""}`}
-      >
+      <div className={cn("text-style text-[20px] font-semibold", className)}>
         {label}
       </div>
-      <div className={`text-position-text ${className ? ` ${className}` : ""}`}>
-        {description}
-      </div>
+      <div className={cn("text-position-text", className)}>{description}</div>
       <div className="mt-4 w-full ">
         {children ? (
           children

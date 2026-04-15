@@ -73,7 +73,6 @@ export const RentsAndBill = () => {
         </DialogContent>
       </Dialog>
       <RentalBillingLayout
-        //customerInfo={<CustomerInformation />}
         items={<AddItemsSection />}
         summary={<RentalSummary />}
         rentList={<RentalItemsSection />}

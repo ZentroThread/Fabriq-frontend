@@ -9,6 +9,7 @@ import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
 import { useState } from "react";
 import useBillingStore from "@/store/customer-store";
 import Swal from "sweetalert2";
+import { logger } from "@/utils/logger";
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
 import type { BackendCustomerPayload } from "@/types/item.types";
 import { InfoRow } from "@/components/atoms/label/info-row";
@@ -59,8 +60,7 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
         showConfirmButton: false,
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      Swal.fire({ icon: "error", title: "Delete failed", text: message });
+      logger.error("Delete failed", err, true);
     }
   };
 

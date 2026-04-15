@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
+import { logger } from "@/utils/logger";
 
 // Ensure proper typing for API responses
 export interface CustomerApiResponse {
@@ -39,10 +40,7 @@ class NotificationService {
         data: eventPayload,
       });
     } catch (e) {
-      console.warn(
-        "Failed to publish welcome notification via Notification Service",
-        e
-      );
+      logger.warn("Failed to publish welcome notification via Notification Service", e);
       throw e;
     }
   }

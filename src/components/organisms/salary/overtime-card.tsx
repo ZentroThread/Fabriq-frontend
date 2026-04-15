@@ -1,15 +1,19 @@
 import ReadOnlyField from "@/components/molecules/input/read-only-field";
 import { type PayRollResponseType } from "@/types/payroll-type";
+import { cn } from "@/utils/style";
 
 type Props = {
   data: PayRollResponseType;
   className?: string;
 };
 
-export default function OvertimeCard({ data, className }: Props) {
+export default function OverTimeCard({ data, className }: Props) {
   return (
     <div
-      className={`space-y-6 p-6 bg-card rounded-2xl shadow-md flex flex-col ${className}`}
+      className={cn(
+        "space-y-6 p-6 bg-card rounded-2xl shadow-md flex flex-col",
+        className
+      )}
     >
       <h2 className="text-position-text">Overtime</h2>
       <div className="grid grid-cols-1  gap-6 items-stretch">
