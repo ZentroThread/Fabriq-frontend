@@ -1,4 +1,4 @@
-import {type CustomerWithRental } from "../components/organisms/tables/customer-with-first-fit-on-table";
+import { type CustomerWithRental } from "../components/organisms/tables/customer-with-first-fit-on-table";
 import type { EmployeeProductionResponse } from "@/types/employee-product.type";
 
 export const columnsEmpProd = [
@@ -53,7 +53,7 @@ export const sampleRentalData: CustomerWithRental[] = [
     returnDate: "2026-03-27",
     fitOnDate: "2026-03-21",
     fitOnStatus: "Pending",
-  }
+  },
 ];
 
 export const chartData = [
@@ -70,7 +70,6 @@ export const chartDataDonut = [
   { browser: "safari", visitors: 200, fill: "var(--color-pie-2)" },
   { browser: "firefox", visitors: 187, fill: "var(--color-pie-3)" },
 ];
-
 
 export const columns = [
   { header: "Date", accessor: "date" as const },
@@ -126,7 +125,6 @@ export const items = [
   { name: "Saree B", price: 2500, days: 2 },
   { name: "Saree C", price: 1800, days: 5 },
 ];
-
 
 export const leaveRecords = [
   { id: 1, remark: "Sick Leave", date: "2025-11-18" },

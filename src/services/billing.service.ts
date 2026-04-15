@@ -6,7 +6,9 @@ import type {
 import { apiClient } from "@/lib/client";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import type { AttireRent } from "@/types/attireRent.type";
-import type { Bill } from "@/types/bill.type";
+import { z } from "zod";
+import { billingSchema } from "@/schemas/bill-data.schema";
+import { logger } from "@/utils/logger";
 
 type AttireRentAddDto = {
   customerCode?: string;
@@ -17,87 +19,69 @@ type AttireRentAddDto = {
 
 export const billingService = {
   async addCustomer(data: AddCustomerPayload): Promise<AddCustomerResponse> {
-    try {
-      const resp = await apiClient.request<BackendCustomerPayload>(
-        API_ENDPOINTS.CUSTOMER.ADD,
-        {
-          method: "POST",
-          data,
-        }
-      );
+    const resp = await apiClient.request<BackendCustomerPayload>(
+      API_ENDPOINTS.CUSTOMER.ADD,
+      {
+        method: "POST",
+        data,
+      }
+    );
 
-      return { success: true, value: resp };
-    } catch (error: unknown) {
-      throw error;
-    }
+    return { success: true, value: resp };
   },
 
   async getAllCustomers(): Promise<BackendCustomerPayload[]> {
-    try {
-      const resp = await apiClient.request<BackendCustomerPayload[]>(
-        API_ENDPOINTS.CUSTOMER.GET_ALL
-      );
-      return resp;
-    } catch (error: unknown) {
-      throw error;
-    }
+    const resp = await apiClient.request<BackendCustomerPayload[]>(
+      API_ENDPOINTS.CUSTOMER.GET_ALL
+    );
+    return resp;
   },
 
   async deleteCustomer(custId: number): Promise<boolean> {
-    try {
-      await apiClient.request<void>(API_ENDPOINTS.CUSTOMER.DELETE(custId), {
-        method: "DELETE",
-      });
-      return true;
-    } catch (error: unknown) {
-      throw error;
-    }
+    await apiClient.request<void>(API_ENDPOINTS.CUSTOMER.DELETE(custId), {
+      method: "DELETE",
+    });
+    return true;
   },
 
   async addAttireRent(payload: AttireRentAddDto): Promise<unknown> {
-    try {
-      const resp = await apiClient.request<unknown>(
-        API_ENDPOINTS.ATTIRE_RENT.ADD,
-        {
-          method: "POST",
-          data: payload,
-        }
-      );
-      return resp;
-    } catch (error: unknown) {
-      throw error;
-    }
+    const resp = await apiClient.request<unknown>(
+      API_ENDPOINTS.ATTIRE_RENT.ADD,
+      {
+        method: "POST",
+        data: payload,
+      }
+    );
+    return resp;
   },
 
-  async getAllBillings(): Promise<Bill[]> {
+  async getAllBillings(): Promise<z.infer<typeof billingSchema>[]> {
     try {
-      const resp = await apiClient.request<Bill[]>(
+      const resp = await apiClient.request<unknown>(
         API_ENDPOINTS.BILLING.GET_ALL
       );
-      return resp;
+      return z.array(billingSchema).parse(resp);
     } catch (error: unknown) {
+      logger.error("Failed to fetch billings", error, true);
       throw error;
     }
   },
 
   async getAllAttireRents(): Promise<AttireRent[]> {
-    try {
-      const resp = await apiClient.request<AttireRent[]>(
-        API_ENDPOINTS.ATTIRE_RENT.GET_ALL
-      );
-      return resp;
-    } catch (error: unknown) {
-      throw error;
-    }
+    const resp = await apiClient.request<AttireRent[]>(
+      API_ENDPOINTS.ATTIRE_RENT.GET_ALL
+    );
+    return resp;
   },
 
   async getAttireRentsByBillingCode(billingCode: string): Promise<unknown[]> {
     try {
       const resp = await apiClient.request<unknown[]>(
-        `/v1/attire-rent/by-billing/${encodeURIComponent(billingCode)}`
+        API_ENDPOINTS.ATTIRE_RENT.GET_BY_BILLING_CODE(billingCode)
       );
       return resp;
     } catch (error: unknown) {
+      logger.error("Failed to fetch attire rents by billing code", error, true);
       throw error;
     }
   },
@@ -110,17 +94,13 @@ export const billingService = {
       returnDate?: string;
     }>;
   }): Promise<unknown> {
-    try {
-      return await apiClient.request<unknown>(
-        "/v1/billing/create-with-rentals",
-        {
-          method: "POST",
-          data: payload,
-        }
-      );
-    } catch (error: unknown) {
-      throw error;
-    }
+    return await apiClient.request<unknown>(
+      API_ENDPOINTS.BILLING.CREATE_WITH_RENTALS,
+      {
+        method: "POST",
+        data: payload,
+      }
+    );
   },
 
   async createBillingAndPay(payload: {
@@ -133,14 +113,13 @@ export const billingService = {
     discountPercentage?: number;
     paymentMethod?: string;
   }): Promise<unknown> {
-    try {
-      return await apiClient.request<unknown>("/v1/billing/create-and-pay", {
+    return await apiClient.request<unknown>(
+      API_ENDPOINTS.BILLING.CREATE_AND_PAY,
+      {
         method: "POST",
         data: payload,
-      });
-    } catch (error: unknown) {
-      throw error;
-    }
+      }
+    );
   },
 
   async payBilling(payload: {
@@ -148,13 +127,9 @@ export const billingService = {
     discountPercentage?: number;
     paymentMethod?: string;
   }): Promise<unknown> {
-    try {
-      return await apiClient.request<unknown>("/v1/billing/pay", {
-        method: "POST",
-        data: payload,
-      });
-    } catch (error: unknown) {
-      throw error;
-    }
+    return await apiClient.request<unknown>(API_ENDPOINTS.BILLING.PAY, {
+      method: "POST",
+      data: payload,
+    });
   },
 };

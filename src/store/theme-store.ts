@@ -25,7 +25,7 @@ export const useThemeStore = create<ThemeStore>()(
       },
     }),
     {
-      name: "theme-storage", // localStorage key name
+      name: "theme-storage",
     }
   )
 );

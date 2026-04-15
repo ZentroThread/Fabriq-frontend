@@ -16,14 +16,16 @@ function Layout() {
   const hideLayout = noLayoutPages.includes(location.pathname);
 
   if (hideLayout) {
-    return <Outlet />; 
+    return <Outlet />;
   }
   const formatRole = (role?: string) => {
     if (!role) return "";
     try {
       return role
         .split("_")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
         .join(" ");
     } catch (error) {
       logger.warn("Failed to format role string", error, false);

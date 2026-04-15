@@ -18,12 +18,6 @@ export function SalaryHistory() {
   const { selectedEmployee } = useEmployeeStore();
   const employeeId = selectedEmployee?.id || 0;
   const empName = selectedEmployee?.fullName || "Employee Name";
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setIsLoading(false), 1000);
-  //   return () => clearTimeout(timer);
-  // }, []);
-
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
   };

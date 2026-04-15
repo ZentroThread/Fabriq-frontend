@@ -24,6 +24,10 @@ export const API_ENDPOINTS = {
   ATTIRE_RENT: {
     ADD: "/v1/attire-rent/add",
     GET_ALL: "/v1/attire-rent/all",
+    GET_BY_BILLING_CODE: (billingCode: string) =>
+      `/v1/attire-rent/by-billing/${encodeURIComponent(billingCode)}`,
+    STATS: (attireCode: string) =>
+      `/v1/attire-rent/stats/${encodeURIComponent(attireCode)}`,
   },
   ATTIRE_CATEGORY: {
     GET_ALL: "/v1/category/all",
@@ -31,6 +35,9 @@ export const API_ENDPOINTS = {
 
   BILLING: {
     GET_ALL: "/v1/billing/all",
+    CREATE_WITH_RENTALS: "/v1/billing/create-with-rentals",
+    CREATE_AND_PAY: "/v1/billing/create-and-pay",
+    PAY: "/v1/billing/pay",
   },
 
   NOTIFICATION: {

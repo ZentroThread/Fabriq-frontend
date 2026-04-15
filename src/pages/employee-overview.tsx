@@ -4,8 +4,6 @@ import { CheckCircle, Trash2, Notebook } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { EmployeeOverviewSkeleton } from "@/components/molecules/skeletons/employee-overview-skeleton";
-//import { employees } from "@/constants/data";
-
 import EmployeeCard from "@/components/molecules/cards/employee-card";
 import { Input } from "@/components/ui/input";
 import { useEmployees } from "@/hooks/employee/employeeDetails/useEmployess";
@@ -14,17 +12,9 @@ import useEmployeeStore from "@/store/employee-store";
 import type { Employee } from "@/types/employee.type";
 import SectionHeader from "@/components/molecules/header/section-header";
 import { swalConfirm } from "@/utils/swal";
-//import {useEmployeeStore} from "@/store/employee-store";
 
 export default function EmployeeOverview() {
   const navigate = useNavigate();
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setIsLoading(false), 1000);
-  //   return () => clearTimeout(timer);
-  // }, []);
-
   const { data: employees, error, isLoading } = useEmployees();
   const { mutate: deleteEmployee } = useDeleteEmployee();
 
@@ -201,7 +191,6 @@ export default function EmployeeOverview() {
 
                 <td className="flex gap-4 text-xl">
                   <div className="flex items-center gap-4">
-                    {/* <CheckCircle className="text-[#d1a47c] w-5 h-5" /> */}
                     <Notebook
                       className="text-[#d1a47c] w-5 h-5 cursor-pointer"
                       onClick={() => handleRowClick(emp.empCode, emp)}

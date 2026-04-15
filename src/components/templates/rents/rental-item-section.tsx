@@ -8,8 +8,7 @@ export default function RentalItemsSection() {
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   );
-  void selectedCustomer; 
-
+  void selectedCustomer;
 
   function onDelete(index: number): void {
     removeItem(index);

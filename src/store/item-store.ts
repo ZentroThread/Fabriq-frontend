@@ -90,9 +90,9 @@ export const useItemStore = create<ItemStore>()(
         }),
     }),
     {
-      name: "hiru-sandu-items", // 👈 localStorage key
+      name: "hiru-sandu-items",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items }), // 👈 Only save items
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

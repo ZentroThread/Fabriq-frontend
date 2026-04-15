@@ -2,7 +2,7 @@ import { API_ENDPOINTS } from "@/constants/api.constants";
 import { z } from "zod";
 import { apiClient } from "@/lib/client";
 import type { Feedback } from "@/schemas/feedback.schema";
-import {  FeedbackSchema } from "@/schemas/feedback.schema";
+import { FeedbackSchema } from "@/schemas/feedback.schema";
 
 export const feedbackService = {
   async getAll(): Promise<Feedback[]> {
@@ -21,9 +21,8 @@ export const feedbackService = {
     return FeedbackSchema.parse(response);
   },
   async deleteFeedback(id: number): Promise<void> {
-    await apiClient.request(
-      API_ENDPOINTS.FEEDBACK.Delete(id),
-      { method: "DELETE" }
-    );
-  }
+    await apiClient.request(API_ENDPOINTS.FEEDBACK.Delete(id), {
+      method: "DELETE",
+    });
+  },
 };

@@ -39,19 +39,6 @@ export default function ItemsHistoryPage() {
     setCodes,
   } = useItemsHistoryStore();
 
-  // function getCategoryLabel(id: number) {
-  //   switch (id) {
-  //     case 1:
-  //       return "Saree";
-  //     case 2:
-  //       return "Nilame Costume";
-  //     case 3:
-  //       return "Jewellary";
-  //     default:
-  //       return `Category ${id}`;
-  //   }
-  // }
-
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -67,11 +54,7 @@ export default function ItemsHistoryPage() {
         }));
         const today = new Date();
 
-        // build aggregated stats by attire code
         const map = new Map<string, AggregatedItem>();
-
-        // category fields removed — no normalization required
-
         for (const r of rows) {
           const code = r.attireCode || r.attire?.attireCode || "-";
           const rentDate = r.rentDate ? new Date(r.rentDate) : null;
@@ -90,7 +73,6 @@ export default function ItemsHistoryPage() {
 
           const entry = map.get(code);
           if (entry) {
-            // propagate categoryId if later rows contain it
             if (entry.categoryId == null && categoryId != null) {
               entry.categoryId = categoryId;
             }
@@ -109,7 +91,6 @@ export default function ItemsHistoryPage() {
         }));
 
         setAgg(aggregated);
-        // derive categories and codes from aggregated data so filters match
         const cats = Array.from(
           new Set(aggregated.map((a) => a.categoryId).filter((c) => c != null))
         ) as number[];
@@ -117,13 +98,11 @@ export default function ItemsHistoryPage() {
         const uniqueCodes = Array.from(new Set(aggregated.map((a) => a.code)));
         setCodes(uniqueCodes);
 
-        // also set list to past rentals for backwards compat display
         const past = rows.filter(
           (r) => r.rentDate && new Date(r.rentDate) <= today
         );
         setList(past);
       } catch (e) {
-        // extract meaningful message from axios error-like objects
         let msg = "Request failed";
         const error = e as { response?: { data?: unknown }; message?: string };
 
@@ -211,22 +190,6 @@ export default function ItemsHistoryPage() {
                 </ul>
               )}
             </div>
-
-            {/* <select
-              value={categoryFilter}
-              onChange={(e) => {
-                setCategoryFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="px-3 py-2 border border-(--color-border) rounded-md bg-main-bg text-position-text focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-            >
-              <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat} value={String(cat)}>
-                  {getCategoryLabel(cat)}
-                </option>
-              ))}
-            </select> */}
 
             <select
               value={rowsPerPage}

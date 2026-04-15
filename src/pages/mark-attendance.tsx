@@ -11,7 +11,6 @@ import { getErrorMessage, swalSuccess, swalError } from "@/utils/swal";
 type Direction = "IN" | "OUT";
 type PunchedState = Record<string, Direction | undefined>;
 
-/* ─── Helpers ───────────────────────────────────────────────────────────── */
 const formatForBackend = (date: Date): string => {
   const pad = (n: number) => n.toString().padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
@@ -23,8 +22,6 @@ const formatForBackend = (date: Date): string => {
 
 const getInitials = (first: string, last: string) =>
   `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase();
-
-/* ─── Sub Components ───────────────────────────────────────────────────── */
 interface EmployeeAvatarProps {
   employee: Employee;
   size?: "sm" | "md" | "lg";
@@ -66,17 +63,13 @@ const StatusBadge = ({ status }: { status?: Direction }) => {
           ? "color-mix(in srgb, var(--color-green) 15%, transparent)"
           : "color-mix(in srgb, var(--color-red) 15%, transparent)",
         color: isIn ? "var(--color-green)" : "var(--color-red)",
-        border: `1px solid ${
-          isIn ? "var(--color-green)" : "var(--color-red)"
-        }`,
+        border: `1px solid ${isIn ? "var(--color-green)" : "var(--color-red)"}`,
       }}
     >
       <span
         className="h-1.5 w-1.5 rounded-full"
         style={{
-          backgroundColor: isIn
-            ? "var(--color-green)"
-            : "var(--color-red)",
+          backgroundColor: isIn ? "var(--color-green)" : "var(--color-red)",
         }}
       />
       {status}
@@ -84,7 +77,6 @@ const StatusBadge = ({ status }: { status?: Direction }) => {
   );
 };
 
-/* ─── Main Component ───────────────────────────────────────────────────── */
 export const Mark_Attendance = () => {
   const { data: employees = [], isLoading } = useEmployees();
   const { mutate: markAttendance, isPending } = useMarkAttendance();
@@ -157,8 +149,7 @@ export const Mark_Attendance = () => {
     };
 
     const parsed = MarkAttendanceSchema.safeParse(payload);
-    if (!parsed.success)
-      return swalError(parsed.error.issues[0].message);
+    if (!parsed.success) return swalError(parsed.error.issues[0].message);
 
     markAttendance(parsed.data, {
       onSuccess: () => {
@@ -176,11 +167,6 @@ export const Mark_Attendance = () => {
 
   const canSubmit = !!selectedEmp && !isPending;
 
-  // const timeStr = now.toLocaleTimeString("en-US", {
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  //   second: "2-digit",
-  // });
   const dateStr = now.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -312,16 +298,13 @@ export const Mark_Attendance = () => {
                 className="py-3 rounded-lg font-semibold text-sm transition"
                 style={{
                   backgroundColor:
-                    direction === "IN"
-                      ? "var(--color-green)"
-                      : "transparent",
+                    direction === "IN" ? "var(--color-green)" : "transparent",
                   color:
                     direction === "IN"
                       ? "var(--color-button-text)"
                       : "var(--color-foreground)",
                   opacity:
-                    selectedEmp &&
-                    punchedMap[selectedEmp.empCode] !== "IN"
+                    selectedEmp && punchedMap[selectedEmp.empCode] !== "IN"
                       ? 1
                       : 0.5,
                 }}
@@ -337,16 +320,13 @@ export const Mark_Attendance = () => {
                 className="py-3 rounded-lg font-semibold text-sm transition"
                 style={{
                   backgroundColor:
-                    direction === "OUT"
-                      ? "var(--color-red)"
-                      : "transparent",
+                    direction === "OUT" ? "var(--color-red)" : "transparent",
                   color:
                     direction === "OUT"
                       ? "var(--color-button-text)"
                       : "var(--color-foreground)",
                   opacity:
-                    selectedEmp &&
-                    punchedMap[selectedEmp.empCode] === "IN"
+                    selectedEmp && punchedMap[selectedEmp.empCode] === "IN"
                       ? 1
                       : 0.5,
                 }}

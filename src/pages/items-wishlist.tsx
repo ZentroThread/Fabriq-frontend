@@ -295,9 +295,6 @@ export default function ItemsWishlistPage() {
                             className="p-2 text-center w-10 rounded-full bg-support-button/75"
                           >
                             <div className="font-medium text-black">{`${count} `}</div>
-                            {/* <div className="text-position-text text-sm mt-1">
-                            {bills.join(", ")}
-                          </div> */}
                           </PopoverContent>
                         </Popover>
                       );

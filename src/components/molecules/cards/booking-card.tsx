@@ -5,19 +5,9 @@ import type { UseMutationResult } from "@tanstack/react-query";
 interface Props {
   b: Booking;
 
-  approveMutation: UseMutationResult<
-    Booking,
-    Error,
-    number,
-    unknown
-  >;
+  approveMutation: UseMutationResult<Booking, Error, number, unknown>;
 
-  rejectMutation: UseMutationResult<
-    Booking,
-    Error,
-    number,
-    unknown
-  >;
+  rejectMutation: UseMutationResult<Booking, Error, number, unknown>;
 }
 
 export default function BookingCard({
@@ -37,7 +27,6 @@ export default function BookingCard({
       shadow-[0_2px_6px_var(--color-shadow)]"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        
         <div className="flex flex-col gap-2">
           <p className="text-(--color-text-color)">
             <strong>Booking ID:</strong> {b.id}
@@ -62,8 +51,8 @@ export default function BookingCard({
                 b.status === "APPROVED"
                   ? "text-(--color-green) font-semibold"
                   : b.status === "REJECTED"
-                  ? "text-(--color-error) font-semibold"
-                  : "text-(--color-pie-2) font-semibold"
+                    ? "text-(--color-error) font-semibold"
+                    : "text-(--color-pie-2) font-semibold"
               }
             >
               {b.status}
@@ -72,13 +61,10 @@ export default function BookingCard({
 
           <p className="text-sm text-(--color-text-color)">
             Requested on:{" "}
-            {b.createdAt
-              ? new Date(b.createdAt).toLocaleString()
-              : "N/A"}
+            {b.createdAt ? new Date(b.createdAt).toLocaleString() : "N/A"}
           </p>
         </div>
         <div className="flex flex-col gap-3">
-          
           <div>
             <p className="text-(--color-text-color)">
               <strong>Attire:</strong>{" "}

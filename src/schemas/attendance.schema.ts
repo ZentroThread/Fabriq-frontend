@@ -43,7 +43,5 @@ export const MarkAttendanceSchema = z.object({
   Direction: z.enum(["IN", "OUT"]),
 });
 
-
 export type Attendance = z.infer<typeof AttendanceSchema>;
 export type MarkAttendance = z.infer<typeof MarkAttendanceSchema>;
-

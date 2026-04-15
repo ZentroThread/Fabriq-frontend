@@ -110,8 +110,8 @@ export function AddCustomerForm({
           );
         }
 
-        reset(); 
-        onClose?.(); 
+        reset();
+        onClose?.();
       } else {
         logger.error(
           "Customer was not added. Please try again.",

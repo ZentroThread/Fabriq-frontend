@@ -66,7 +66,6 @@ export const getStartDateFromRange = (range?: string) => {
   }
 };
 
-// Returns the start date for upcoming rental range (always today)
 export const getUpcomingRentalStartDate = (range?: string) => {
   const now = new Date();
 
@@ -99,10 +98,6 @@ export const getUpcomingRentalEndDate = (range?: string) => {
   }
 };
 
-/**
- * Parse date string or array from backend and format it with date and time
- * Backend may return dates as arrays like [2024, 1, 18, 14, 30, 0] or as ISO strings
- */
 export const formatDateTime = (
   dateValue: string | number[] | null | undefined
 ): string => {
@@ -110,24 +105,17 @@ export const formatDateTime = (
 
   try {
     let date: Date;
-
-    // If it's an array (Java LocalDateTime format)
     if (Array.isArray(dateValue)) {
-      // Array format: [year, month, day, hour, minute, second, millisecond?]
       const [year, month, day, hour = 0, minute = 0, second = 0] = dateValue;
-      // Note: JavaScript months are 0-indexed, but backend months are 1-indexed
       date = new Date(year, month - 1, day, hour, minute, second);
     } else {
-      // If it's a string, try to parse it
       date = new Date(dateValue);
     }
 
-    // Check if date is valid
     if (isNaN(date.getTime())) {
       return "-";
     }
 
-    // Format: "MM/DD/YYYY, HH:MM:SS AM/PM"
     return date.toLocaleString("en-US", {
       year: "numeric",
       month: "2-digit",
@@ -142,9 +130,6 @@ export const formatDateTime = (
   }
 };
 
-/**
- * Parse date string or array from backend into a Date object for comparisons
- */
 export const parseDate = (
   dateValue: string | number[] | null | undefined
 ): Date | null => {
@@ -153,7 +138,6 @@ export const parseDate = (
   try {
     let date: Date;
 
-    // If it's an array (Java LocalDateTime format)
     if (Array.isArray(dateValue)) {
       const [year, month, day, hour = 0, minute = 0, second = 0] = dateValue;
       date = new Date(year, month - 1, day, hour, minute, second);

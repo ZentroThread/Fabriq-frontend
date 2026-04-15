@@ -2,7 +2,6 @@ import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
 import { logger } from "@/utils/logger";
 
-// Ensure proper typing for API responses
 export interface CustomerApiResponse {
   custId?: string;
   cust_id?: string;
@@ -33,14 +32,15 @@ class NotificationService {
         priority: 1,
         timestamp: new Date().toISOString(),
       };
-
-      // Ensure consistent Axios integration (handles tokens/auth/tenant headers if applicable)
       await apiClient.request(API_ENDPOINTS.NOTIFICATION.PUBLISH, {
         method: "POST",
         data: eventPayload,
       });
     } catch (e) {
-      logger.warn("Failed to publish welcome notification via Notification Service", e);
+      logger.warn(
+        "Failed to publish welcome notification via Notification Service",
+        e
+      );
       throw e;
     }
   }

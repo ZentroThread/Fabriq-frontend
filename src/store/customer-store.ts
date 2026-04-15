@@ -34,12 +34,10 @@ export const useBillingStore = create<BillingState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const data = await billingService.getAllCustomers();
-      // Filter out locally-deleted customers persisted in localStorage
       const deletedRaw = localStorage.getItem("deleted_customers");
       const deleted: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
       const filtered = data.filter((c) => !deleted.includes(c.custCode));
       set({ customers: filtered, isLoading: false });
-      // Prime react-query cache
       queryClient.setQueryData(["customers"], filtered);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -53,9 +51,7 @@ export const useBillingStore = create<BillingState>((set, get) => ({
       const resp = await billingService.addCustomer(payload);
       const created = resp.value ?? null;
       if (created) {
-        // update local state
         set((state) => ({ customers: [...state.customers, created] }));
-        // invalidate/react-query cache so UI using react-query updates
         await queryClient.invalidateQueries({ queryKey: ["customers"] });
       }
       set({ isLoading: false });
@@ -69,7 +65,6 @@ export const useBillingStore = create<BillingState>((set, get) => ({
   updateCustomer: async (custCode, payload) => {
     set({ isLoading: true, error: null });
     try {
-      // Update local state only (no backend update endpoint available)
       let updated: BackendCustomerPayload | null = null;
       set((state) => {
         const idx = state.customers.findIndex((c) => c.custCode === custCode);
@@ -83,7 +78,6 @@ export const useBillingStore = create<BillingState>((set, get) => ({
         updated = merged;
         return { customers };
       });
-      // invalidate react-query cache
       await queryClient.invalidateQueries({ queryKey: ["customers"] });
       set({ isLoading: false });
       return updated;
@@ -96,7 +90,6 @@ export const useBillingStore = create<BillingState>((set, get) => ({
   deleteCustomer: async (custCode: string) => {
     set({ isLoading: true, error: null });
     try {
-      // Find the customer to obtain custId and call backend delete
       const state = get();
       const target = state.customers.find((c) => c.custCode === custCode);
       if (target && typeof target.custId === "number") {
@@ -104,7 +97,6 @@ export const useBillingStore = create<BillingState>((set, get) => ({
         set((s) => ({
           customers: s.customers.filter((c) => c.custCode !== custCode),
         }));
-        // Persist deletion so it survives reloads (in case backend still lists briefly)
         const deletedRaw = localStorage.getItem("deleted_customers");
         const deleted: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
         if (!deleted.includes(custCode)) {
@@ -116,11 +108,9 @@ export const useBillingStore = create<BillingState>((set, get) => ({
         return null;
       }
 
-      // Fallback: if no custId is present, fall back to local-only deletion
       set((s) => ({
         customers: s.customers.filter((c) => c.custCode !== custCode),
       }));
-      // Persist deletion so it survives reloads
       const deletedRaw = localStorage.getItem("deleted_customers");
       const deleted: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
       if (!deleted.includes(custCode)) {

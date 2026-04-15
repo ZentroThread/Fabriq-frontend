@@ -63,7 +63,7 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & {
       _retry?: boolean;
-      _skipAuthRedirect?: boolean; 
+      _skipAuthRedirect?: boolean;
     };
 
     const resp = error.response;
@@ -148,7 +148,7 @@ axiosInstance.interceptors.response.use(
     }
 
     if (error.response?.status === 403) {
-        logger.warn("API access forbidden (403)", errInfo, true);
+      logger.warn("API access forbidden (403)", errInfo, true);
     }
 
     return Promise.reject(error);

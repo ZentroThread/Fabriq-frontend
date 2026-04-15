@@ -5,7 +5,7 @@ export interface AiMessage {
   id: string;
   text: string;
   sender: "user" | "bot";
-  timestamp: string; // Sticking to string for JSON serialization safety
+  timestamp: string;
 }
 
 interface AiChatStore {

@@ -3,7 +3,6 @@ import modelImg from "@/assets/images/model.jpeg";
 import { User, Lock, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/user-auth-store";
-//import { useLogin } from "@/hooks/hooks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas/user.schema";
@@ -12,10 +11,6 @@ import { useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
-  // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  // const authError = useAuthStore((state) => state.error);
-
-  // const { mutate: login, isPending } = useLogin();
   const {
     user,
     login,

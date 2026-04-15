@@ -91,7 +91,6 @@ function Customers() {
     return res;
   }, [customers, searchQuery, range]);
 
-  // sort by registration date (newest first), then by custCode (desc)
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       const ta = a.custRegistrationDate
@@ -130,8 +129,6 @@ function Customers() {
       .getState()
       .updateCustomer(selectedCustomer.custCode, payload);
     if (updated) {
-      // updateCustomer already updates local state; avoid refetch
-      // which would re-load backend data and discard local changes
       logger.info("Customer updated", undefined, true);
       setIsEditDialogOpen(false);
       setSelectedCustomer(null);
@@ -149,14 +146,6 @@ function Customers() {
       <div className="text-style text-[30px] font-semibold">Customers</div>
       <div className="text-position-text ">All registered customers</div>
 
-      {/* <div className="flex gap-2 lg:mr-5 lg:ml-auto sm:ml-0 sm:mr-auto mt-4">
-        <CustomButton
-          text={"Add Customer"}
-          width="w-auto"
-          icon={<Plus />}
-          onClick={() => setIsDialogOpen(true)}
-        />
-      </div> */}
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
           <ItemSearchFilter

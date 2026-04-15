@@ -37,8 +37,7 @@ export function TableDemo() {
         ))}
       </TableBody>
       <TableFooter>
-        <TableRow>
-        </TableRow>
+        <TableRow></TableRow>
       </TableFooter>
     </Table>
   );

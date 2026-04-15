@@ -24,16 +24,11 @@ export default function useTodayDeviceAttendanceLogsSummary() {
 
   const presentCount = uniqueInLogs.length - lateCount;
 
-  const absentCount = Math.max(
-    totalEmployees - uniqueInLogs.length,
-    0
-  );
+  const absentCount = Math.max(totalEmployees - uniqueInLogs.length, 0);
 
   // Attach employee name
   const todayAttendanceWithEmpName = todayLogs.map((log) => {
-    const employee = employees.find(
-      (emp) => emp.empCode === log.empCode
-    );
+    const employee = employees.find((emp) => emp.empCode === log.empCode);
 
     return {
       ...log,
@@ -45,9 +40,9 @@ export default function useTodayDeviceAttendanceLogsSummary() {
 
   return {
     totalEmployees,
-    presentCount, 
-    lateCount,    
-    absentCount,  
+    presentCount,
+    lateCount,
+    absentCount,
     todayAttendanceWithEmpName,
     isLoading,
   };

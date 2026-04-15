@@ -12,7 +12,6 @@ export interface AttireRent {
 }
 
 interface WishlistStore {
-  // State
   list: AttireRent[];
   isLoading: boolean;
   error: string | null;
@@ -21,7 +20,6 @@ interface WishlistStore {
   searchQuery: string;
   selectedDate: Date | undefined;
 
-  // Actions
   fetchWishlist: () => Promise<void>;
   setCurrentPage: (page: number) => void;
   setRowsPerPage: (rows: number) => void;
@@ -32,7 +30,6 @@ interface WishlistStore {
 }
 
 export const useWishlistStore = create<WishlistStore>((set) => ({
-  // Initial state
   list: [],
   isLoading: false,
   error: null,

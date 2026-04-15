@@ -8,7 +8,7 @@ import {
   useEmployeeProdByEmpAndMonthYear,
 } from "@/hooks/employee/productionRecord/useEmployeeProduction";
 import { currentMonth, currentYear, today } from "@/utils/date";
-import {swalConfirm} from "@/utils/swal";
+import { swalConfirm } from "@/utils/swal";
 
 export const useEmployeeProductionOverview = () => {
   const { selectedEmployee } = useEmployeeStore();
@@ -77,12 +77,12 @@ export const useEmployeeProductionOverview = () => {
   };
 
   const handleAddProduction = () => {
-      addProduction(formData);
-      setFormData({});
-      setSelectedDay(null);
-    };
+    addProduction(formData);
+    setFormData({});
+    setSelectedDay(null);
+  };
 
-    const handleProductionUpdate = (id: number) => {
+  const handleProductionUpdate = (id: number) => {
     if (!selectedEmployee) return;
 
     const updateData: Partial<EmployeeProductionRequest> = {
@@ -94,9 +94,10 @@ export const useEmployeeProductionOverview = () => {
     updateProduction({ id, data: updateData });
   };
 
-
   const handleProductionDelete = async (id: number) => {
-    if( await swalConfirm("Are you sure?", "You won't be able to revert this!")){
+    if (
+      await swalConfirm("Are you sure?", "You won't be able to revert this!")
+    ) {
       deleteProduction(id);
     }
   };

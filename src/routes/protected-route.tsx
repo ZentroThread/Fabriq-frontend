@@ -12,7 +12,7 @@ export const ProtectedRoute = ({
   redirectTo = "/login",
 }: ProtectedRouteProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
-  const isAuthChecked = useAuthStore((state) => state.isAuthChecked); 
+  const isAuthChecked = useAuthStore((state) => state.isAuthChecked);
   const user = useAuthStore((state) => state.user);
 
   if (!isAuthChecked) {

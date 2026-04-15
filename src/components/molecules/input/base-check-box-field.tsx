@@ -5,7 +5,7 @@ interface Props {
   value?: boolean;
   disabled?: boolean;
   onChange?: (value?: boolean) => void;
-};
+}
 
 export default function BaseCheckboxField({
   label,

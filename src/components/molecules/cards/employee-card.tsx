@@ -7,12 +7,7 @@ interface DashboardCardProps {
   className?: string;
 }
 
-function EmployeeCard({
-  label,
-  label1,
-  width,
-  className,
-}: DashboardCardProps) {
+function EmployeeCard({ label, label1, width, className }: DashboardCardProps) {
   return (
     <div
       className={cn(

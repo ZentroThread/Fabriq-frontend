@@ -25,7 +25,6 @@ import { AddItemForm } from "@/components/organisms/forms/additem-form";
 import { useFilteredItems } from "@/hooks/attire/useItems";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-// import { useStockUpdates } from "@/hooks/useStockUpdates";
 import { useItemStore } from "@/store/item-store";
 
 function Items() {

@@ -64,7 +64,6 @@ function Reports() {
           string2="Last 3 Months"
           string3="Last 6 Months"
         />
-        {/* <AddButton text="Export" icon={<Download />} /> */}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
@@ -109,14 +108,6 @@ function Reports() {
           <RevenueByCategoryPie data={attireRentSummary} />
         </Chart>
       </div>
-      {/* <div className="">
-        <Chart
-          label={"Rentals by Category"}
-          description={"Product category distribution"}
-        >
-          <ChartLineMultiple />
-        </Chart>
-      </div> */}
       <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mt-5 mb-5">
         <Chart
           label={"Top Selling Products"}

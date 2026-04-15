@@ -13,7 +13,6 @@ import Chart from "@/components/atoms/frame/frame";
 import { BillsSkeleton } from "@/components/molecules/skeletons/bills-skeleton";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-// Card components not used in this page; removed to fix unused import
 import {
   Table,
   TableBody,
@@ -24,37 +23,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useBillingStore from "@/store/billing-store";
-
-type Customer = {
-  custName?: string;
-  custMobileNumber?: string;
-  custCode?: string;
-};
-
-type Billing = {
-  billingCode?: string;
-  billingDate?: string;
-  billingTotal?: string;
-  billingType?: string;
-  customer?: Customer;
-};
-
-type RentItem = {
-  id?: string | number;
-  attireCode?: string;
-  attire?: { attireCode?: string };
-  rentDuration?: number | null;
-  rentDate?: string | null;
-  returnDate?: string | null;
-};
+import type { BillingType, RentItemType } from "@/types/bill.type";
 
 const Bills = () => {
   const storeBillings = useBillingStore((s) => s.billings) as
-    | Billing[]
+    | BillingType[]
     | undefined;
   const fetchBillings = useBillingStore((s) => s.fetchBillings);
-  const [billings, setBillings] = useState<Billing[]>([]);
-  const [rents, setRents] = useState<RentItem[]>([]);
+  const [billings, setBillings] = useState<BillingType[]>([]);
+  const [rents, setRents] = useState<RentItemType[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [filterQuery, setFilterQuery] = useState("");
@@ -64,7 +41,7 @@ const Bills = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const [selected, setSelected] = useState<Billing | null>(null);
+  const [selected, setSelected] = useState<BillingType | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -72,7 +49,7 @@ const Bills = () => {
       setLoading(true);
       try {
         if (fetchBillings) await fetchBillings();
-      } catch (e) {
+      } catch (_e) {
         /* empty */
       } finally {
         setLoading(false);
@@ -112,13 +89,12 @@ const Bills = () => {
       return true;
     });
 
-    // sort descending by billingDate
-    list.sort((a: Billing, b: Billing) => {
+    list.sort((a: BillingType, b: BillingType) => {
       const da = parseDate(a.billingDate);
       const db = parseDate(b.billingDate);
       const timeA = da ? da.getTime() : 0;
       const timeB = db ? db.getTime() : 0;
-      return timeB - timeA; // descending order (newest first)
+      return timeB - timeA;
     });
 
     return list;
@@ -126,11 +102,10 @@ const Bills = () => {
 
   const countInRange = filtered.length;
   const totalInRange = filtered.reduce(
-    (acc, b) => acc + (parseFloat(b.billingTotal || "0") || 0),
+    (acc, b) => acc + (b.billingTotal || 0),
     0
   );
 
-  // paging for table
   const totalItems = filtered.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const paged = useMemo(() => {
@@ -138,7 +113,7 @@ const Bills = () => {
     return filtered.slice(start, start + pageSize);
   }, [filtered, currentPage, pageSize]);
 
-  function openDetails(bill: Billing) {
+  function openDetails(bill: BillingType) {
     setSelected(bill);
     setDialogOpen(true);
     (async () => {
@@ -150,8 +125,8 @@ const Bills = () => {
         const items = await billingService.getAttireRentsByBillingCode(
           bill.billingCode
         );
-        setRents((items as RentItem[]) || []);
-      } catch (e) {
+        setRents((items as RentItemType[]) || []);
+      } catch (_e) {
         setRents([]);
       }
     })();
@@ -173,7 +148,6 @@ const Bills = () => {
         View and search billing records
       </div>
       <div className="mt-3 mb-4 flex items-center gap-6">
-        {/*Fixed duplicate gap class*/}
         <DashboardCard
           lable="Count"
           lable1={String(countInRange)}

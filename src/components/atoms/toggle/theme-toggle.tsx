@@ -18,9 +18,13 @@ export default function ThemeToggle() {
       className="p-2 rounded-full transition-all hover:bg-button-hover"
     >
       {isDark ? (
-        <Sun className={cn(iconClass, "text-yellow-400 hover:text-icon-hover")} />
+        <Sun
+          className={cn(iconClass, "text-yellow-400 hover:text-icon-hover")}
+        />
       ) : (
-        <Moon className={cn(iconClass, "text-icon-dark hover:text-icon-hover")} />
+        <Moon
+          className={cn(iconClass, "text-icon-dark hover:text-icon-hover")}
+        />
       )}
     </button>
   );

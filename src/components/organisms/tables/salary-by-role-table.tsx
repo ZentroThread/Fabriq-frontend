@@ -14,9 +14,19 @@ type PayrollByRole = {
   employeeCount: number;
 };
 
-export function PayrollByRoleTable({ tableData }: { tableData: PayrollByRole[] }) {
-  const totalEmployees = tableData.reduce((sum, item) => sum + item.employeeCount, 0);
-  const totalSalary = tableData.reduce((sum, item) => sum + item.totalSalary, 0);
+export function PayrollByRoleTable({
+  tableData,
+}: {
+  tableData: PayrollByRole[];
+}) {
+  const totalEmployees = tableData.reduce(
+    (sum, item) => sum + item.employeeCount,
+    0
+  );
+  const totalSalary = tableData.reduce(
+    (sum, item) => sum + item.totalSalary,
+    0
+  );
 
   const formatCurrency = (value: number) =>
     `Rs.${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -39,9 +49,15 @@ export function PayrollByRoleTable({ tableData }: { tableData: PayrollByRole[] }
             key={roleData.role}
             className={`border-b hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
           >
-            <TableCell className="font-medium px-4 py-2 text-position-text">{roleData.role}</TableCell>
-            <TableCell className="px-4 py-2 text-position-text">{roleData.employeeCount}</TableCell>
-            <TableCell className="text-right px-4 py-2 text-position-text">{formatCurrency(roleData.totalSalary)}</TableCell>
+            <TableCell className="font-medium px-4 py-2 text-position-text">
+              {roleData.role}
+            </TableCell>
+            <TableCell className="px-4 py-2 text-position-text">
+              {roleData.employeeCount}
+            </TableCell>
+            <TableCell className="text-right px-4 py-2 text-position-text">
+              {formatCurrency(roleData.totalSalary)}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -50,8 +66,12 @@ export function PayrollByRoleTable({ tableData }: { tableData: PayrollByRole[] }
       <TableFooter className="bg-gray-100 font-semibold">
         <TableRow>
           <TableCell className="px-4 py-2 text-position-text">Total</TableCell>
-          <TableCell className="px-4 py-2 text-position-text">{totalEmployees}</TableCell>
-          <TableCell className="text-right px-4 py-2 text-position-text">{formatCurrency(totalSalary)}</TableCell>
+          <TableCell className="px-4 py-2 text-position-text">
+            {totalEmployees}
+          </TableCell>
+          <TableCell className="text-right px-4 py-2 text-position-text">
+            {formatCurrency(totalSalary)}
+          </TableCell>
         </TableRow>
       </TableFooter>
     </Table>

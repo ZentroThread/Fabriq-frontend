@@ -1,4 +1,3 @@
-
 interface InfoRowProps {
   label: string;
   value: React.ReactNode;

@@ -42,11 +42,10 @@ export default function AddEmployee() {
 
   return (
     <div className="p-5 flex flex-col gap-5">
-      {/* Employee Form */}
       <EmployeeForm
         isEditing={isEditing}
         formData={formData}
-        imagePreview={imagePreview} // pass preview URL
+        imagePreview={imagePreview}
         onImageChange={(file, preview) => {
           setImageFile(file);
           setImagePreview(preview);

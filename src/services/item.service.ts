@@ -2,6 +2,7 @@ import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
 import { useItemStore } from "@/store/item-store";
 import { getErrorMessage } from "@/utils/swal";
+import { logger } from "@/utils/logger";
 
 import type { Item, BackendItem, AddItemPayload } from "@/types/item.types";
 
@@ -21,7 +22,7 @@ interface AttireStats {
   wishlistCount: number;
   attireCode: string;
 }
-// Helper function to map backend response to frontend Item
+
 const mapBackendItemToItem = (backendItem: BackendItem): Item => ({
   id: backendItem.id,
   code: backendItem.attireCode,
@@ -69,7 +70,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to add item");
       setError(errorMsg);
-
+      logger.error("Failed to add item", error, true);
       throw error;
     } finally {
       setLoading(false);
@@ -98,7 +99,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to fetch items");
       setError(errorMsg);
-
+      logger.error("Failed to fetch items", error, true);
       throw error;
     } finally {
       setLoading(false);
@@ -120,7 +121,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to fetch item details");
       setError(errorMsg);
-
+      logger.error("Failed to fetch item details", error, true);
       throw error;
     } finally {
       setLoading(false);
@@ -142,7 +143,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to fetch item details");
       setError(errorMsg);
-
+      logger.error("Failed to fetch item details", error, true);
       throw error;
     } finally {
       setLoading(false);
@@ -182,7 +183,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to update item");
       setError(errorMsg);
-
+      logger.error("Failed to update item", error, true);
       throw error;
     } finally {
       setLoading(false);
@@ -205,7 +206,7 @@ export const itemService = {
     } catch (error: unknown) {
       const errorMsg = getErrorMessage(error, "Failed to delete item");
       setError(errorMsg);
-
+      logger.error("Failed to delete item", error, true);
       throw error;
     } finally {
       setLoading(false);
@@ -228,7 +229,7 @@ export const itemService = {
   // New: fetch rental stats and wishlist for an attire code
   getStatsByAttireCode: async (attireCode: string): Promise<AttireStats> => {
     return apiClient.request<AttireStats>(
-      `/v1/attire-rent/stats/${encodeURIComponent(attireCode)}`
+      API_ENDPOINTS.ATTIRE_RENT.STATS(attireCode)
     );
   },
   // Create an attire rent (used for future/wishlist entries)
@@ -239,7 +240,7 @@ export const itemService = {
     returnDate?: string | Date;
     billingCode?: string;
   }): Promise<StockUpdate> => {
-    return apiClient.request<StockUpdate>(`/v1/attire-rent/add`, {
+    return apiClient.request<StockUpdate>(API_ENDPOINTS.ATTIRE_RENT.ADD, {
       method: "POST",
       data: payload,
     });

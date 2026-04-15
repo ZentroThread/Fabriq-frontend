@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import {type CustomerWithRental } from "../components/organisms/tables/customer-with-first-fit-on-table";
-import {type CustomerWithUpcomingRental} from "../components/organisms/tables/customer-with-rental";
+import { type CustomerWithRental } from "../components/organisms/tables/customer-with-first-fit-on-table";
+import { type CustomerWithUpcomingRental } from "../components/organisms/tables/customer-with-rental";
 
 export const exportUpcomingRentalsExcel = (
   data: CustomerWithRental[],
@@ -9,9 +9,9 @@ export const exportUpcomingRentalsExcel = (
 ) => {
   const worksheetData = data.map((item) => ({
     "Rental ID": item.rentalId,
-    "Customer": item.customerName,
-    "Contact": item.contactNumber,
-    "Item": item.itemName,
+    Customer: item.customerName,
+    Contact: item.contactNumber,
+    Item: item.itemName,
     "Pickup Date": item.rentalDate,
     "Return Date": item.returnDate,
     "First Fit-On": item.fitOnDate ?? "",
@@ -38,9 +38,9 @@ export const exportUpcomingReturnsExcel = (
 ) => {
   const worksheetData = data.map((item) => ({
     "Rental ID": item.rentalId,
-    "Customer": item.customerName,
-    "Contact": item.contactNumber,
-    "Item": item.itemName,
+    Customer: item.customerName,
+    Contact: item.contactNumber,
+    Item: item.itemName,
     "Pickup Date": item.rentalDate,
     "Return Date": item.returnDate,
   }));

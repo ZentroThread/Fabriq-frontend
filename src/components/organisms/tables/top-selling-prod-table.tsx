@@ -14,8 +14,11 @@ type TopSellingProduct = {
   revenue: number;
 };
 
-export function TopSellingProdTable({ tableData }: { tableData: TopSellingProduct[] }) {
- 
+export function TopSellingProdTable({
+  tableData,
+}: {
+  tableData: TopSellingProduct[];
+}) {
   const totalSales = tableData.reduce((sum, item) => sum + item.sales, 0);
   const totalRevenue = tableData.reduce((sum, item) => sum + item.revenue, 0);
 
@@ -26,7 +29,9 @@ export function TopSellingProdTable({ tableData }: { tableData: TopSellingProduc
     <Table className="w-full text-sm shadow-lg rounded-lg overflow-hidden">
       <TableHeader className="bg-gray-100 uppercase  text-gray-700">
         <TableRow>
-          <TableHead className="w-[150px] text-left px-4 py-2">Product</TableHead>
+          <TableHead className="w-[150px] text-left px-4 py-2">
+            Product
+          </TableHead>
           <TableHead className="text-left px-4 py-2">Sales</TableHead>
           <TableHead className="text-right px-4 py-2">Revenue</TableHead>
         </TableRow>
@@ -38,9 +43,15 @@ export function TopSellingProdTable({ tableData }: { tableData: TopSellingProduc
             key={product.productName}
             className={`border-b border-border hover:bg-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"} text-position-text`}
           >
-            <TableCell className="font-medium px-4 py-2 text-position-text">{product.productName}</TableCell>
-            <TableCell className="px-4 py-2 text-position-text">{product.sales}</TableCell>
-            <TableCell className="text-right px-4 py-2 text-position-text">{formatCurrency(product.revenue)}</TableCell>
+            <TableCell className="font-medium px-4 py-2 text-position-text">
+              {product.productName}
+            </TableCell>
+            <TableCell className="px-4 py-2 text-position-text">
+              {product.sales}
+            </TableCell>
+            <TableCell className="text-right px-4 py-2 text-position-text">
+              {formatCurrency(product.revenue)}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -48,8 +59,12 @@ export function TopSellingProdTable({ tableData }: { tableData: TopSellingProduc
       <TableFooter className="bg-gray-100 font-semibold">
         <TableRow>
           <TableCell className="px-4 py-2 text-position-text">Total</TableCell>
-          <TableCell className="px-4 py-2 text-position-text">{totalSales}</TableCell>
-          <TableCell className="text-right px-4 py-2 text-position-text">{formatCurrency(totalRevenue)}</TableCell>
+          <TableCell className="px-4 py-2 text-position-text">
+            {totalSales}
+          </TableCell>
+          <TableCell className="text-right px-4 py-2 text-position-text">
+            {formatCurrency(totalRevenue)}
+          </TableCell>
         </TableRow>
       </TableFooter>
     </Table>

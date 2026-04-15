@@ -15,8 +15,13 @@ export const usePayrollByRole = (range?: string): PayrollByRole[] => {
 
   const payrollQueries = useQueries({
     queries:
-      employees?.map(emp => ({
-        queryKey: ["payroll", emp.id, startDate.getMonth() + 1, startDate.getFullYear()],
+      employees?.map((emp) => ({
+        queryKey: [
+          "payroll",
+          emp.id,
+          startDate.getMonth() + 1,
+          startDate.getFullYear(),
+        ],
         queryFn: () =>
           payrollService.generatePayroll(
             emp.id,
@@ -24,7 +29,7 @@ export const usePayrollByRole = (range?: string): PayrollByRole[] => {
             startDate.getFullYear()
           ),
         enabled: !!emp.id,
-      })) ?? [], 
+      })) ?? [],
   });
 
   if (!employees || employees.length === 0) return [];

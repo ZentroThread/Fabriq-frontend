@@ -58,35 +58,22 @@ export default function MonthlySalary() {
         </div>
       </div>
 
-      {/* Salary Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        {/* Earnings */}
         <EarningsCard data={salaryDetails} className="lg:col-span-2" />
-
-        {/* Deductions */}
         <DeductionsCard data={salaryDetails} className="lg:col-span-1" />
-
-        {/* Overtime */}
         <OvertimeCard data={salaryDetails} className="lg:col-span-3" />
-
-        {/*Extra Holiday Take*/}
         <ExtraHolidayCard data={salaryDetails} className="lg:col-span-1" />
-
-        {/* Allowances */}
         <AllowancesCard data={salaryDetails} className="lg:col-span-2" />
       </div>
 
-      {/* Salary Summary */}
       <SalarySummary data={salaryDetails} />
 
-      {/* Production Summary */}
       <EmpProductionSummary
         empId={Number(id)}
         month={Number(month)}
         year={Number(year)}
       />
 
-      {/* Advance Payment Summary */}
       <EmpAdvancePaymentSummary
         empId={Number(id)}
         month={Number(month)}

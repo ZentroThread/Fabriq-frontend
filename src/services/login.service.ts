@@ -2,6 +2,7 @@ import axios from "axios";
 import type { LoginInput, TokenResponse, User } from "../types/types";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { apiClient } from "@/lib/client";
+import { logger } from "@/utils/logger";
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   v !== null && typeof v === "object";
@@ -61,10 +62,6 @@ const extractMessage = (
 };
 
 export const loginService = {
-  /**
-   * Login user with credentials
-   * Backend sets JWT tokens as HttpOnly cookies
-   */
   login: async (credentials: LoginInput): Promise<TokenResponse> => {
     try {
       const response = await apiClient.request<TokenResponse>(
@@ -78,15 +75,14 @@ export const loginService = {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const msg = extractMessage(error.response?.data, error.message);
+        logger.error(`Login failed: ${msg}`, error, true);
         throw new Error(msg);
       }
+      logger.error("Login failed unexpectedly", error, true);
       throw error;
     }
   },
 
-  /**
-   * Get current user profile (validates JWT from HttpOnly cookie)
-   */
   getUserProfile: async (options?: {
     _skipAuthRedirect?: boolean;
     _retry?: boolean;
@@ -96,7 +92,6 @@ export const loginService = {
         API_ENDPOINTS.LOGIN.GETCURRENTUSER,
         {
           method: "GET",
-          // Pass through flags to axios config
           ...(options || {}),
         }
       );
@@ -107,15 +102,14 @@ export const loginService = {
           error.response?.data,
           "Username or Password Error."
         );
+        logger.error(`User profile fetch failed: ${msg}`, error, true);
         throw new Error(msg);
       }
+      logger.error("User profile fetch failed unexpectedly", error, true);
       throw error;
     }
   },
 
-  /**
-   * Refresh access token using refresh token
-   */
   refreshToken: async (): Promise<TokenResponse> => {
     try {
       const response = await apiClient.request<TokenResponse>(
@@ -126,25 +120,26 @@ export const loginService = {
       );
       return response;
     } catch (error) {
+      logger.error("Token refresh failed", error, true);
       throw error;
     }
   },
 
-  /**
-   * Logout user and clear HttpOnly cookies
-   */
   logout: async (): Promise<{ success: boolean }> => {
     try {
       await apiClient.request(API_ENDPOINTS.LOGIN.LOGOUT, {
         method: "POST",
       });
-    } catch {}
+    } catch (error) {
+      logger.error(
+        "Logout request failed, continuing local clear",
+        error,
+        false
+      );
+    }
     return { success: true };
   },
 
-  /**
-   * Change user password
-   */
   changePassword: async (data: {
     currentPassword: string;
     newPassword: string;
@@ -164,8 +159,10 @@ export const loginService = {
           error.response?.data,
           "Failed to change password. Try again."
         );
+        logger.error(`Password change failed: ${msg}`, error, true);
         throw new Error(msg);
       }
+      logger.error("Password change failed unexpectedly", error, true);
       throw error;
     }
   },

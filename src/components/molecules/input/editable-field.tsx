@@ -4,7 +4,7 @@ interface Props {
   label: string;
   value: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+}
 
 export default function EditableField({ label, value, onChange }: Props) {
   return (

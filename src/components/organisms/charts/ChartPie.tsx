@@ -52,7 +52,6 @@ export function ChartPie({ data }: ChartPieProps) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-
                   formatter={(value, _name, props) => {
                     const payload = props.payload as PieData;
 

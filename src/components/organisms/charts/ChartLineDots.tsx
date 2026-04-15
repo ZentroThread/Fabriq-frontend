@@ -17,7 +17,7 @@ import { ChartContainer } from "@/components/ui/chart";
 import { chartConfig } from "@/constants/data";
 
 type ChartDataItem = {
-  month: string; 
+  month: string;
   total: number;
 };
 
@@ -26,7 +26,6 @@ interface ChartLineDotsProps {
 }
 
 export function ChartLineDots({ chartData }: ChartLineDotsProps) {
-
   const formattedData = chartData.map((item) => {
     const date = new Date(item.month + "-01");
     const monthLabel = new Intl.DateTimeFormat("en-US", {
@@ -56,7 +55,6 @@ export function ChartLineDots({ chartData }: ChartLineDotsProps) {
                   tickMargin={5}
                 />
                 <YAxis stroke="var(--color-position-text)" />
-  
 
                 {/* Tooltip for hover */}
                 <Tooltip

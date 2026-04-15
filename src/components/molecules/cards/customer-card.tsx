@@ -45,7 +45,6 @@ interface CustomerCardProps {
   };
 }
 
-
 export default function CustomerCard({ customer }: CustomerCardProps) {
   const [open, setOpen] = useState(false);
 

@@ -12,8 +12,7 @@ export function useReservationCleanup() {
   }, [items]);
 
   useEffect(() => {
-    const beforeUnloadHandler = () => {
-    };
+    const beforeUnloadHandler = () => {};
 
     window.addEventListener("beforeunload", beforeUnloadHandler);
 
@@ -28,7 +27,7 @@ export function useReservationCleanup() {
 
       cleanup();
     };
-  }, []); 
+  }, []);
   return {
     markConfirming: () => {
       isConfirming.current = true;
