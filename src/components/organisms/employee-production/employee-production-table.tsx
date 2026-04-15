@@ -1,18 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import Table from "@/components/molecules/Table/table";
 import type { EmployeeProductionResponse } from "@/types/employee-product.type";
-
-const columns = [
-  { header: "Date", accessor: "date" as const },
-  { header: "Product Name", accessor: "productionName" as const },
-  { header: "Quantity", accessor: "quantity" as const },
-  { header: "Rate Per Product", accessor: "ratePerProduct" as const },
-  {
-    header: "Total",
-    accessor: (row: EmployeeProductionResponse) =>
-      row.quantity * row.ratePerProduct,
-  },
-];
+import { columnsEmpProd } from "@/constants/data";
 
 type EmployeeProductionTableProps = {
   data: EmployeeProductionResponse[];
@@ -27,7 +16,7 @@ export default function EmployeeProductionTable({
 }: EmployeeProductionTableProps) {
   return (
     <Table
-      columns={columns}
+      columns={columnsEmpProd}
       data={employeeProductions}
       actions={(production) => (
         <div className="flex gap-2">

@@ -1,4 +1,6 @@
 import { Calendar } from "@/components/ui/calendar";
+import { calenderStyles } from "@/constants/data";
+import { cn } from "@/utils/style";
 
 type DatePickerProps = {
   selectedDay: Date | null;
@@ -9,11 +11,14 @@ type DatePickerProps = {
 export default function SingleDatePicker({
   selectedDay,
   onDaySelect,
-  className = "",
+  className,
 }: DatePickerProps) {
   return (
     <div
-      className={`p-4 bg-card border border-(--color-border) rounded-2xl shadow-md flex items-center justify-center ${className}`}
+      className={cn(
+        "p-4 bg-card border border-(--color-border) rounded-2xl shadow-md flex items-center justify-center",
+        className
+      )}
     >
       <Calendar
         mode="single"
@@ -25,18 +30,3 @@ export default function SingleDatePicker({
     </div>
   );
 }
-
-const calenderStyles = {
-  leave: {
-    backgroundColor: "var(--color-light-pink)",
-    color: "var(--color-light-black)",
-    borderRadius: "6px",
-    fontWeight: "bold",
-  },
-  today: {
-    backgroundColor: "var(--color-light-pink)",
-    color: "var(--color-accent-foreground)",
-    borderRadius: "6px",
-    fontWeight: "bold",
-  },
-};

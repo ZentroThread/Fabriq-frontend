@@ -5,7 +5,6 @@ type AttendanceWithId = Attendance & { id: string | number } & {
   employeeName: string | null;
 };
 
-// Function to get color based on status
 const getStatusColor = (status: string) => {
   switch (status) {
     case "PRESENT":

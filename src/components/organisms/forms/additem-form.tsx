@@ -4,6 +4,7 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import { useAddItem } from "@/hooks/useItems";
 import { useAuthStore } from "@/store/user-auth-store";
+import { logger } from "@/utils/logger";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -53,18 +54,17 @@ export function AddItemForm({
   itemData,
 }: AddItemFormProps) {
   const form = useAddItemForm();
-  // Pre-fill form when in edit mode
   useEffect(() => {
     if (editMode && itemData) {
       form.reset({
         code: itemData.code,
         title: itemData.title,
         description: itemData.description,
-        price: itemData.price.toString(), // Convert to string for form
-        stock: itemData.stock.toString(), // Convert to string for form
+        price: itemData.price.toString(),
+        stock: itemData.stock.toString(),
         status: itemData.status,
         categoryId: itemData.category.categoryId,
-        image: undefined, // Image will need to be re-uploaded in edit mode
+        image: undefined,
       });
     }
   }, [editMode, itemData, form]);
@@ -74,40 +74,35 @@ export function AddItemForm({
   const { getTenantId, isAuthenticated } = useAuthStore();
 
   async function onSubmit(values: z.infer<typeof addItemFormSchema>) {
-    // Validate authentication and tenant ID before submitting
     if (!isAuthenticated()) {
-      await Swal.fire({
-        icon: "error",
-        title: "Authentication Required",
-        text: "Please log in to continue.",
-      });
+      logger.warn(
+        "Authentication Required",
+        new Error("Please log in to continue."),
+        true
+      );
       return;
     }
 
     const tenantId = getTenantId();
     if (!tenantId) {
-      await Swal.fire({
-        icon: "error",
-        title: "Session Error",
-        text: "Tenant ID not found. Please log out and log back in.",
-      });
-
+      logger.error(
+        "Session Error",
+        new Error("Tenant ID not found. Please log out and log back in."),
+        true
+      );
       return;
     }
 
     const payload = {
       ...values,
-      // ensure numeric types
       price: parseFloat(values.price) || 0,
       stock: parseInt(values.stock, 10) || 0,
       category: Number(values.categoryId),
-      // ensure required string fields are always strings
       title: values.title ?? "",
       description: values.description ?? "",
     };
 
     if (editMode && itemData) {
-      // Update existing item
       try {
         await updateItemMutation.mutateAsync({
           id: String(itemData.id),
@@ -121,30 +116,20 @@ export function AddItemForm({
         });
         if (onClose) onClose();
       } catch (error: unknown) {
-        Swal.fire({
-          icon: "error",
-          title: "Failed to update item. Refresh the page.",
-          text: error instanceof Error ? error.message : "Unknown error",
-        });
+        logger.error("Failed to update item. Refresh the page.", error, true);
       }
     } else {
-      // Add new item
       try {
         await addItemMutation.mutateAsync(payload);
         if (onClose) onClose();
       } catch (error: unknown) {
-        Swal.fire({
-          icon: "error",
-          title: "Failed to add item",
-          text: error instanceof Error ? error.message : "Unknown error",
-        });
+        logger.error("Failed to add item", error, true);
       }
     }
   }
 
   return (
     <Form {...form}>
-      {/* SweetAlert2 used for success messages; inline SuccessAlert removed */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="bg-card">
         <ScrollArea className="h-[500px] w-full pr-4 [&>div>div]:space-y-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-500">
           <div className="space-y-4">
@@ -320,10 +305,7 @@ export function AddItemForm({
                       </label>
                     </div>
                   </FormControl>
-                  {/* <FormDescription className="text-position-text font-light ">Upload an image file</FormDescription> */}
                   <FormMessage />
-
-                  {/* Preview the uploaded image */}
                   {value && value instanceof File ? (
                     <div className="mt-2">
                       <p className="text-xs text-position-text mb-1">

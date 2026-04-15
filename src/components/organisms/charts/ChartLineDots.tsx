@@ -1,5 +1,3 @@
-"use client";
-
 import {
   CartesianGrid,
   Line,
@@ -15,20 +13,8 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
-
-export const description = "A line chart with dots";
-
-const chartConfig = {
-  total: {
-    label: "Total",
-    color: "var(--chart-1)",
-  },
-  month: {
-    label: "Month",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
+import { ChartContainer } from "@/components/ui/chart";
+import { chartConfig } from "@/constants/data";
 
 type ChartDataItem = {
   month: string; 

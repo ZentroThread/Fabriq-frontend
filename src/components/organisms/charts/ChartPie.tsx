@@ -12,8 +12,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "A pie chart with a legend";
-
 type PieData = {
   category: "saree" | "nilame" | "jwelary";
   value: number;

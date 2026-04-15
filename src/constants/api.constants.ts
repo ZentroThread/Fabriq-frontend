@@ -32,7 +32,10 @@ export const API_ENDPOINTS = {
   BILLING: {
     GET_ALL: "/v1/billing/all",
   },
-  // Add more endpoints...
+
+  NOTIFICATION: {
+    PUBLISH: "/v1/notification/publish",
+  },
 
   EMPLOYEE: {
     ADD: "/v1/employees",
@@ -101,17 +104,17 @@ export const API_ENDPOINTS = {
 
   RAG: {
     CHAT: "/api/chat",
-    BACKEND_CHAT: "/v1/rag/chat"
+    BACKEND_CHAT: "/v1/rag/chat",
   },
-  FEEDBACK:{
+  FEEDBACK: {
     All: "/v1/feedback/all",
-    Approve: (id: number) => `/v1/feedback/approve/${id}`, 
+    Approve: (id: number) => `/v1/feedback/approve/${id}`,
     Delete: (id: number) => `/v1/feedback/delete/${id}`,
   },
-  BOOKINGS:{
+  BOOKINGS: {
     All: "/v1/bookings",
     ByTenant: (tenantId: string) => `/v1/bookings/tenant/${tenantId}`,
     Approve: (requestId: number) => `/v1/bookings/${requestId}/approve`,
     Reject: (requestId: number) => `/v1/bookings/${requestId}/reject`,
-  }
+  },
 };

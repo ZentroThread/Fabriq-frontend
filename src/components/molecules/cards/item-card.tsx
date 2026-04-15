@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
 import Button from "@/components/atoms/button/custom-button";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
@@ -10,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDeleteItem } from "@/hooks/useItems";
-import { useItemStore } from "@/store/item-store";
 import { cn } from "@/utils/style";
 import { SquarePen, Trash2 } from "lucide-react";
 
@@ -43,8 +43,7 @@ export function ItemCard({
   status,
   categoryId,
 }: ItemCardProps) {
-  const editingItemCode = useItemStore((state) => state.editingItemCode);
-  const setEditingItemCode = useItemStore((state) => state.setEditingItemCode);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const deleteItemMutation = useDeleteItem();
 
   const handleDelete = () => {
@@ -113,7 +112,7 @@ export function ItemCard({
               padding="p-4"
               textcolor={"text-icon-card1"}
               bordercolor={"border-border-card1"}
-              onClick={() => setEditingItemCode(code)}
+              onClick={() => setIsEditDialogOpen(true)}
               icon={<SquarePen className="w-4" />}
             />
             <AlertDialogDemo
@@ -140,8 +139,8 @@ export function ItemCard({
       </Card>
 
       <Dialog
-        open={editingItemCode === code}
-        onOpenChange={(isOpen) => setEditingItemCode(isOpen ? code : null)}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
       >
         <DialogContent className="max-w-xl max-h-[90vh] bg-card">
           <DialogHeader className="flex items-center">
@@ -171,7 +170,7 @@ export function ItemCard({
               },
               image,
             }}
-            onClose={() => setEditingItemCode(null)}
+            onClose={() => setIsEditDialogOpen(false)}
           />
         </DialogContent>
       </Dialog>

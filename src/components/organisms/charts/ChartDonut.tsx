@@ -1,5 +1,3 @@
-"use client";
-
 import { Pie, PieChart, Cell, LabelList } from "recharts";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import {
@@ -7,12 +5,9 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
-
-
-
 export function ChartDonut() {
 
-   const { totalEmployees, presentCount, lateCount,absentCount } = useTodayDeviceAttendanceLogsSummary();
+const { totalEmployees, presentCount, lateCount,absentCount } = useTodayDeviceAttendanceLogsSummary();
 
   const attendanceData = [
     { name: "Present", value: presentCount, color: "#B47C5A" },

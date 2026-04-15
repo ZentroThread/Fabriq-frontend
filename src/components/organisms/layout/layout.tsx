@@ -14,7 +14,7 @@ function Layout() {
   const hideLayout = noLayoutPages.includes(location.pathname);
 
   if (hideLayout) {
-    return <Outlet />; // <-- Login page will render here
+    return <Outlet />; 
   }
 
   // Format role for display
@@ -45,7 +45,7 @@ function Layout() {
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 md:static md:top-0`}
         >
-          <Sidebar open={sidebarOpen} />
+          <Sidebar />
         </div>
 
         {/* Overlay */}

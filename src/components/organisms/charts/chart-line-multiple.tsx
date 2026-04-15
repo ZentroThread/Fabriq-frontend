@@ -1,37 +1,19 @@
-"use client";
-
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { chartData } from "@/constants/data";
+import { chartConfig, chartData } from "@/constants/data";
 import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
 } from "@/components/ui/card";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "A multiple line chart";
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
-
 export function ChartLineMultiple() {
   return (
     <Card>
-      <CardHeader></CardHeader>
       <CardContent>
         <ChartContainer
           config={chartConfig}

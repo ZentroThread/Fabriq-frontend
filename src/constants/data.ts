@@ -1,4 +1,17 @@
 import {type CustomerWithRental } from "../components/organisms/tables/customer-with-first-fit-on-table";
+import type { EmployeeProductionResponse } from "@/types/employee-product.type";
+
+export const columnsEmpProd = [
+  { header: "Date", accessor: "date" as const },
+  { header: "Product Name", accessor: "productionName" as const },
+  { header: "Quantity", accessor: "quantity" as const },
+  { header: "Rate Per Product", accessor: "ratePerProduct" as const },
+  {
+    header: "Total",
+    accessor: (row: EmployeeProductionResponse) =>
+      row.quantity * row.ratePerProduct,
+  },
+];
 
 export const sampleRentalData: CustomerWithRental[] = [
   {
@@ -58,6 +71,13 @@ export const chartDataDonut = [
   { browser: "firefox", visitors: 187, fill: "var(--color-pie-3)" },
 ];
 
+
+export const columns = [
+  { header: "Date", accessor: "date" as const },
+  { header: "Amount", accessor: "amount" as const },
+  { header: "Reason", accessor: "reason" as const },
+];
+
 export const employees = [
   {
     initials: "NP",
@@ -107,44 +127,6 @@ export const items = [
   { name: "Saree C", price: 1800, days: 5 },
 ];
 
-export const invoices = [
-  {
-    invoice: "INV001",
-
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-];
 
 export const leaveRecords = [
   { id: 1, remark: "Sick Leave", date: "2025-11-18" },
@@ -163,3 +145,29 @@ export const status = [
   { value: "In Laundry", label: "In Laundry" },
   { value: "Rented", label: "Rented" },
 ];
+
+export const calenderStyles = {
+  leave: {
+    backgroundColor: "var(--color-light-pink)",
+    color: "var(--color-light-black)",
+    borderRadius: "6px",
+    fontWeight: "bold",
+  },
+  today: {
+    backgroundColor: "var(--color-light-pink)",
+    color: "var(--color-accent-foreground)",
+    borderRadius: "6px",
+    fontWeight: "bold",
+  },
+};
+
+export const chartConfig = {
+  profit: {
+    label: "Profit",
+    color: "var(--color-light-pie-1)", // pink
+  },
+  revenue: {
+    label: "Revenue",
+    color: "var(--color-light-pie-2)", // brown
+  },
+};
