@@ -6,7 +6,6 @@ import { useAuthStore } from "@/store/user-auth-store";
 
 export const FetchCustomers = () => {
   const user = useAuthStore((state) => state.user);
-  // Only allow owner and cashier to fetch customers
   const hasAccess = user?.role === "owner" || user?.role === "cashier";
 
   return useQuery({

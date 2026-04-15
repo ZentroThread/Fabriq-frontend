@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
 import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import {
   BanknoteArrowUp,
   Heart,

@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { BillsSkeleton } from "@/components/molecules/skeletons/bills-skeleton";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
@@ -72,7 +72,9 @@ const Bills = () => {
       setLoading(true);
       try {
         if (fetchBillings) await fetchBillings();
-      } catch (e) { /* empty */ } finally {
+      } catch (e) {
+        /* empty */
+      } finally {
         setLoading(false);
       }
     }

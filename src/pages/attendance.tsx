@@ -1,5 +1,5 @@
 import AttendanceCard from "@/components/molecules/cards/attendance-card";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { Calendar28 } from "@/components/organisms/date-picker/calender";
 import { AttendanceSkeleton } from "@/components/molecules/skeletons/attendance-skeleton";
 import { CircleCheck, CircleX, Clock4, FingerprintPattern } from "lucide-react";
@@ -27,7 +27,6 @@ function Attendance() {
   if (isLoading) {
     return <AttendanceSkeleton />;
   }
-
 
   return (
     <div className="p-5 flex flex-col ">

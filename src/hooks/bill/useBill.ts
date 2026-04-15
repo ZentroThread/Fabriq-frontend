@@ -7,7 +7,6 @@ import { useAuthStore } from "@/store/user-auth-store";
 
 export const useGetAllBills = () => {
   const user = useAuthStore((state) => state.user);
-  // Only allow owner and cashier to fetch bills
   const hasAccess = user?.role === "owner" || user?.role === "cashier";
 
   return useQuery<Bill[]>({
@@ -18,7 +17,6 @@ export const useGetAllBills = () => {
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error, "Failed to fetch bills");
 
-        // Show error to user
         Swal.fire({
           icon: "error",
           title: "Failed to load bills",
@@ -29,6 +27,6 @@ export const useGetAllBills = () => {
       }
     },
     retry: 1,
-    enabled: hasAccess, // Only fetch if user has access
+    enabled: hasAccess,
   });
 };

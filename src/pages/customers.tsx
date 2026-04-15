@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { CustomersSkeleton } from "@/components/molecules/skeletons/customers-skeleton";
 
 function Customers() {
@@ -265,7 +265,11 @@ function Customers() {
                                   await fetchCustomers();
                                   logger.info("Deleted", undefined, true);
                                 } catch (err) {
-                                  logger.error("Failed to delete customer", err, true);
+                                  logger.error(
+                                    "Failed to delete customer",
+                                    err,
+                                    true
+                                  );
                                 }
                               }
                             }}

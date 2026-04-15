@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import SidebarButton from "../../atoms/iconbutton/side-button";
-import { sidebarItems } from "../../../config/sidebar-items";
+import { sidebarItems } from "./sidebar-items";
 import { useAuthStore } from "@/store/user-auth-store";
 import { cn } from "@/utils/style";
 

@@ -7,7 +7,6 @@ import { useAuthStore } from "@/store/user-auth-store";
 
 export const useGetAllAttireRents = () => {
   const user = useAuthStore((state) => state.user);
-  // Only allow owner and cashier to fetch attire rentals
   const hasAccess = user?.role === "owner" || user?.role === "cashier";
 
   return useQuery<AttireRent[]>({
@@ -31,6 +30,6 @@ export const useGetAllAttireRents = () => {
       }
     },
     retry: 1,
-    enabled: hasAccess, // Only fetch if user has access
+    enabled: hasAccess, 
   });
 };

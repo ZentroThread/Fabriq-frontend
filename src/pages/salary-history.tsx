@@ -1,4 +1,4 @@
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { CheckCircle } from "lucide-react";
 import useEmployeeStore from "@/store/employee-store";
 import { useGetPayrollRecord } from "@/hooks/employee/payroll/usePayroll";

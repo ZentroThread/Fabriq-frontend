@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { attireRentService } from "@/services/attireRent.service";
 import { ItemsHistorySkeleton } from "@/components/molecules/skeletons/items-history-skeleton";
 import {

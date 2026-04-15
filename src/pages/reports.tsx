@@ -1,40 +1,39 @@
-// import AddButton from "@/components/atoms/button/add-button";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-import { DollarSign, Package,TrendingUp } from "lucide-react";
+import { DollarSign, Package, TrendingUp } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { ChartBarMultiple } from "@/components/organisms/charts/chart-bar-multiple";
-// import { ChartLineMultiple } from "@/components/organisms/charts/chart-line-multiple";
 import { ReportsSkeleton } from "@/components/molecules/skeletons/reports-skeleton";
 import { useState, useEffect } from "react";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
-import {useTotalSalary} from "@/hooks/employee/payroll/useTotalSalary";
-import {useTotalProfit} from "@/hooks/profit/useTotalProfit";
-import {useMonthlyProfitRevenue} from "@/hooks/profit/useMonthlyProfitRevenue";
-import {RevenueByCategoryPie} from "@/components/organisms/charts/revenue-by-category-pie";
-import {useAttireRentSummaryByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
-import {TopSellingProdTable} from "@/components/organisms/tables/top-selling-prod-table";
-import {useTopSellingProductsByDateRange} from "@/hooks/attire/useAttireRentSummaryByDateRange";
-import {usePayrollByRole} from "@/hooks/employee/payroll/usePayrollByRole";
-import {PayrollByRoleTable} from "@/components/organisms/tables/salary-by-role-table";
-import {useUpcomingAttireRentWithCustomerDetails} from "@/hooks/attire/useUpcomingAttireRentWithCustomerDetails";
-import {CustomerWithRentalTable} from "@/components/organisms/tables/customer-with-rental";
-import {CustomerWithFirstFitOnTable} from "@/components/organisms/tables/customer-with-first-fit-on-table";
-import {sampleRentalData} from "@/constants/data";
+import { useTotalSalary } from "@/hooks/employee/payroll/useTotalSalary";
+import { useTotalProfit } from "@/hooks/profit/useTotalProfit";
+import { useMonthlyProfitRevenue } from "@/hooks/profit/useMonthlyProfitRevenue";
+import { RevenueByCategoryPie } from "@/components/organisms/charts/revenue-by-category-pie";
+import { useAttireRentSummaryByDateRange } from "@/hooks/attire/useAttireRentSummaryByDateRange";
+import { TopSellingProdTable } from "@/components/organisms/tables/top-selling-prod-table";
+import { useTopSellingProductsByDateRange } from "@/hooks/attire/useAttireRentSummaryByDateRange";
+import { usePayrollByRole } from "@/hooks/employee/payroll/usePayrollByRole";
+import { PayrollByRoleTable } from "@/components/organisms/tables/salary-by-role-table";
+import { useUpcomingAttireRentWithCustomerDetails } from "@/hooks/attire/useUpcomingAttireRentWithCustomerDetails";
+import { CustomerWithRentalTable } from "@/components/organisms/tables/customer-with-rental";
+import { CustomerWithFirstFitOnTable } from "@/components/organisms/tables/customer-with-first-fit-on-table";
+import { sampleRentalData } from "@/constants/data";
 
 function Reports() {
-
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("");
   const [nextTimeRange, setNextTimeRange] = useState("");
-  const {summaryForSelectedMonthRange , totalOrdersByMonthRange } = useMonthlyBillSummary(timeRange);
+  const { summaryForSelectedMonthRange, totalOrdersByMonthRange } =
+    useMonthlyBillSummary(timeRange);
   const { totalSalary } = useTotalSalary(timeRange);
   const { totalProfit } = useTotalProfit(timeRange);
   const { chartData } = useMonthlyProfitRevenue(timeRange);
   const attireRentSummary = useAttireRentSummaryByDateRange(timeRange);
   const topSellingProducts = useTopSellingProductsByDateRange(timeRange);
   const payrollByRole = usePayrollByRole(timeRange);
-  const upcomingAttireRentWithCustomerDetails = useUpcomingAttireRentWithCustomerDetails(nextTimeRange);
+  const upcomingAttireRentWithCustomerDetails =
+    useUpcomingAttireRentWithCustomerDetails(nextTimeRange);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -69,14 +68,14 @@ function Reports() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
-                  lable={"Total Revenue"}
-                  lable1={`LKR ${((summaryForSelectedMonthRange.reduce((acc, curr) => acc + curr.total, 0)/1000000).toFixed(2)).toLocaleString()}M`}
-                  lable2={""}
-                  icon={DollarSign}
-                />
+          lable={"Total Revenue"}
+          lable1={`LKR ${(summaryForSelectedMonthRange.reduce((acc, curr) => acc + curr.total, 0) / 1000000).toFixed(2).toLocaleString()}M`}
+          lable2={""}
+          icon={DollarSign}
+        />
         <DashboardCard
           lable={"Total Profits"}
-          lable1={`LKR ${((totalProfit/1000000).toFixed(2)).toLocaleString()}M`}
+          lable1={`LKR ${(totalProfit / 1000000).toFixed(2).toLocaleString()}M`}
           lable2={""}
           icon={TrendingUp}
           iconbg="var(--color-light-pie-1)"
@@ -90,7 +89,7 @@ function Reports() {
         />
         <DashboardCard
           lable={"Total Salary"}
-          lable1={`LKR ${((totalSalary/1000000).toFixed(2)).toLocaleString()}M`}
+          lable1={`LKR ${(totalSalary / 1000000).toFixed(2).toLocaleString()}M`}
           lable2={""}
           icon={DollarSign}
           iconbg="var(--color-light-pie-1)"
@@ -108,7 +107,6 @@ function Reports() {
           description={"Product category distribution"}
         >
           <RevenueByCategoryPie data={attireRentSummary} />
-
         </Chart>
       </div>
       {/* <div className="">
@@ -153,11 +151,13 @@ function Reports() {
           label={"Upcoming Attire Rental"}
           description={"Attire rentals scheduled "}
         >
-          <CustomerWithRentalTable tableData={upcomingAttireRentWithCustomerDetails} />
+          <CustomerWithRentalTable
+            tableData={upcomingAttireRentWithCustomerDetails}
+          />
         </Chart>
       </div>
 
-       <div className=" mt-5 mb-5">
+      <div className=" mt-5 mb-5">
         <Chart
           label={"Upcoming First Fit-Ons"}
           description={"Attire rentals scheduled for first fit-on appointments"}

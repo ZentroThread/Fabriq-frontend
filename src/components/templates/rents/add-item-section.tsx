@@ -1,22 +1,21 @@
 import InputField from "@/components/molecules/input/input-feild";
 import { useEffect, useState, useMemo } from "react";
+import { logger } from "@/utils/logger";
 import { useItems } from "@/hooks/useItems";
 import { useItemStore } from "@/store/item-store";
 import type { Item } from "@/types/item.types";
-import Chart from "../Chart";
+import Chart from "../../atoms/frame/frame";
 import Button from "@/components/atoms/button/custom-button";
 import { Plus, Loader2, AlertCircle } from "lucide-react";
 import useBillingStore from "@/store/billing-store";
 import type { BillingState } from "@/store/billing-store";
 
-// Extended type to handle both custCode and cust_id
 interface CustomerData {
   custCode?: string;
   cust_id?: number | string;
   [key: string]: unknown;
 }
 
-// Type for items that might have different stock field names
 interface ItemWithStock extends Omit<
   Partial<Item>,
   "stock" | "quantity" | "availableQty" | "attire_stock"
@@ -28,7 +27,6 @@ interface ItemWithStock extends Omit<
 }
 
 export default function AddItemsSection() {
-  // ensure items are fetched into the local zustand store for suggestions
   useItems();
 
   const selectedCustomer = useBillingStore(
@@ -40,31 +38,24 @@ export default function AddItemsSection() {
     (s: BillingState) => s.setSelectedCustomer
   );
 
-  // Toggle between regular and customized forms
   const [formType, setFormType] = useState<"regular" | "customized">("regular");
-
   const [itemCode, setItemCode] = useState<string | null>("");
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [days, setDays] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  // Customized form state
   const [customCode, setCustomCode] = useState<string>("");
   const [customPrice, setCustomPrice] = useState<string>("");
 
-  // Local item store
   const allItems = useItemStore((s) => s.items);
   const isLoading = useItemStore((s) => s.isLoading);
   const isError = Boolean(useItemStore((s) => s.error));
 
-  // debounced search term so we don't spam the API while typing
   useEffect(() => {
     const t = setTimeout(() => setSearchTerm((itemCode ?? "").trim()), 150);
     return () => clearTimeout(t);
   }, [itemCode]);
 
-  // Local suggestions from zustand store
   const suggestions = (
     searchTerm
       ? allItems.filter((it) => {
@@ -83,7 +74,6 @@ export default function AddItemsSection() {
     return item.code || (item.id ? String(item.id) : "");
   };
 
-  // Derived state from local store lookup
   const localItem =
     allItems.find((it) => {
       const q = (itemCode ?? "").trim();
@@ -98,7 +88,6 @@ export default function AddItemsSection() {
 
   const [displayedStock, setDisplayedStock] = useState<number | null>(null);
 
-  // normalize stock from different backend field names
   const normalizeStock = (item: ItemWithStock | null): number | null => {
     if (!item) return null;
 
@@ -129,17 +118,6 @@ export default function AddItemsSection() {
     return null;
   };
 
-  // Update displayed stock whenever local item OR store changes
-  // useEffect(() => {
-  //   if (localItem) {
-  //     const liveStock = getCurrentStock(localItem.code || "");
-  //     setDisplayedStock(liveStock);
-  //   } else {
-  //     setDisplayedStock(null);
-  //   }
-  // }, [localItem, allItems]);
-
-  // Derive customerCode from selectedCustomer
   const customerCode = useMemo(() => {
     if (!selectedCustomer) return "";
     return (
@@ -172,10 +150,7 @@ export default function AddItemsSection() {
       customerCode: customerCode,
     };
 
-    // Just add to local billing state - NO API CALLS
     addItem(payload);
-
-    // Reset form
     setStartDate(null);
     setEndDate(null);
     setItemCode("");
@@ -196,13 +171,10 @@ export default function AddItemsSection() {
       startDate: startDate || undefined,
       endDate: endDate || undefined,
       customerCode: customerCode,
-      isCustomItem: true, // Mark as custom item
+      isCustomItem: true, 
     };
-
-    // Add to local billing state
     addItem(payload);
 
-    // Reset form
     setCustomCode("");
     setCustomPrice("");
     setStartDate(null);
@@ -220,7 +192,9 @@ export default function AddItemsSection() {
       } else {
         setSelectedCustomer({ custCode: value } as CustomerData);
       }
-    } catch (err) {}
+    } catch (err) {
+      logger.error("Failed to update customer code", err, true);
+    }
   };
 
   return (

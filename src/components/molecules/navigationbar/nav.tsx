@@ -2,7 +2,7 @@ import { Menu, LogOut, X } from "lucide-react";
 import logo from "../../../assets/images/logo.png";
 import ThemeToggle from "../../atoms/toggle/theme-toggle";
 import { useAuthStore } from "@/store/user-auth-store";
-import ChatWidget from "../../organisms/ChatWidget";
+import ChatWidget from "../../organisms/chat-widget/chat-widget";
 import { AlertDialogDemo } from "../../atoms/alert/alert-dialog";
 import { ChangePasswordDialog } from "../dialog/change-password-dialog";
 import { cn } from "@/utils/style";
@@ -11,7 +11,7 @@ interface NavProps {
   username: string;
   position: string;
   sidebarOpen: boolean;
-  className?: string; 
+  className?: string;
   setSidebarOpen: (v: boolean) => void;
 }
 

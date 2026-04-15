@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { ItemsWishlistSkeleton } from "@/components/molecules/skeletons/items-wishlist-skeleton";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 import type { ComponentProps } from "react";

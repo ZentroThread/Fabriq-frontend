@@ -8,11 +8,10 @@ export default function RentalItemsSection() {
   const selectedCustomer = useBillingStore(
     (s: BillingState) => s.selectedCustomer
   );
-  void selectedCustomer; // Intentionally unused for now
+  void selectedCustomer; 
 
 
   function onDelete(index: number): void {
-    // Remove from UI only - no API calls needed
     removeItem(index);
   }
 
@@ -68,12 +67,6 @@ export default function RentalItemsSection() {
                       >
                         <Trash2 size={16} className="text-position-text" />
                       </button>
-                      {/* <button
-                        className="flex items-center gap-2 text-position-text font-normal cursor-pointer"
-                        onClick={() => ChangeMeasurementPopup(index)}
-                      >
-                        <Ruler size={16} className="text-text-active" />
-                      </button> */}
                     </div>
                   </td>
                 </tr>

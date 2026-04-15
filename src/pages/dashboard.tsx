@@ -1,7 +1,7 @@
 import { ChartDonut } from "@/components/organisms/charts/ChartDonut";
 import { ChartLineDots } from "@/components/organisms/charts/ChartLineDots";
 import { ChartPie } from "@/components/organisms/charts/ChartPie";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { Clock4, DollarSign, Package, Users } from "lucide-react";
 import { DashboardSkeleton } from "@/components/molecules/skeletons/dashboard-skeleton";
@@ -9,8 +9,8 @@ import { useState, useEffect } from "react";
 import { useAttireRentsSummary } from "@/hooks/attire/useAttireRentsSummary";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
 import { useMonthlyBillSummary } from "@/hooks/bill/useMonthlyBillSummary";
-import {useAttireRentCurrentMonthlyOverview} from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
-import {RentDetailsSummary} from "@/components/organisms/summaries/rent-details-summary";
+import { useAttireRentCurrentMonthlyOverview } from "@/hooks/attire/useAttireRentCurrentMonthlyOverview";
+import { RentDetailsSummary } from "@/components/organisms/summaries/rent-details-summary";
 
 function Dashboard() {
   const {
@@ -27,7 +27,7 @@ function Dashboard() {
       ? Math.round(((presentCount + lateCount) / totalEmployees) * 100)
       : 0;
 
-  const { monthlySummary,summaryForThisMonth } = useMonthlyBillSummary();
+  const { monthlySummary, summaryForThisMonth } = useMonthlyBillSummary();
 
   const currentMonthlyOverview = useAttireRentCurrentMonthlyOverview();
 
@@ -54,7 +54,7 @@ function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5 mb-5">
         <DashboardCard
           lable={"Total Revenue"}
-          lable1={`LKR ${((summaryForThisMonth.totalAmount/1000000).toFixed(2)).toLocaleString()}M`}
+          lable1={`LKR ${(summaryForThisMonth.totalAmount / 1000000).toFixed(2).toLocaleString()}M`}
           lable2={"+15%"}
           icon={DollarSign}
         />
@@ -73,7 +73,7 @@ function Dashboard() {
         <DashboardCard
           lable={"Attendance Rate"}
           lable1={`${attendanceRate}%`}
-          lable2={`${presentCount+lateCount}/${totalEmployees} present`}
+          lable2={`${presentCount + lateCount}/${totalEmployees} present`}
           icon={Users}
           iconbg="var(--color-dbcard)"
         />

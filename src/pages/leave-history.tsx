@@ -1,5 +1,5 @@
 import Button from "@/components/atoms/button/custom-button";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { Calendar } from "@/components/ui/calendar";
 import { leaveRecords } from "@/constants/data";
 import { Plus } from "lucide-react";

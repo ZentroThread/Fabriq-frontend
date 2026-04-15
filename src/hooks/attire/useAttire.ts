@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { itemService } from "@/services/item.service";
 import { getErrorMessage } from "@/utils/swal";
-import Swal from "sweetalert2";
+import { logger } from "@/utils/logger";
 
 export const useGetAllAttire = () => {
   return useQuery({
@@ -14,13 +14,7 @@ export const useGetAllAttire = () => {
           error,
           "Failed to fetch attire items"
         );
-
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load attire",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        logger.error("Failed to load attire", error, true);
         throw error;
       }
     },
@@ -39,13 +33,7 @@ export const useAttireGetById = (id: string) => {
           error,
           "Failed to fetch attire item"
         );
-
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load attire",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        logger.error("Failed to load attire", error, true);
         throw error;
       }
     },
