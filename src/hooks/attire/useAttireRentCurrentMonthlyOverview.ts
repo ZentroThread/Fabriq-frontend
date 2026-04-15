@@ -1,5 +1,5 @@
 import { useGetAllAttireRents } from "./useAttireRents";
-import { useItems } from "../useItems";
+import { useItems } from "./useItems";
 
 export type CategoryType = "saree" | "nilame" | "jwelary";
 

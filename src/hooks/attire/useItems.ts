@@ -54,7 +54,6 @@ export const useItems = () => {
   return query;
 };
 
-// Hook to fetch single item by ID
 export const useItem = (id: string) => {
   return useQuery({
     queryKey: ["items", id],
@@ -63,7 +62,6 @@ export const useItem = (id: string) => {
   });
 };
 
-// Hook to add new item
 export const useAddItem = () => {
   const queryClient = useQueryClient();
 
@@ -85,7 +83,6 @@ export const useAddItem = () => {
   });
 };
 
-// Hook to update item
 export const useUpdateItem = () => {
   const queryClient = useQueryClient();
 
@@ -98,8 +95,6 @@ export const useUpdateItem = () => {
       queryClient.invalidateQueries({
         queryKey: ["items", variables.id],
       });
-      // Success handling (UI notifications) should be handled by the
-      // component that triggers the mutation so it can also close dialogs.
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to update item");

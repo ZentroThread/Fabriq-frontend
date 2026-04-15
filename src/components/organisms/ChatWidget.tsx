@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Bell, MessageSquare, X, Send } from "lucide-react";
-import { useChatSocket } from "../../../hooks/messengin-chat/useChatSocket";
+import { useChatSocket } from "../../hooks/messengin-chat/useChatSocket";
 import { cn } from "@/utils/style";
-import { Button } from "../../ui/button";
+import { Button } from "../ui/button";
 import {
   Card,
   CardHeader,
   CardContent,
   CardTitle,
   CardFooter,
-} from "../../ui/card";
-import { ScrollArea } from "../../ui/scroll-area";
-import { Textarea } from "../../ui/textarea";
+} from "../ui/card";
+import { ScrollArea } from "../ui/scroll-area";
+import { Textarea } from "../ui/textarea";
 
 interface ChatWidgetProps {
   myRole: string;

@@ -1,7 +1,7 @@
 import InputField from "@/components/molecules/input/input-feild";
 import { useEffect, useState, useMemo } from "react";
 import { logger } from "@/utils/logger";
-import { useItems } from "@/hooks/useItems";
+import { useItems } from "@/hooks/attire/useItems";
 import { useItemStore } from "@/store/item-store";
 import type { Item } from "@/types/item.types";
 import Chart from "../../atoms/frame/frame";
@@ -171,7 +171,7 @@ export default function AddItemsSection() {
       startDate: startDate || undefined,
       endDate: endDate || undefined,
       customerCode: customerCode,
-      isCustomItem: true, 
+      isCustomItem: true,
     };
     addItem(payload);
 

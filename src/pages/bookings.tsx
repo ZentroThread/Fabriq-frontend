@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/store/user-auth-store";
-import { useBookings } from "@/hooks/useBooking";
+import { useBookings } from "@/hooks/booking/useBooking";
 import type { Booking } from "@/schemas/booking.shema";
 import BookingCard from "@/components/molecules/cards/booking-card";
 

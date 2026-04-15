@@ -1,4 +1,4 @@
-import { useFeedback } from "@/hooks/useFeedback";
+import { useFeedback } from "@/hooks/booking/useFeedback";
 import { Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import type { Feedback } from "@/schemas/feedback.schema";

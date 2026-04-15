@@ -2,7 +2,7 @@ import { billingService } from "@/services/billing.service";
 import { useQuery } from "@tanstack/react-query";
 import type { AttireRent } from "@/types/attireRent.type";
 import { getErrorMessage } from "@/utils/swal";
-import Swal from "sweetalert2";
+import { logger } from "@/utils/logger";
 import { useAuthStore } from "@/store/user-auth-store";
 
 export const useGetAllAttireRents = () => {
@@ -19,17 +19,11 @@ export const useGetAllAttireRents = () => {
           error,
           "Failed to fetch attire rentals"
         );
-
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load rentals",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        logger.error(errorMessage, error, true);
         throw error;
       }
     },
     retry: 1,
-    enabled: hasAccess, 
+    enabled: hasAccess,
   });
 };

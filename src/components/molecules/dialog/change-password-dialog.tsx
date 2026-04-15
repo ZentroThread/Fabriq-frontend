@@ -24,7 +24,7 @@ import {
   changePasswordSchema,
   type ChangePasswordFormValues,
 } from "@/schemas/user.schema";
-import { useChangePasswordMutation } from "@/hooks/useChangePassword";
+import { useChangePasswordMutation } from "@/hooks/user/useChangePassword";
 import { Lock, Loader2 } from "lucide-react";
 
 interface ChangePasswordDialogProps {

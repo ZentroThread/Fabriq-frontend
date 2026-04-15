@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { useChatStore, type ChatMessage } from "../store/chat-store";
+import { useChatStore, type ChatMessage } from "../../store/chat-store";
 import { useAuthStore } from "@/store/user-auth-store";
 import { API_BASE_URL } from "@/constants/constdata";
 
 export const useChatSocket = (myRole: string) => {
-  // Use Zustand store instead of local state
   const { messages, unreadCount, addMessage, clearUnread, cleanupOldMessages } =
     useChatStore();
   const tenantId = useAuthStore((state) => state.tenantId);
@@ -16,8 +15,6 @@ export const useChatSocket = (myRole: string) => {
 
   useEffect(() => {
     if (!myRole) return;
-
-    // Cleanup old messages on mount
     cleanupOldMessages();
 
     const wsUrl = tenantId
@@ -77,7 +74,9 @@ export const useChatSocket = (myRole: string) => {
         destination: "/app/chat.sendMessage",
         body: JSON.stringify(chatMessage),
       });
-    } else { /* empty */ }
+    } else {
+      /* empty */
+    }
   };
 
   return { messages, sendMessage, unreadCount, clearUnread, isConnected };

@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { loginService } from "@/services/login.service";
+import { logger } from "@/utils/logger";
 import Swal from "sweetalert2";
 
 export function useChangePasswordMutation() {
@@ -24,11 +25,7 @@ export function useChangePasswordMutation() {
       });
     },
     onError: async (error: Error) => {
-      await Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message || "Failed to change password",
-      });
+      logger.error(error.message || "Failed to change password", error, true);
     },
   });
 }

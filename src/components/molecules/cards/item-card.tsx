@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useDeleteItem } from "@/hooks/useItems";
+import { useDeleteItem } from "@/hooks/attire/useItems";
 import { cn } from "@/utils/style";
 import { SquarePen, Trash2 } from "lucide-react";
 
@@ -138,10 +138,7 @@ export function ItemCard({
         </CardContent>
       </Card>
 
-      <Dialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-      >
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-xl max-h-[90vh] bg-card">
           <DialogHeader className="flex items-center">
             <DialogTitle className="text-style font-extrabold text-xl">

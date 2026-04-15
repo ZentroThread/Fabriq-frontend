@@ -1,10 +1,10 @@
 import { useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/user/useAuth";
 import { useAuthStore } from "@/store/user-auth-store";
 import { useAiChatStore } from "@/store/ai-chat-store";
-import { useAiChatMutation } from "@/hooks/useAiChat";
+import { useAiChatMutation } from "@/hooks/ragchat/useAiChat";
 import { cn } from "@/utils/style";
 
 interface ChatBotProps {
@@ -17,7 +17,8 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const tenantId = useAuthStore((state) => state.tenantId);
-  const { messages, inputValue, setInputValue, resetMessages } = useAiChatStore();
+  const { messages, inputValue, setInputValue, resetMessages } =
+    useAiChatStore();
 
   useEffect(() => {
     if ((!user || !tenantId) && messages.length > 1) {

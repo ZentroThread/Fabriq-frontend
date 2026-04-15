@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Routes from "./routes/routes";
-import { useTheme } from "./hooks/useTheme";
-import { useAuth } from "./hooks/useAuth";
+import { useTheme } from "./hooks/theme/useTheme";
+import { useAuth } from "./hooks/user/useAuth";
 
 function App() {
   const { initializeTheme } = useTheme();

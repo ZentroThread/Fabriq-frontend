@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { itemService } from "@/services/item.service";
-import { getErrorMessage } from "@/utils/swal";
 import { logger } from "@/utils/logger";
 
 export const useGetAllAttire = () => {
@@ -10,10 +9,6 @@ export const useGetAllAttire = () => {
       try {
         return await itemService.getAllItems();
       } catch (error: unknown) {
-        const errorMessage = getErrorMessage(
-          error,
-          "Failed to fetch attire items"
-        );
         logger.error("Failed to load attire", error, true);
         throw error;
       }
@@ -29,10 +24,6 @@ export const useAttireGetById = (id: string) => {
       try {
         return await itemService.getItemByAttireId(id);
       } catch (error: unknown) {
-        const errorMessage = getErrorMessage(
-          error,
-          "Failed to fetch attire item"
-        );
         logger.error("Failed to load attire", error, true);
         throw error;
       }

@@ -6,9 +6,7 @@ import { loginService } from "@/services/login.service";
 import { extractTenantId } from "@/lib/jwt";
 import { logger } from "@/utils/logger";
 
-/**
- * Helper: Extract tenant ID from access token cookie and persist it
- */
+
 const extractAndPersistTenantId = (): string | null => {
   try {
     // Get access token from cookies

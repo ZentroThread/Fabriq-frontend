@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import Swal from "sweetalert2";
-import { useAddItem } from "@/hooks/useItems";
+import { useAddItem } from "@/hooks/attire/useItems";
 import { useAuthStore } from "@/store/user-auth-store";
 import { logger } from "@/utils/logger";
 
@@ -21,10 +21,10 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { addItemFormSchema } from "@/schemas/user.schema";
-import { useAddItemForm } from "@/hooks/useAddItemForm";
+import { useAddItemForm } from "@/hooks/attire/useAddItemForm";
 import { categories, status } from "@/constants/data";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useUpdateItem } from "@/hooks/useItems";
+import { useUpdateItem } from "@/hooks/attire/useItems";
 import { useEffect } from "react";
 
 interface AddItemFormProps {
