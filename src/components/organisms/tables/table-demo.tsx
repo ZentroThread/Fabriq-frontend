@@ -9,6 +9,13 @@ import {
 } from "@/components/ui/table";
 import { invoices } from "@/constants/data";
 
+interface Invoice {
+  invoice: string;
+  paymentStatus: string;
+  totalAmount: string;
+  paymentMethod: string;
+}
+
 export function TableDemo() {
   return (
     <Table className="text-position-text font-light">
@@ -21,20 +28,16 @@ export function TableDemo() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices.map((invoice) => (
+        {invoices.map((invoice: Invoice) => (
           <TableRow key={invoice.invoice}>
             <TableCell className="font-medium ">{invoice.invoice}</TableCell>
-            {/* <TableCell>{invoice.paymentStatus}</TableCell> */}
             <TableCell>{invoice.paymentMethod}</TableCell>
             <TableCell className="text-right">{invoice.totalAmount}</TableCell>
           </TableRow>
         ))}
       </TableBody>
       <TableFooter>
-        <TableRow>
-          {/* <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell> */}
-        </TableRow>
+        <TableRow></TableRow>
       </TableFooter>
     </Table>
   );

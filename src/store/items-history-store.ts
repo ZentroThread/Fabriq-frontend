@@ -56,7 +56,6 @@ interface ItemsHistoryStore {
 }
 
 export const useItemsHistoryStore = create<ItemsHistoryStore>((set) => ({
-  // Initial state
   list: [],
   loading: true,
   agg: [],
@@ -69,7 +68,6 @@ export const useItemsHistoryStore = create<ItemsHistoryStore>((set) => ({
   categories: [],
   codes: [],
 
-  // Actions
   setList: (list) => set({ list }),
   setLoading: (loading) => set({ loading }),
   setAgg: (agg) => set({ agg }),

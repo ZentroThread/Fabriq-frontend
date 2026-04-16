@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { ItemsWishlistSkeleton } from "@/components/molecules/skeletons/items-wishlist-skeleton";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 import type { ComponentProps } from "react";
@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/style";
 import { useWishlistStore } from "@/store/wishlist-store";
 import {
   Table,
@@ -295,9 +295,6 @@ export default function ItemsWishlistPage() {
                             className="p-2 text-center w-10 rounded-full bg-support-button/75"
                           >
                             <div className="font-medium text-black">{`${count} `}</div>
-                            {/* <div className="text-position-text text-sm mt-1">
-                            {bills.join(", ")}
-                          </div> */}
                           </PopoverContent>
                         </Popover>
                       );

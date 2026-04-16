@@ -12,8 +12,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "A pie chart with a legend";
-
 type PieData = {
   category: "saree" | "nilame" | "jwelary";
   value: number;
@@ -54,7 +52,6 @@ export function ChartPie({ data }: ChartPieProps) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-
                   formatter={(value, _name, props) => {
                     const payload = props.payload as PieData;
 

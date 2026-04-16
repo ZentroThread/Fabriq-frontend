@@ -42,14 +42,3 @@ export function NativeSelectDemo({
     </NativeSelect>
   );
 }
-
-// Usage example:
-// <NativeSelectDemo
-//   option="Select status"
-//   value1="last-month"
-//   value2="last-3-months"
-//   value3="last-year"
-//   string1="Last Month"
-//   string2="Last 3 Months"
-//   string3="Last Year"
-// />

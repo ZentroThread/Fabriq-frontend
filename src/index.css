@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-/* Tailwind CSS v4 @theme directive - ignore CSS validator warning */
-/* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
   --color-avatar-gradient-from: #b77e66;
   --color-avatar-gradient-to: #ab7057;
@@ -31,9 +29,7 @@
   --color-dbcard: #c09e8e;
   --color-input-border: #e9d8d0;
   --color-input-active-border: #b87e64;
-  /* Custom app colors - Light mode */
 
-  /* Unique light color variables */
   --color-light-pie-1: #f8a5ba;
   --color-light-pie-2: #b87e64;
   --color-light-pie-3: #fad4d8;
@@ -71,7 +67,6 @@
   --color-bg-green: #008000;
   --color-bg-error: #d10000;
 
-  /* Map descriptive variables to the light-* variables */
   --color-pie-1: var(--color-light-pie-1);
   --color-pie-2: var(--color-light-pie-2);
   --color-pie-3: var(--color-light-pie-3);
@@ -114,13 +109,9 @@
   --color-red: var(--color-bg-red);
   --color-green: var(--color-bg-green);
   --color-error: var(--color-bg-error);
-  /* Add button-hover variable for theme toggle */
 }
 
 .dark {
-  /* Custom app colors - Dark mode */
-  /* Unique dark color variables */
-
   --color-dark-gray-dark: #3f3f46;
   --color-dark-gray-medium: #52525b;
   --color-dark-gray-light: #71717a;
@@ -134,7 +125,6 @@
   --color-bg-red: #a30000;
   --color-bg-green: #008000;
   --color-bg-error: #d10000;
-  /* Map descriptive variables to dark-* variables */
   --color-error: var(--color-bg-error);
   --color-green: var(--color-bg-green);
   --color-red: var(--color-bg-red);
@@ -170,8 +160,6 @@
   --color-button-hover: var(--color-dark-white);
   --color-text-color: var(--color-dark-yellow);
   --color-shadow: rgba(0, 0, 0, 0.8);
-
-  /* Override button-hover for dark mode */
 }
 
 * {
@@ -195,8 +183,6 @@ body {
   color: var(--color-position-text);
   font-weight: 500;
 }
-
-/* Form error text using theme error color */
 .form-error {
   color: var(--color-error);
   font-size: 0.75rem;

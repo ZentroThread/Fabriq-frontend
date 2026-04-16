@@ -4,6 +4,8 @@ import Nav from "../../molecules/navigationbar/nav";
 import Sidebar from "../../molecules/sidebar/Sidebar";
 import AIAssistant from "../../molecules/chatbot/AIAssistant";
 import { useAuthStore } from "@/store/user-auth-store";
+import { cn } from "@/utils/style";
+import { logger } from "@/utils/logger";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,15 +16,21 @@ function Layout() {
   const hideLayout = noLayoutPages.includes(location.pathname);
 
   if (hideLayout) {
-    return <Outlet />; // <-- Login page will render here
+    return <Outlet />;
   }
-
-  // Format role for display
-  const formatRole = (role: string) => {
-    return role
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+  const formatRole = (role?: string) => {
+    if (!role) return "";
+    try {
+      return role
+        .split("_")
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ");
+    } catch (error) {
+      logger.warn("Failed to format role string", error, false);
+      return role || "";
+    }
   };
 
   return (
@@ -40,29 +48,24 @@ function Layout() {
       <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar */}
         <div
-          className={`fixed top-20 left-0 bottom-0 z-30 w-[300px] bg-sidebar-bg shadow-lg transform transition-transform duration-300
-          ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 md:static md:top-0`}
+          className={cn(
+            "fixed top-20 left-0 bottom-0 z-30 w-[300px] bg-sidebar-bg shadow-lg transform transition-transform duration-300",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+            "md:translate-x-0 md:static md:top-0"
+          )}
         >
-          <Sidebar open={sidebarOpen} />
+          <Sidebar />
         </div>
-
-        {/* Overlay */}
         {sidebarOpen && (
           <div
             className="fixed top-20 left-0 right-0 bottom-0 z-20 bg-overlay-bg/30 backdrop-blur-sm md:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
         )}
-
-        {/* CONTENT (Dashboard, Attendance, Items, Reports) */}
         <main className="flex-1 overflow-auto p-4 bg-main-bg">
           <Outlet />
         </main>
       </div>
-
-      {/* AI Assistant - Always available */}
       <AIAssistant />
     </div>
   );

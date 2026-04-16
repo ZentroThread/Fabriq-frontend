@@ -1,12 +1,11 @@
 import { billingService } from "@/services/billing.service";
 import { useQuery } from "@tanstack/react-query";
 import { getErrorMessage } from "@/utils/swal";
-import Swal from "sweetalert2";
+import { logger } from "@/utils/logger";
 import { useAuthStore } from "@/store/user-auth-store";
 
 export const FetchCustomers = () => {
   const user = useAuthStore((state) => state.user);
-  // Only allow owner and cashier to fetch customers
   const hasAccess = user?.role === "owner" || user?.role === "cashier";
 
   return useQuery({
@@ -20,18 +19,11 @@ export const FetchCustomers = () => {
           error,
           "Failed to fetch customers"
         );
-        console.error("❌ Error fetching customers:", error);
-        // Show error to user
-        Swal.fire({
-          icon: "error",
-          title: "Failed to load customers",
-          text: errorMessage,
-          confirmButtonColor: "#dc2626",
-        });
+        logger.error(errorMessage, error, true);
         throw error;
       }
     },
     retry: 1,
-    enabled: hasAccess, // Only fetch if user has access
+    enabled: hasAccess,
   });
 };

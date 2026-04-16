@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -21,12 +20,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { changePasswordSchema } from "@/schemas/user.schema";
-import { loginService } from "@/services/login.service";
-import Swal from "sweetalert2";
-import { Lock } from "lucide-react";
-
-type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+import {
+  changePasswordSchema,
+  type ChangePasswordFormValues,
+} from "@/schemas/user.schema";
+import { useChangePasswordMutation } from "@/hooks/user/useChangePassword";
+import { Lock, Loader2 } from "lucide-react";
 
 interface ChangePasswordDialogProps {
   children?: React.ReactNode;
@@ -34,7 +33,6 @@ interface ChangePasswordDialogProps {
 
 export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
@@ -45,36 +43,21 @@ export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
     },
   });
 
-  const onSubmit = async (values: ChangePasswordFormValues) => {
-    setIsLoading(true);
-    try {
-      const result = await loginService.changePassword({
+  const { mutate: changePassword, isPending } = useChangePasswordMutation();
+
+  const onSubmit = (values: ChangePasswordFormValues) => {
+    changePassword(
+      {
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
-      });
-
-      if (result.success) {
-        await Swal.fire({
-          icon: "success",
-          title: "Password Changed",
-          text:
-            result.message || "Your password has been changed successfully.",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        setOpen(false);
-        form.reset();
+      },
+      {
+        onSuccess: () => {
+          setOpen(false);
+          form.reset();
+        },
       }
-    } catch (error) {
-      await Swal.fire({
-        icon: "error",
-        title: "Error",
-        text:
-          error instanceof Error ? error.message : "Failed to change password",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    );
   };
 
   return (
@@ -109,7 +92,7 @@ export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
                       type="password"
                       placeholder="Enter current password"
                       {...field}
-                      disabled={isLoading}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -127,7 +110,7 @@ export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
                       type="password"
                       placeholder="Enter new password"
                       {...field}
-                      disabled={isLoading}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -145,7 +128,7 @@ export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
                       type="password"
                       placeholder="Re-enter new password"
                       {...field}
-                      disabled={isLoading}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -160,12 +143,13 @@ export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
                   setOpen(false);
                   form.reset();
                 }}
-                disabled={isLoading}
+                disabled={isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Changing..." : "Change Password"}
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isPending ? "Changing..." : "Change Password"}
               </Button>
             </DialogFooter>
           </form>

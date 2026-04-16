@@ -68,7 +68,6 @@ export const payrollService = {
 export const printPayslip = (empId: number, month: number, year: number) => {
   const tenantId = useAuthStore.getState().tenantId;
   if (!tenantId) {
-    console.error("Tenant ID is not available");
     return;
   }
   const url = `${API_BASE_URL}${API_ENDPOINTS.PAYROLL.PRINT_PAYSLIP(tenantId, empId, month, year)}`;

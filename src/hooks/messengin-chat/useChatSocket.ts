@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { useChatStore, type ChatMessage } from "../store/chat-store";
+import { useChatStore, type ChatMessage } from "../../store/chat-store";
 import { useAuthStore } from "@/store/user-auth-store";
 import { API_BASE_URL } from "@/constants/constdata";
 
 export const useChatSocket = (myRole: string) => {
-  // Use Zustand store instead of local state
   const { messages, unreadCount, addMessage, clearUnread, cleanupOldMessages } =
     useChatStore();
   const tenantId = useAuthStore((state) => state.tenantId);
@@ -16,11 +15,7 @@ export const useChatSocket = (myRole: string) => {
 
   useEffect(() => {
     if (!myRole) return;
-
-    // Cleanup old messages on mount
     cleanupOldMessages();
-
-    console.log("Connecting to WebSocket with role:", myRole);
 
     const wsUrl = tenantId
       ? `${API_BASE_URL}/ws?tenantId=${tenantId}`
@@ -30,10 +25,9 @@ export const useChatSocket = (myRole: string) => {
     const client = new Client({
       webSocketFactory: () => socket,
       debug: () => {
-        // console.log(str); // reduce noise
+        //  // reduce noise
       },
       onConnect: () => {
-        console.log("Connected to WebSocket");
         setIsConnected(true);
 
         // Subscribe to my role's topic
@@ -50,13 +44,9 @@ export const useChatSocket = (myRole: string) => {
         });
       },
       onDisconnect: () => {
-        console.log("Disconnected from WebSocket");
         setIsConnected(false);
       },
-      onStompError: (frame) => {
-        console.error("Broker reported error: " + frame.headers["message"]);
-        console.error("Additional details: " + frame.body);
-      },
+      onStompError: (_frame) => {},
     });
 
     client.activate();
@@ -85,7 +75,7 @@ export const useChatSocket = (myRole: string) => {
         body: JSON.stringify(chatMessage),
       });
     } else {
-      console.error("STOMP client is not connected");
+      /* empty */
     }
   };
 

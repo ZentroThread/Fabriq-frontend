@@ -6,6 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/utils/style";
 import {
   Popover,
   PopoverContent,
@@ -14,10 +15,9 @@ import {
 
 interface Calendar28Props {
   height?: string;
-  onDateChange?: (date: Date | undefined) => void; // callback to notify parent
+  onDateChange?: (date: Date | undefined) => void;
 }
 
-// Format date to "Month Day, Year"
 function formatDate(date: Date | undefined) {
   if (!date) return "";
   return date.toLocaleDateString("en-US", {
@@ -27,7 +27,6 @@ function formatDate(date: Date | undefined) {
   });
 }
 
-// Check if a date is valid
 function isValidDate(date: Date | undefined) {
   if (!date) return false;
   return !isNaN(date.getTime());
@@ -45,7 +44,7 @@ export function Calendar28({ height = "h-12", onDateChange }: Calendar28Props) {
     setValue(formatDate(newDate));
     setMonth(newDate);
     if (onDateChange) {
-      onDateChange(newDate); // notify parent component
+      onDateChange(newDate);
     }
     setOpen(false);
   };
@@ -58,7 +57,10 @@ export function Calendar28({ height = "h-12", onDateChange }: Calendar28Props) {
           id="date"
           value={value}
           placeholder="June 01, 2025"
-          className={`bg-background text-position-text font-light pr-10 rounded-xl ${height}`}
+          className={cn(
+            "bg-background text-position-text font-light pr-10 rounded-xl",
+            height
+          )}
           onChange={(e) => {
             const newDate = new Date(e.target.value);
             setValue(e.target.value);

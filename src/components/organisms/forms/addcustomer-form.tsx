@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { House, Mail, Phone, User } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useEffect } from "react";
-import { normalizePhoneForProvider } from "@/lib/phone";
+import { normalizePhoneForProvider } from "@/utils/phone";
 import useBillingStore from "@/store/customer-store";
 import billingStore from "@/store/billing-store";
 import Swal from "sweetalert2";
@@ -12,29 +12,20 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AddCustomerFormValues } from "@/types/types";
 import { addCustomerSchema } from "@/schemas/user.schema";
+import {
+  notificationService,
+  type CustomerApiResponse,
+} from "@/services/notification.service";
+import { logger } from "@/utils/logger";
 
 interface AddCustomerFormProps {
   onClose?: () => void;
-  onSubmit?: (data: {
-    fullName?: string;
-    address?: string;
-    mobileNumber?: string;
-    landline?: string;
-    whatsapp?: string;
-    email?: string;
-  }) => void;
+  onSubmit?: (data: AddCustomerFormValues) => void;
   editMode?: boolean;
-  customerData?: Partial<{
-    fullName: string;
-    address: string;
-    mobileNumber: string;
-    landline: string;
-    whatsapp: string;
-    email: string;
-  }>;
+  customerData?: Partial<AddCustomerFormValues>;
 }
 
-function AddCustomerForm({
+export function AddCustomerForm({
   onClose,
   onSubmit,
   editMode = false,
@@ -71,7 +62,6 @@ function AddCustomerForm({
     }
   }, [editMode, customerData, reset]);
   const onSubmitForm = async (values: AddCustomerFormValues) => {
-    // If parent provided onSubmit, call it and return
     if (onSubmit) {
       onSubmit(values);
       return;
@@ -89,97 +79,47 @@ function AddCustomerForm({
     };
 
     try {
-      const created = await useBillingStore.getState().addCustomer(apiPayload);
+      const created = (await useBillingStore
+        .getState()
+        .addCustomer(apiPayload)) as CustomerApiResponse;
       if (created) {
-        // send welcome notification via backend endpoint
-        try {
-          const base = import.meta.env.VITE_API_BASE || "";
-          const url = `${base}/v1/notification/publish`;
-          const createdObj = created as unknown as Record<string, unknown>;
-          const phone = String(
-            createdObj["custWhatsappNumber"] ??
-              createdObj["custMobileNumber"] ??
-              ""
-          );
-          const eventPayload = {
-            eventType: "WELCOME",
-            recipientPhone: phone,
-            recipientEmail: String(createdObj["custEmail"] ?? ""),
-            recipientName: String(
-              createdObj["custName"] ?? createdObj["cust_name"] ?? ""
-            ),
-            templateData: {
-              custCode: String(
-                createdObj["custCode"] ?? createdObj["cust_code"] ?? ""
-              ),
-              custName: String(
-                createdObj["custName"] ?? createdObj["cust_name"] ?? ""
-              ),
-            },
-            priority: 1,
-            timestamp: new Date().toISOString(),
-          };
+        notificationService.sendWelcomeNotification(created).catch((e) => {
+          logger.warn("Welcome SMS failed to send", e, true);
+        });
 
-          // fire and forget; log any failure
-          fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(eventPayload),
-          })
-            .then((res) => {
-              if (!res.ok)
-                console.warn("Notification publish failed", res.statusText);
-            })
-            .catch((e) => console.warn("Notification publish error", e));
-        } catch (e) {
-          console.warn("Failed to call notification endpoint", e);
-        }
         await Swal.fire({
           icon: "success",
           title: "Customer added",
-          text: `${created.custName} has been added successfully.`,
+          text: `${created.custName ?? created.cust_name} has been added successfully.`,
           timer: 2000,
           showConfirmButton: false,
         });
-        // Refresh customers list and close/reset form
         await fetchCustomers();
-        // Set the created customer as the selected customer for billing flow
+
         try {
-          const createdCustomer = created as {
-            custId?: string;
-            cust_id?: string;
-            custCode?: string;
-            cust_code?: string;
-          };
           billingStore.getState().setSelectedCustomer({
             ...created,
-            cust_id:
-              createdCustomer.custId ?? createdCustomer.cust_id ?? undefined,
-            custCode:
-              createdCustomer.custCode ??
-              createdCustomer.cust_code ??
-              undefined,
+            custCode: created.custCode ?? created.cust_code,
           });
         } catch (e) {
-          console.warn("Failed to set selected customer:", e);
+          logger.warn(
+            "Customer added, but auto-select failed. Please search manually.",
+            e,
+            true
+          );
         }
-        reset(); // Reset form
-        onClose?.(); // Close the form
+
+        reset();
+        onClose?.();
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Add failed",
-          text: "Customer was not added. Please try again.",
-        });
+        logger.error(
+          "Customer was not added. Please try again.",
+          undefined,
+          true
+        );
       }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.error("Add customer failed", err);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: message || "Failed to add customer",
-      });
+    } catch (err: unknown) {
+      logger.error("Failed to add customer", err, true);
     }
   };
 

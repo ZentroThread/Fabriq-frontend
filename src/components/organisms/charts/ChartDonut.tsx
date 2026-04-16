@@ -1,25 +1,21 @@
-"use client";
-
 import { Pie, PieChart, Cell, LabelList } from "recharts";
 import useTodayDeviceAttendanceLogsSummary from "@/hooks/employee/deviceAttendance/useTodayAttendnceSummary";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-
-
-
+import { Card, CardContent } from "@/components/ui/card";
 
 export function ChartDonut() {
-
-   const { totalEmployees, presentCount, lateCount,absentCount } = useTodayDeviceAttendanceLogsSummary();
+  const { totalEmployees, presentCount, lateCount, absentCount } =
+    useTodayDeviceAttendanceLogsSummary();
 
   const attendanceData = [
     { name: "Present", value: presentCount, color: "#B47C5A" },
     { name: "Absent", value: absentCount, color: "#F7A1B2" },
-    { name: "Leave", value: totalEmployees - (presentCount + absentCount + lateCount), color: "#CBB2A3" },
+    {
+      name: "Leave",
+      value: totalEmployees - (presentCount + absentCount + lateCount),
+      color: "#CBB2A3",
+    },
   ];
-   return (
+  return (
     <Card className="flex flex-col">
       <CardContent className="flex flex-col items-center gap-6">
         {/* Donut */}

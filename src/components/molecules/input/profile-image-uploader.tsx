@@ -1,19 +1,23 @@
 import { useEffect, useRef } from "react";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import ImageInput from "@/components/atoms/input/image-input";
+import { cn } from "@/utils/style";
 
-interface Props {
+interface ProfileImageUploaderProps {
   imageUrl?: string;
   editable?: boolean;
   onImageChange: (file: File, preview: string) => void;
+  className?: string;
 }
 
 export default function ProfileImageUploader({
   imageUrl,
   editable = false,
   onImageChange,
-}: Props) {
+  className,
+}: ProfileImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const createdBlobUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     return () => {
@@ -23,37 +27,40 @@ export default function ProfileImageUploader({
     };
   }, [imageUrl]);
 
+  const handleImageSelect = (file: File) => {
+    if (createdBlobUrlRef.current) {
+      URL.revokeObjectURL(createdBlobUrlRef.current);
+    }
+    const preview = URL.createObjectURL(file);
+    createdBlobUrlRef.current = preview;
+    onImageChange(file, preview);
+  };
+
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-32 h-32 rounded-2xl border overflow-hidden bg-main-bg">
+    <div className={cn("flex flex-col items-center gap-4", className)}>
+      <div
+        className="w-32 h-32 rounded-2xl border overflow-hidden bg-main-bg relative flex items-center justify-center"
+        aria-label="Profile image preview"
+      >
         {imageUrl ? (
           <img
             src={imageUrl}
-            alt="Profile"
+            alt="User profile"
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="h-full flex items-center justify-center text-sm text-gray-400">
-            No Image
-          </div>
+          <span className="text-sm text-gray-400">No Image</span>
         )}
       </div>
 
-      <ImageInput
-        ref={inputRef}
-        onSelect={(file) => {
-          const preview = URL.createObjectURL(file);
-          onImageChange(file, preview);
-        }}
-      />
+      <ImageInput ref={inputRef} onSelect={handleImageSelect} />
 
       {editable && (
         <Button
           text="Update"
           width="w-32"
-          onClick={() => {
-            inputRef.current?.click();
-          }}
+          onClick={() => inputRef.current?.click()}
+          aria-label="Update profile image"
         />
       )}
     </div>

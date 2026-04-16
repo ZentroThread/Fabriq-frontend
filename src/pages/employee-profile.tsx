@@ -1,5 +1,5 @@
-import Button from "@/components/atoms/button/add-button";
-import Chart from "@/components/templates/Chart";
+import Button from "@/components/atoms/button/custom-button";
+import Chart from "@/components/atoms/frame/frame";
 import EmployeeForm from "@/components/organisms/employee/employee-form";
 import useEmployeeProfile from "@/hooks/employee/employeeDetails/useEmployeeProfile";
 import LoadingFallback from "@/components/ui/loading";

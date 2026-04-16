@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { useNavigate } from "react-router-dom";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { ItemCard } from "@/components/molecules/cards/item-card";
 import { ItemsSkeleton } from "@/components/molecules/skeletons/items-skeleton";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import {
   BanknoteArrowUp,
   Heart,
@@ -22,10 +22,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddItemForm } from "@/components/organisms/forms/additem-form";
-import { useFilteredItems } from "@/hooks/useItems";
+import { useFilteredItems } from "@/hooks/attire/useItems";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
-// import { useStockUpdates } from "@/hooks/useStockUpdates";
 import { useItemStore } from "@/store/item-store";
 
 function Items() {
@@ -61,7 +60,6 @@ function Items() {
       fetchedItems.length > 0 &&
       allItemsFromStore.length === 0
     ) {
-      console.log("📥 [INITIAL LOAD] Syncing database to Zustand");
       setItems(fetchedItems);
     }
   }, [fetchedItems]);
@@ -99,8 +97,6 @@ function Items() {
     return result;
   }, [allItems, searchQuery, categoryFilter]);
 
-  console.log("📦 All Items from Zustand:", allItems.length);
-
   const handleItemAdded = () => {
     setIsDialogOpen(false);
   };
@@ -118,7 +114,6 @@ function Items() {
 
   const handleCategoryChange = (category: string) => {
     setCategoryFilter(category);
-    console.log("Category changed to:", category);
   };
 
   if (isLoading && allItems.length === 0) {
@@ -135,7 +130,7 @@ function Items() {
           Manage bridal attire and accessories inventory
         </div>
 
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-3 w-full gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-3 w-full gap-4">
           <div className="flex items-center justify-center gap-2 border-2 p-2 w-full md:w-40 rounded-3xl text-position-text bg-text-active/5">
             {displayDate} <Calendar1 />
           </div>

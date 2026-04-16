@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { itemService } from "@/services/item.service";
-import { QUERY_KEYS } from "@/constants/query-keys";
 import Swal from "sweetalert2";
 import { getErrorMessage } from "@/utils/swal";
+import { logger } from "@/utils/logger";
 
 export interface Item {
   id: number;
@@ -35,18 +35,13 @@ interface AddItemPayload {
 
 export const useItems = () => {
   const query = useQuery({
-    queryKey: QUERY_KEYS.ITEMS.ALL,
+    queryKey: ["items"],
     queryFn: async () => {
-      console.log("🔍 TanStack Query: Starting getAllItems fetch");
       try {
         const result = await itemService.getAllItems();
-        console.log(
-          "✅ TanStack Query: getAllItems success, items:",
-          result.length
-        );
         return result;
       } catch (error) {
-        console.error("❌ TanStack Query: getAllItems failed:", error);
+        logger.error("Failed to fetch items", error);
         throw error;
       }
     },
@@ -59,23 +54,21 @@ export const useItems = () => {
   return query;
 };
 
-// Hook to fetch single item by ID
 export const useItem = (id: string) => {
   return useQuery({
-    queryKey: QUERY_KEYS.ITEMS.BY_ID(id),
+    queryKey: ["items", id],
     queryFn: () => itemService.getItemById(id),
     enabled: !!id,
   });
 };
 
-// Hook to add new item
 export const useAddItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: itemService.addItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
+      queryClient.invalidateQueries({ queryKey: ["items"] });
       Swal.fire({
         icon: "success",
         title: "Item added successfully!",
@@ -85,18 +78,11 @@ export const useAddItem = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to add item");
-      console.error("❌ Error adding item:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to add item",
-        text: errorMessage,
-        confirmButtonColor: "#dc2626",
-      });
+      logger.error(errorMessage, error, true);
     },
   });
 };
 
-// Hook to update item
 export const useUpdateItem = () => {
   const queryClient = useQueryClient();
 
@@ -104,23 +90,15 @@ export const useUpdateItem = () => {
     mutationFn: ({ id, data }: { id: string; data: AddItemPayload }) =>
       itemService.updateItem(id, data),
     onSuccess: async (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
-      await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
+      queryClient.invalidateQueries({ queryKey: ["items"] });
+      await queryClient.refetchQueries({ queryKey: ["items"] });
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.ITEMS.BY_ID(variables.id),
+        queryKey: ["items", variables.id],
       });
-      // Success handling (UI notifications) should be handled by the
-      // component that triggers the mutation so it can also close dialogs.
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to update item");
-      console.error("❌ Error updating item:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to update item",
-        text: errorMessage,
-        confirmButtonColor: "#dc2626",
-      });
+      logger.error(errorMessage, error, true);
     },
   });
 };
@@ -132,8 +110,8 @@ export const useDeleteItem = () => {
   return useMutation({
     mutationFn: itemService.deleteItem,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
-      await queryClient.refetchQueries({ queryKey: QUERY_KEYS.ITEMS.ALL });
+      await queryClient.invalidateQueries({ queryKey: ["items"] });
+      await queryClient.refetchQueries({ queryKey: ["items"] });
       Swal.fire({
         icon: "success",
         title: "Item deleted successfully!",
@@ -143,13 +121,7 @@ export const useDeleteItem = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to delete item");
-      console.error("❌ Error deleting item:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to delete item",
-        text: errorMessage,
-        confirmButtonColor: "#dc2626",
-      });
+      logger.error(errorMessage, error, true);
     },
   });
 };

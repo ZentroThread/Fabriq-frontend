@@ -5,7 +5,6 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Export queryClient so it can be used in other files for cache management
 export const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(

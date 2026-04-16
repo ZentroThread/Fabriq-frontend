@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { billingService } from "@/services/billing.service";
+import { logger } from "@/utils/logger";
+import { getErrorMessage } from "@/utils/swal";
+import type { BillingType, CustomerType } from "@/types/bill.type";
 
 type RentalItem = {
   itemCode: string;
@@ -12,23 +15,16 @@ type RentalItem = {
   isCustomItem?: boolean;
 };
 
-type Customer = {
-  cust_id?: number | string;
-  custCode?: string;
-  cust_code?: string;
-};
-
-type Billing = {
-  billingCode?: string;
-  [key: string]: unknown;
-};
+// Legacy types removed as they are now imported from bill-data.schema
 
 export type BillingState = {
-  selectedCustomer?: Customer | null;
+  selectedCustomer?: CustomerType | null;
   items: RentalItem[];
-  currentBilling?: Billing | null;
-  billings?: Billing[];
-  setSelectedCustomer: (c: Customer | null) => void;
+  currentBilling?: BillingType | null;
+  billings?: BillingType[];
+  error?: string | null;
+  setError: (msg: string | null) => void;
+  setSelectedCustomer: (c: CustomerType | null) => void;
   addItem: (item: Partial<RentalItem>) => void;
   removeItem: (index: number) => void;
   clearItems: () => void;
@@ -43,6 +39,8 @@ export type BillingState = {
 const useBillingStore = create<BillingState>((set, get) => ({
   selectedCustomer: null,
   items: [],
+  error: null,
+  setError: (msg: string | null) => set({ error: msg }),
 
   setSelectedCustomer: (c) => set({ selectedCustomer: c }),
 
@@ -72,75 +70,90 @@ const useBillingStore = create<BillingState>((set, get) => ({
   fetchBillings: async () => {
     try {
       const resp = await billingService.getAllBillings();
-      const list = (resp as Billing[]) || [];
-      set({ billings: list });
-    } catch (e) {
-      console.warn("fetchBillings failed", e);
-      set({ billings: [] });
+      const list = (resp as BillingType[]) || [];
+      set({ billings: list, error: null });
+    } catch (error) {
+      const msg = getErrorMessage(error, "Failed to fetch billings");
+      logger.error("Failed to fetch billings", error, true);
+      set({ billings: [], error: msg });
     }
   },
 
   clearAll: () => set({ items: [], selectedCustomer: null }),
 
   payBilling: async ({ discountPercentage = 0, paymentMethod = "cash" }) => {
-    const items = get().items;
-    const customer = get().selectedCustomer;
+    // Centralized error handling for billing flow
+    try {
+      set({ error: null });
 
-    if (!items || items.length === 0) throw new Error("No items to bill");
-    if (!customer) throw new Error("No selected customer");
+      const items = get().items;
+      const customer = get().selectedCustomer;
 
-    const customerCode =
-      customer.custCode ||
-      customer.cust_code ||
-      (customer.cust_id ? String(customer.cust_id) : undefined);
-    if (!customerCode) throw new Error("Customer code is required");
+      if (!items || items.length === 0) throw new Error("No items to bill");
+      if (!customer) throw new Error("No selected customer");
 
-    // Create billing with rentals and pay in one API call
-    const payload = {
-      customerCode,
-      items: items.map((item) => ({
-        attireCode: item.itemCode,
-        rentDate: item.startDate || new Date().toISOString().split("T")[0],
-        returnDate: item.endDate || undefined,
-        isCustomItem: item.isCustomItem || false,
-        customItemName: item.isCustomItem ? item.name : undefined,
-        customPrice: item.isCustomItem ? item.price : undefined,
-      })),
-      discountPercentage,
-      paymentMethod,
-    };
+      const customerRecord = customer as Record<string, unknown>;
+      const customerCode =
+        customer.custCode ||
+        (typeof customerRecord.cust_code === "string"
+          ? (customerRecord.cust_code as string)
+          : undefined) ||
+        (customerRecord.cust_id ? String(customerRecord.cust_id) : undefined);
+      if (!customerCode) throw new Error("Customer code is required");
 
-    const resp = await billingService.createBillingAndPay(payload);
+      const payload = {
+        customerCode,
+        items: items.map((item) => ({
+          attireCode: item.itemCode,
+          rentDate: item.startDate || new Date().toISOString().split("T")[0],
+          returnDate: item.endDate || undefined,
+          isCustomItem: item.isCustomItem || false,
+          customItemName: item.isCustomItem ? item.name : undefined,
+          customPrice: item.isCustomItem ? item.price : undefined,
+        })),
+        discountPercentage,
+        paymentMethod,
+      };
 
-    const respTyped = resp as
-      | { billHtml?: string; billing?: Billing }
-      | undefined;
+      const resp = await billingService.createBillingAndPay(payload);
 
-    if (respTyped && respTyped.billHtml) {
-      const w = window.open("");
-      if (w) {
-        w.document.write(respTyped.billHtml);
-        w.document.close();
-        w.focus();
-        setTimeout(() => {
-          w.print();
-          w.close();
-        }, 300);
+      const respTyped = resp as
+        | { billHtml?: string; billing?: BillingType }
+        | undefined;
+
+      if (respTyped && respTyped.billHtml) {
+        const w = window.open("");
+        if (w) {
+          w.document.write(respTyped.billHtml);
+          w.document.close();
+          w.focus();
+          setTimeout(() => {
+            w.print();
+            w.close();
+          }, 300);
+        }
       }
+
+      set({
+        items: [],
+        currentBilling:
+          respTyped && respTyped.billing ? respTyped.billing : null,
+        error: null,
+      });
+
+      setTimeout(() => {
+        try {
+          window.location.reload();
+        } catch {
+          /* empty */
+        }
+      }, 1000);
+    } catch (error) {
+      const msg = getErrorMessage(error, "Failed to complete billing");
+      logger.error("payBilling failed", error, true);
+      set({ error: msg });
+      throw error;
     }
-
-    set({
-      items: [],
-      currentBilling: respTyped && respTyped.billing ? respTyped.billing : null,
-    });
-
-    setTimeout(() => {
-      try {
-        window.location.reload();
-      } catch (e) {
-        console.warn("reload failed", e);
-      }
-    }, 1000);
   },
 }));
 

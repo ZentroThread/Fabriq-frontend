@@ -1,6 +1,6 @@
 import BaseInputField from "@/components/molecules/input/base-input-field";
 import { type AdvancePaymentRequest } from "@/types/advance-payment.type";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 
 type AdvancePaymentFormProps = {
   empName: string;

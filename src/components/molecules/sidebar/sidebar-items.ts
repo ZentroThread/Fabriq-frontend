@@ -6,7 +6,7 @@ import {
   ReceiptText,
   Users,
   CalendarCheck,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react";
 
 export type UserRole = "owner" | "cashier" | "sales_assistant";
@@ -29,8 +29,5 @@ export const sidebarItems = {
     { label: "Items", icon: Box, to: "/attire" },
   ],
 
-  sales_assistant: [
-    // { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
-    { label: "Items", icon: Box, to: "/attire" },
-  ],
+  sales_assistant: [{ label: "Items", icon: Box, to: "/attire" }],
 };

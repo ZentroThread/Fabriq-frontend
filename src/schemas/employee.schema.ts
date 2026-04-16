@@ -1,6 +1,5 @@
 import { z } from "zod";
-
-export const GenderEnum = z.enum(["MALE", "FEMALE", "OTHER"]);
+import { GenderEnum } from "../enum/enums";
 
 export const EmployeeBankDetailsSchema = z.object({
   id: z.number(),

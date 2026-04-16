@@ -26,6 +26,7 @@ interface ItemStore {
   items: Item[];
   isLoading: boolean;
   error: string | null;
+  editingItemCode: string | null;
 
   setItems: (items: Item[]) => void;
   addItem: (item: Item) => void;
@@ -34,6 +35,7 @@ interface ItemStore {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   updateItemStock: (attireCode: string, newStock: number) => void;
+  setEditingItemCode: (code: string | null) => void;
 }
 
 export const useItemStore = create<ItemStore>()(
@@ -42,6 +44,9 @@ export const useItemStore = create<ItemStore>()(
       items: [],
       isLoading: false,
       error: null,
+      editingItemCode: null,
+
+      setEditingItemCode: (code) => set({ editingItemCode: code }),
 
       addItem: (item) =>
         set((state) => ({
@@ -49,7 +54,6 @@ export const useItemStore = create<ItemStore>()(
         })),
 
       setItems: (items) => {
-        console.log("📥 [STORE] setItems called with:", items.length);
         set({ items });
       },
 
@@ -71,9 +75,6 @@ export const useItemStore = create<ItemStore>()(
 
       updateItemStock: (attireCode: string, newStock: number) =>
         set((state) => {
-          console.log(
-            `🔄 [STORE] Updating stock for ${attireCode}: ${newStock}`
-          );
           const updatedItems = state.items.map((item) =>
             item.code === attireCode
               ? {
@@ -85,14 +86,13 @@ export const useItemStore = create<ItemStore>()(
                 }
               : item
           );
-          console.log(`✅ [STORE] Stock updated, saving to localStorage`);
           return { items: updatedItems };
         }),
     }),
     {
-      name: "hiru-sandu-items", // 👈 localStorage key
+      name: "hiru-sandu-items",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items }), // 👈 Only save items
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

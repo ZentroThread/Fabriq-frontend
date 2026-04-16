@@ -1,5 +1,5 @@
 import { useGetAllAttireRents } from "./useAttireRents";
-import {FetchCustomers} from "../customer/useCustomer";
+import { FetchCustomers } from "../customer/useCustomer";
 
 type AttireRentsSummary = {
   activeRentsCount: number;
@@ -11,8 +11,8 @@ type AttireRentsSummary = {
 
 type AttireRentSummaryWithCustomer = {
   customerName?: string;
-  attireName:string;
-  returnDate : string | null;
+  attireName: string;
+  returnDate: string | null;
   isOverdue: boolean;
 };
 
@@ -59,7 +59,9 @@ export const useAttireRentsSummary = (): AttireRentsSummary => {
     // Rent with Customer Details
     const today = new Date();
     const isOverdue = returnDate ? returnDate < today : false;
-    const customer = customers?.find((customer) => customer.custCode === rent.custCode);
+    const customer = customers?.find(
+      (customer) => customer.custCode === rent.custCode
+    );
     const customerName = customer?.custName;
     const attireName = rent.attireCode;
     const returnDateStr = returnDate ? returnDate.toLocaleDateString() : null;
@@ -71,7 +73,6 @@ export const useAttireRentsSummary = (): AttireRentsSummary => {
     };
 
     rentWithCustomerDetails.push(rentWithCustomerDetail);
-
   });
 
   return {

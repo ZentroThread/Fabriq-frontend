@@ -24,7 +24,7 @@ export const useUpdateEmployee = () => {
 
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to update employee");
-      console.error("❌ Error updating employee:", error);
+
       swalError("Failed to update employee", errorMessage);
     },
   });

@@ -12,10 +12,9 @@ export const ProtectedRoute = ({
   redirectTo = "/login",
 }: ProtectedRouteProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
-  const isAuthChecked = useAuthStore((state) => state.isAuthChecked); // Add this
+  const isAuthChecked = useAuthStore((state) => state.isAuthChecked);
   const user = useAuthStore((state) => state.user);
 
-  // Wait for auth check to complete
   if (!isAuthChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -27,7 +26,6 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Not authenticated - redirect to login
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} replace />;
   }
@@ -61,6 +59,5 @@ export const ProtectedRoute = ({
     }
   }
 
-  // Authenticated and authorized - render child routes
   return <Outlet />;
 };

@@ -1,11 +1,11 @@
 import { Checkbox } from "@/components/ui/checkbox";
 
-type Props = {
+interface Props {
   label: string;
   value?: boolean;
   disabled?: boolean;
   onChange?: (value?: boolean) => void;
-};
+}
 
 export default function BaseCheckboxField({
   label,

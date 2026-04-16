@@ -1,12 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import Table from "@/components/molecules/Table/table";
 import type { AdvancePaymentResponse } from "@/types/advance-payment.type";
-
-const columns = [
-  { header: "Date", accessor: "date" as const },
-  { header: "Amount", accessor: "amount" as const },
-  { header: "Reason", accessor: "reason" as const },
-];
+import { columns } from "@/constants/data";
 
 type AdvancePaymentTableProps = {
   data: AdvancePaymentResponse[];

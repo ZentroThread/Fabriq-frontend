@@ -33,10 +33,7 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
     const thisMonthBills = bills.filter((bill) => {
       if (!bill.billingDate) return false;
       const d = new Date(bill.billingDate);
-      return (
-        d.getMonth() === currentMonth &&
-        d.getFullYear() === currentYear
-      );
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
     });
 
     const totalAmount = thisMonthBills.reduce(
@@ -57,12 +54,12 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
       if (!bill.billingDate) return;
 
       const date = new Date(bill.billingDate);
-      const key = `${date.getFullYear()}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}`;
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}`;
 
-      summaryMap[key] =
-        (summaryMap[key] ?? 0) + Number(bill.billingTotal || 0);
+      summaryMap[key] = (summaryMap[key] ?? 0) + Number(bill.billingTotal || 0);
     });
 
     return Object.entries(summaryMap)
@@ -86,7 +83,7 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       months.push(key);
-      summaryMap[key] = 0; 
+      summaryMap[key] = 0;
     }
 
     bills.forEach((bill) => {
@@ -115,6 +112,6 @@ export const useMonthlyBillSummary = (monthRange?: string) => {
     summaryForSelectedMonthRange,
     totalOrdersByMonthRange,
     billDetailsForSelectedRange,
-    monthlySummary
+    monthlySummary,
   };
 };

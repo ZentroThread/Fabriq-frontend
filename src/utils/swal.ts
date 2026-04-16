@@ -1,29 +1,22 @@
 import Swal from "sweetalert2";
 import type { AxiosError } from "axios";
 
-/**
- * Extract a user-friendly error message from various error types
- */
 export const getErrorMessage = (
   error: unknown,
   fallback = "An unexpected error occurred"
 ): string => {
   if (!error) return fallback;
 
-  // Handle Axios errors
   if (typeof error === "object" && error !== null && "isAxiosError" in error) {
     const axiosError = error as AxiosError<{
       message?: string;
       error?: string;
     }>;
-
-    // Try to get error message from response
     const responseMessage =
       axiosError.response?.data?.message || axiosError.response?.data?.error;
 
     if (responseMessage) return responseMessage;
 
-    // Handle HTTP status codes with user-friendly messages
     if (axiosError.response?.status) {
       const status = axiosError.response.status;
       switch (status) {
@@ -48,7 +41,6 @@ export const getErrorMessage = (
       }
     }
 
-    // Network errors
     if (axiosError.code === "ERR_NETWORK") {
       return "Network error. Please check your internet connection.";
     }
@@ -57,21 +49,16 @@ export const getErrorMessage = (
       return "Request timeout. Please try again.";
     }
 
-    // Fallback to axios message
     if (axiosError.message) return axiosError.message;
   }
-
-  // Handle standard Error objects
   if (error instanceof Error) {
     return error.message || fallback;
   }
 
-  // Handle string errors
   if (typeof error === "string") {
     return error;
   }
 
-  // Fallback
   return fallback;
 };
 

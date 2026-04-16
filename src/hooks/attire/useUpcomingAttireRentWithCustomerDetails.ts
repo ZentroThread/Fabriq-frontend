@@ -12,7 +12,9 @@ type CustomerWithUpcomingRental = {
   returnDate: string;
 };
 
-export const useUpcomingAttireRentWithCustomerDetails = (dateRange?: string) => {
+export const useUpcomingAttireRentWithCustomerDetails = (
+  dateRange?: string
+) => {
   const { data: attireRents } = useGetAllAttireRents();
   const { data: customers } = FetchCustomers();
   const { data: attires } = useGetAllAttire();
@@ -26,9 +28,7 @@ export const useUpcomingAttireRentWithCustomerDetails = (dateRange?: string) => 
     customers.map((customer) => [customer.custCode, customer])
   );
 
-  const attireMap = new Map(
-    attires.map((attire) => [attire.id, attire])
-  );
+  const attireMap = new Map(attires.map((attire) => [attire.id, attire]));
 
   const upcomingRentals: CustomerWithUpcomingRental[] = attireRents
 

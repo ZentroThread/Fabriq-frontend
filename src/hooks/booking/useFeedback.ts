@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Swal from "sweetalert2";
-import { getErrorMessage,swalSuccess } from "@/utils/swal";
+import { getErrorMessage, swalSuccess } from "@/utils/swal";
 import { feedbackService } from "@/services/feedback.service";
+import { logger } from "@/utils/logger";
 
 export const useFeedback = () => {
   const queryClient = useQueryClient();
@@ -12,7 +12,7 @@ export const useFeedback = () => {
       try {
         return await feedbackService.getAll();
       } catch (error) {
-        console.error("Error fetching feedback:", error);
+        logger.error("Failed to fetch feedback", error);
         throw error;
       }
     },
@@ -27,7 +27,7 @@ export const useFeedback = () => {
       try {
         return await feedbackService.approveFeedback(id);
       } catch (error) {
-        console.error("Error approving feedback:", error);
+        logger.error("Failed to approve feedback", error);
         throw error;
       }
     },
@@ -36,7 +36,7 @@ export const useFeedback = () => {
       queryClient.invalidateQueries({ queryKey: ["feedback"] });
     },
     onError: (error) => {
-      Swal.fire("Error", getErrorMessage(error), "error");
+      logger.error(getErrorMessage(error), error, true);
     },
   });
 
@@ -45,7 +45,7 @@ export const useFeedback = () => {
       try {
         await feedbackService.deleteFeedback(id);
       } catch (error) {
-        console.error("Error deleting feedback:", error);
+        logger.error("Failed to delete feedback", error);
         throw error;
       }
     },
@@ -54,7 +54,7 @@ export const useFeedback = () => {
       queryClient.invalidateQueries({ queryKey: ["feedback"] });
     },
     onError: (error) => {
-      Swal.fire("Error", getErrorMessage(error), "error");
+      logger.error(getErrorMessage(error), error, true);
     },
   });
 
@@ -62,6 +62,5 @@ export const useFeedback = () => {
     feedbackQuery,
     approveFeedback: approveMutation.mutate,
     deleteFeedback: deleteMutation.mutate,
-  };  
-
+  };
 };

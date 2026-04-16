@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Wallet, CreditCard, Banknote } from "lucide-react";
-import Chart from "../Chart";
-import CustomButton from "@/components/atoms/button/add-button";
+import Chart from "../../atoms/frame/frame";
+import CustomButton from "@/components/atoms/button/custom-button";
 import useBillingStore from "@/store/billing-store";
 
 type BillingItem = {
@@ -22,17 +22,18 @@ export default function RentalSummary() {
   const items = useBillingStore((s) => s.items);
   const currentBilling = useBillingStore((s) => s.currentBilling);
   const payBilling = useBillingStore((s) => s.payBilling);
-
-  // If backend returned billing with items, prefer that, otherwise show local items
   const displayItems = useMemo((): BillingItem[] => {
-    if (currentBilling && Array.isArray(currentBilling.items))
-      return currentBilling.items as BillingItem[];
+    if (
+      currentBilling &&
+      "items" in currentBilling &&
+      Array.isArray((currentBilling as { items: unknown }).items)
+    )
+      return (currentBilling as { items: unknown }).items as BillingItem[];
     return items as BillingItem[];
   }, [currentBilling, items]);
 
   const subtotal = useMemo(() => {
     return displayItems.reduce((acc: number, it: BillingItem) => {
-      // backend items may have attire with price or line totals
       if (it.attire && it.attire.attirePrice)
         return acc + (it.attire.attirePrice || 0) * (it.rentDuration || 1);
       if (it.price) return acc + it.price;
@@ -65,7 +66,6 @@ export default function RentalSummary() {
                   (it.attire && it.attire.attireCode) ||
                   it.itemCode ||
                   "-";
-                //const days = it.rentDuration || it.days || 1;
                 const price = it.attire?.attirePrice ?? it.price ?? 0;
                 const line = price;
                 return (

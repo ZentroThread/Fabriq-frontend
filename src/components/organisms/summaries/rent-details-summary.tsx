@@ -1,5 +1,5 @@
-import {useAttireRentsSummary} from "@/hooks/attire/useAttireRentsSummary";
-import {DashboardRentalCard} from "@/components/molecules/cards/dashboard-rental-card";
+import { useAttireRentsSummary } from "@/hooks/attire/useAttireRentsSummary";
+import { DashboardRentalCard } from "@/components/molecules/cards/dashboard-rental-card";
 import { RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -20,16 +20,16 @@ export const RentDetailsSummary = () => {
     if (!rentSummaryForCurrentWeek?.length) return;
 
     const interval = setInterval(() => {
-      setStartIndex((prev) =>
-        (prev + 4) % rentSummaryForCurrentWeek.length
-      );
-    }, 5000); 
+      setStartIndex((prev) => (prev + 4) % rentSummaryForCurrentWeek.length);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [rentSummaryForCurrentWeek]);
 
-  const visibleRents =
-    rentSummaryForCurrentWeek?.slice(startIndex, startIndex + 4);
+  const visibleRents = rentSummaryForCurrentWeek?.slice(
+    startIndex,
+    startIndex + 4
+  );
 
   return (
     <div>
@@ -40,9 +40,11 @@ export const RentDetailsSummary = () => {
           subTitle={rent.attireName || "No Attire"}
           date={rent.returnDate || "No Return Date"}
           icon={
-            rent.isOverdue
-              ? <RefreshCcw className="text-(--color-bg-red)" />
-              : <RefreshCcw className="text-(--color-button)" />
+            rent.isOverdue ? (
+              <RefreshCcw className="text-(--color-bg-red)" />
+            ) : (
+              <RefreshCcw className="text-(--color-button)" />
+            )
           }
         />
       ))}

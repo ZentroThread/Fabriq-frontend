@@ -1,4 +1,4 @@
-import { useQuery , useMutation} from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { AttendanceService } from "@/services/attendance.service";
 import { type Attendance, type MarkAttendance } from "@/types/attendance.ts";
 
@@ -12,8 +12,7 @@ export const useDailyAttendance = (date: string) => {
 
 export const useMarkAttendance = () => {
   return useMutation({
-    mutationFn: (data: MarkAttendance) => 
+    mutationFn: (data: MarkAttendance) =>
       AttendanceService.markAttendance(data),
   });
 };
-

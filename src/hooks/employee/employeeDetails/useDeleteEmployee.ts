@@ -18,7 +18,7 @@ export const useDeleteEmployee = () => {
     },
     onError: (error: unknown) => {
       const errorMessage = getErrorMessage(error, "Failed to delete employee");
-      console.error("❌ Error deleting employee:", error);
+
       swalError("Failed to delete employee", errorMessage);
     },
   });

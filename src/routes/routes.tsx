@@ -27,16 +27,11 @@ import Bookings from "@/pages/bookings";
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public routes - Login pages (NO layout) */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Protected routes WITH layout and authentication */}
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
-          {/* Dashboard - All authenticated users */}
-
-          {/* Employees - Owner only */}
           <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/emp" element={<EmployeeOverview />} />
@@ -59,20 +54,17 @@ function AppRoutes() {
             <Route path="/add-employee" element={<AddEmployee />} />
           </Route>
 
-          {/* Attendance - Owner only */}
           <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/mark-attendance" element={<Mark_Attendance />} />
           </Route>
 
-          {/* Dashboard - Owner and Cashier only */}
           <Route
             element={<ProtectedRoute allowedRoles={["owner", "cashier"]} />}
           >
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
 
-          {/* Rentals & Billing - Owner, Cashier and Sales Assistant */}
           <Route
             element={
               <ProtectedRoute
@@ -85,7 +77,6 @@ function AppRoutes() {
             <Route path="/customers" element={<Customers />} />
           </Route>
 
-          {/* Items - Owner and Sales Assistant */}
           <Route
             element={
               <ProtectedRoute
@@ -99,8 +90,6 @@ function AppRoutes() {
             <Route path="/items/history" element={<ItemsHistory />} />
             <Route path="/bookings" element={<Bookings />} />
           </Route>
-
-          {/* Reports - Owner only */}
           <Route element={<ProtectedRoute allowedRoles={["owner"]} />}>
             <Route path="/reports" element={<Reports />} />
           </Route>

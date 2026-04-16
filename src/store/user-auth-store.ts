@@ -4,20 +4,17 @@ import type { LoginInput, User, UserRole } from "@/types/types";
 import { queryClient } from "@/main";
 import { loginService } from "@/services/login.service";
 import { extractTenantId } from "@/lib/jwt";
+import { logger } from "@/utils/logger";
 
-/**
- * Helper: Extract tenant ID from access token cookie and persist it
- */
 const extractAndPersistTenantId = (): string | null => {
   try {
-    // Get access token from cookies
     const cookies = document.cookie.split(";");
     const accessTokenCookie = cookies.find((c) =>
       c.trim().startsWith("accessToken=")
     );
 
     if (!accessTokenCookie) {
-      console.warn("⚠️ No accessToken cookie found");
+      logger.warn("No accessToken cookie found");
       return null;
     }
 
@@ -25,15 +22,14 @@ const extractAndPersistTenantId = (): string | null => {
     const tenantId = extractTenantId(token);
 
     if (tenantId) {
-      console.log("✅ Decoded tenant ID:", tenantId);
       localStorage.setItem("tenantId", tenantId);
       return tenantId;
     } else {
-      console.warn("⚠️ No tenant ID in JWT token");
+      logger.warn(" No tenant ID in JWT token");
       return null;
     }
   } catch (error) {
-    console.error("❌ Failed to extract tenant ID from token:", error);
+    logger.error(" Failed to extract tenant ID from token:", error);
     return null;
   }
 };
@@ -74,22 +70,16 @@ export const useAuthStore = create<AuthState>()(
         typeof window !== "undefined" ? localStorage.getItem("tenantId") : null,
 
       initializeAuth: async () => {
-        // Skip loading state for silent auth check on mount
         set({ isLoading: false });
 
         try {
-          // Silently check for existing session
-          // This flag prevents redirect and retry logic
           const user = await loginService.getUserProfile({
             _skipAuthRedirect: true,
-            _retry: true, // Mark as already retried to prevent refresh attempt
+            _retry: true,
           });
 
-          // Extract tenant ID from JWT in cookie and persist it
           const tenantId =
             extractAndPersistTenantId() || user?.tenantId || null;
-
-          console.log("✅ Auth initialized - Tenant ID:", tenantId);
 
           set({
             user,
@@ -98,9 +88,6 @@ export const useAuthStore = create<AuthState>()(
             tenantId,
           });
         } catch {
-          // No valid session - this is expected on initial load
-          // Fail silently without errors
-          console.log("ℹ️ No active session found");
           set({
             user: null,
             isLoading: false,
@@ -114,17 +101,12 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          console.log("🔐 Starting login...");
           const tokenResponse = await loginService.login(credentials);
-          console.log("✅ Login response received");
 
           const user = await loginService.getUserProfile({});
-          console.log("✅ User profile fetched:", user.username);
 
-          // Extract tenant ID from JWT token in cookie and persist it
           const tenantId =
             extractAndPersistTenantId() || user?.tenantId || null;
-          console.log("✅ Tenant ID stored:", tenantId);
 
           const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
 
@@ -135,12 +117,10 @@ export const useAuthStore = create<AuthState>()(
             tenantId,
           });
 
-          console.log("✅ Login complete - Check localStorage for tenantId");
           return { success: true };
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Login failed";
-          console.error("❌ Login failed:", message);
           set({
             error: message,
             isLoading: false,
@@ -157,16 +137,14 @@ export const useAuthStore = create<AuthState>()(
         try {
           await loginService.logout();
         } catch (error) {
-          console.error("Logout API call failed:", error);
+          logger.error("Logout API call failed:", error);
         }
 
         await queryClient.cancelQueries();
         queryClient.clear();
 
-        // Clear tenant ID from localStorage
         localStorage.removeItem("tenantId");
         localStorage.removeItem("fabriq_chat_messages");
-        console.log("🚪 Logged out - localStorage cleared");
 
         set({ user: null, error: null, tokenExpiryTime: null, tenantId: null });
       },
@@ -180,7 +158,6 @@ export const useAuthStore = create<AuthState>()(
         try {
           const freshUser = await loginService.getUserProfile({});
 
-          // Extract tenant ID from JWT and persist
           const tenantId =
             extractAndPersistTenantId() || freshUser?.tenantId || null;
 
@@ -228,12 +205,6 @@ export const useAuthStore = create<AuthState>()(
             : null;
 
         const tenantId = stateTenantId ?? userTenantId ?? localStorageTenantId;
-        console.log("🔍 Getting tenant ID:", {
-          stateTenantId,
-          userTenantId,
-          localStorageTenantId,
-          result: tenantId,
-        });
 
         return tenantId;
       },

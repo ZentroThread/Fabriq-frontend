@@ -14,15 +14,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import Swal from "sweetalert2";
+import { logger } from "@/utils/logger";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { CustomersSkeleton } from "@/components/molecules/skeletons/customers-skeleton";
 
 function Customers() {
@@ -90,7 +91,6 @@ function Customers() {
     return res;
   }, [customers, searchQuery, range]);
 
-  // sort by registration date (newest first), then by custCode (desc)
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       const ta = a.custRegistrationDate
@@ -129,18 +129,11 @@ function Customers() {
       .getState()
       .updateCustomer(selectedCustomer.custCode, payload);
     if (updated) {
-      // updateCustomer already updates local state; avoid refetch
-      // which would re-load backend data and discard local changes
-      Swal.fire({
-        icon: "success",
-        title: "Customer updated",
-        timer: 1200,
-        showConfirmButton: false,
-      });
+      logger.info("Customer updated", undefined, true);
       setIsEditDialogOpen(false);
       setSelectedCustomer(null);
     } else {
-      Swal.fire({ icon: "error", title: "Update failed" });
+      logger.error("Update failed", undefined, true);
     }
   };
 
@@ -153,14 +146,6 @@ function Customers() {
       <div className="text-style text-[30px] font-semibold">Customers</div>
       <div className="text-position-text ">All registered customers</div>
 
-      {/* <div className="flex gap-2 lg:mr-5 lg:ml-auto sm:ml-0 sm:mr-auto mt-4">
-        <CustomButton
-          text={"Add Customer"}
-          width="w-auto"
-          icon={<Plus />}
-          onClick={() => setIsDialogOpen(true)}
-        />
-      </div> */}
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
           <ItemSearchFilter
@@ -262,16 +247,19 @@ function Customers() {
                                 confirmButtonText: "Delete",
                               });
                               if (res.isConfirmed) {
-                                await useBillingStore
-                                  .getState()
-                                  .deleteCustomer(c.custCode);
-                                await fetchCustomers();
-                                Swal.fire({
-                                  icon: "success",
-                                  title: "Deleted",
-                                  timer: 1200,
-                                  showConfirmButton: false,
-                                });
+                                try {
+                                  await useBillingStore
+                                    .getState()
+                                    .deleteCustomer(c.custCode);
+                                  await fetchCustomers();
+                                  logger.info("Deleted", undefined, true);
+                                } catch (err) {
+                                  logger.error(
+                                    "Failed to delete customer",
+                                    err,
+                                    true
+                                  );
+                                }
                               }
                             }}
                           />

@@ -1,83 +1,30 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Loader2 } from "lucide-react";
-import { API_ENDPOINTS } from "@/constants/api.constants";
-import { apiClient } from "@/lib/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/user/useAuth";
 import { useAuthStore } from "@/store/user-auth-store";
-
-interface Message {
-  id: string;
-  text: string;
-  sender: "user" | "bot";
-  timestamp: Date;
-}
+import { useAiChatStore } from "@/store/ai-chat-store";
+import { useAiChatMutation } from "@/hooks/ragchat/useAiChat";
+import { cn } from "@/utils/style";
 
 interface ChatBotProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const CHAT_STORAGE_KEY = "fabriq_chat_messages";
-
-const getInitialMessages = (): Message[] => {
-  try {
-    const stored = localStorage.getItem(CHAT_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return parsed.map((msg: Message) => ({
-        ...msg,
-        timestamp: new Date(msg.timestamp),
-      }));
-    }
-  } catch (error) {
-    console.error("Failed to load chat history:", error);
-  }
-
-  return [
-    {
-      id: "welcome",
-      text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ];
-};
-
 function ChatBot({ isOpen, onClose }: ChatBotProps) {
-  const [messages, setMessages] = useState<Message[]>(getInitialMessages);
-  const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const tenantId = useAuthStore((state) => state.tenantId);
-
+  const { messages, inputValue, setInputValue, resetMessages } =
+    useAiChatStore();
 
   useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    if ((!user || !tenantId) && messages.length > 1) {
+      resetMessages();
     }
-  }, [messages]);
-
-  useEffect(() => {
-  if (!user || !tenantId) {
-    localStorage.removeItem(CHAT_STORAGE_KEY);
-
-    setMessages([
-      {
-        id: "welcome",
-        text: "Hello! I'm your Fabriq AI assistant. How can I help you today?",
-        sender: "bot",
-        timestamp: new Date(),
-      },
-    ]);
-  }
-}, [user, tenantId]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [user, tenantId, messages.length, resetMessages]);
 
   useEffect(() => {
     if (isOpen) {
@@ -85,66 +32,29 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
     }
   }, [isOpen]);
 
-  const handleSend = async () => {
-    if (!inputValue.trim() || isLoading) return;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputValue,
-      sender: "user",
-      timestamp: new Date(),
-    };
+  const { mutate: sendMessage, isPending } = useAiChatMutation();
 
-    setMessages((prev) => [...prev, userMessage]);
+  const handleSend = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!inputValue.trim() || isPending) return;
+    sendMessage(inputValue);
     setInputValue("");
-    setIsLoading(true);
-
-    try {
-      const data = (await apiClient.request(API_ENDPOINTS.RAG.BACKEND_CHAT, {
-        method: "POST",
-        data: { question: inputValue },
-      })) as { answer: string };
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: data.answer,
-        sender: "bot",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "Sorry, I encountered an error. Please make sure the AI service is running and try again.",
-        sender: "bot",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-      console.error("Chat error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
   };
 
   if (!isOpen) return null;
 
   return createPortal(
     <>
-      {/* Overlay - transparent, allows clicking through */}
-      <div
-        className="fixed inset-0 z-9998 transition-opacity duration-300 opacity-100 pointer-events-auto"
+      <button
+        type="button"
+        className="fixed inset-0 z-9998 bg-black/20 w-full h-full transition-opacity duration-300 opacity-100 cursor-default"
         onClick={onClose}
+        aria-label="Close Chat Overlay"
       />
-
-      {/* Chat Window */}
       <div
         className="fixed right-0 top-0 h-full w-full sm:w-112.5 bg-layout-bg shadow-2xl z-9999 
         transform transition-transform duration-300 ease-in-out flex flex-col translate-x-0"
@@ -176,26 +86,31 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+              className={cn(
+                "flex",
+                message.sender === "user" ? "justify-end" : "justify-start"
+              )}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                className={cn(
+                  "max-w-[80%] rounded-2xl px-4 py-3",
                   message.sender === "user"
                     ? "bg-support-button text-support-button-text"
                     : "bg-card border border-border text-text-color"
-                }`}
+                )}
               >
                 <p className="text-sm whitespace-pre-wrap wrap-break-word">
                   {message.text}
                 </p>
                 <p
-                  className={`text-xs mt-1 ${
+                  className={cn(
+                    "text-xs mt-1",
                     message.sender === "user"
                       ? "text-support-button-text opacity-70"
                       : "text-support-text"
-                  }`}
+                  )}
                 >
-                  {message.timestamp.toLocaleTimeString([], {
+                  {new Date(message.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
@@ -204,7 +119,7 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
             </div>
           ))}
 
-          {isLoading && (
+          {isPending && (
             <div className="flex justify-start">
               <div className="bg-card border border-border rounded-2xl px-4 py-3">
                 <Loader2 className="w-5 h-5 text-support-button animate-spin" />
@@ -217,34 +132,33 @@ function ChatBot({ isOpen, onClose }: ChatBotProps) {
 
         {/* Input */}
         <div className="p-4 border-t border-border bg-nav-bg">
-          <div className="flex gap-2">
+          <form className="flex gap-2" onSubmit={handleSend}>
             <input
               ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              disabled={isLoading}
+              disabled={isPending}
               className="flex-1 px-4 py-3 rounded-xl border border-input-border bg-layout-bg 
               text-text-color placeholder:text-support-text focus:outline-none 
               focus:border-input-active-border transition-colors disabled:opacity-50"
             />
             <button
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isLoading}
+              type="submit"
+              disabled={!inputValue.trim() || isPending}
               className="px-4 py-3 bg-support-button hover:bg-support-button-hover 
               text-support-button-text rounded-xl transition-colors disabled:opacity-50 
               disabled:cursor-not-allowed flex items-center justify-center min-w-12.5"
               aria-label="Send message"
             >
-              {isLoading ? (
+              {isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <Send className="w-5 h-5" />
               )}
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </>,

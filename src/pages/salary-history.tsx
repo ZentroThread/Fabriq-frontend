@@ -1,8 +1,8 @@
-import Chart from "@/components/templates/Chart";
+import Chart from "@/components/atoms/frame/frame";
 import { CheckCircle } from "lucide-react";
 import useEmployeeStore from "@/store/employee-store";
 import { useGetPayrollRecord } from "@/hooks/employee/payroll/usePayroll";
-import Button from "@/components/atoms/button/add-button";
+import Button from "@/components/atoms/button/custom-button";
 import { getMonthAsString, getYearsForRange } from "@/utils/date";
 import SectionHeader from "@/components/molecules/header/section-header";
 import { useNavigate } from "react-router-dom";
@@ -18,12 +18,6 @@ export function SalaryHistory() {
   const { selectedEmployee } = useEmployeeStore();
   const employeeId = selectedEmployee?.id || 0;
   const empName = selectedEmployee?.fullName || "Employee Name";
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setIsLoading(false), 1000);
-  //   return () => clearTimeout(timer);
-  // }, []);
-
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
   };

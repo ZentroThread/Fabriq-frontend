@@ -1,5 +1,3 @@
-"use client";
-
 import {
   CartesianGrid,
   Line,
@@ -15,23 +13,11 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
-
-export const description = "A line chart with dots";
-
-const chartConfig = {
-  total: {
-    label: "Total",
-    color: "var(--chart-1)",
-  },
-  month: {
-    label: "Month",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
+import { ChartContainer } from "@/components/ui/chart";
+import { chartConfig } from "@/constants/data";
 
 type ChartDataItem = {
-  month: string; 
+  month: string;
   total: number;
 };
 
@@ -40,7 +26,6 @@ interface ChartLineDotsProps {
 }
 
 export function ChartLineDots({ chartData }: ChartLineDotsProps) {
-
   const formattedData = chartData.map((item) => {
     const date = new Date(item.month + "-01");
     const monthLabel = new Intl.DateTimeFormat("en-US", {
@@ -70,7 +55,6 @@ export function ChartLineDots({ chartData }: ChartLineDotsProps) {
                   tickMargin={5}
                 />
                 <YAxis stroke="var(--color-position-text)" />
-  
 
                 {/* Tooltip for hover */}
                 <Tooltip

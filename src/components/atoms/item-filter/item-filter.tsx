@@ -1,8 +1,9 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef } from "react";
 import { Search, X } from "lucide-react";
+import { useItemFilterStore } from "@/store/item-filter-store";
 
 interface Item {
-  id: string;
+  id: string | number;
   code: string;
   title: string;
   description: string;
@@ -24,69 +25,65 @@ export function ItemSearchFilter({
   items,
   onSearchChange,
 }: ItemSearchFilterProps) {
-  const [searchValue, setSearchValue] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const {
+    searchValue,
+    showSuggestions,
+    setSearchValue,
+    setShowSuggestions,
+    clearSearch,
+  } = useItemFilterStore();
 
-  // Get search suggestions based on input
+  const listboxRef = useRef<HTMLDivElement>(null);
   const suggestions = useMemo(() => {
     if (!searchValue.trim()) return [];
 
     const query = searchValue.toLowerCase();
-    const matches = items
+    const queryRegex = new RegExp(
+      `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi"
+    );
+
+    return items
       .filter(
         (item) =>
           item.title?.toLowerCase().includes(query) ||
           item.code?.toLowerCase().includes(query) ||
           item.description?.toLowerCase().includes(query)
       )
-      .slice(0, 8); // Limit to 8 suggestions
-
-    return matches;
+      .slice(0, 8)
+      .map((item) => ({ ...item, _queryRegex: queryRegex }));
   }, [searchValue, items]);
 
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const handleBlur = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setShowSuggestions(false);
+    }
+  };
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
-    setShowSuggestions(true);
     onSearchChange(value);
   };
 
-  const handleSuggestionClick = (item: Item) => {
-    setSearchValue(item.title);
+  const handleSuggestionClick = (title: string) => {
+    setSearchValue(title);
     setShowSuggestions(false);
-    onSearchChange(item.title);
+    onSearchChange(title);
   };
 
   const handleClear = () => {
-    setSearchValue("");
-    setShowSuggestions(false);
+    clearSearch();
     onSearchChange("");
   };
 
-  // Highlight matching text
-  const highlightMatch = (text: string, query: string) => {
-    if (!query.trim()) return text;
+  const highlightMatch = (text: string, regex: RegExp | undefined) => {
+    if (!regex || !text) return text;
 
-    const parts = text.split(new RegExp(`(${query})`, "gi"));
+    const parts = text.split(regex);
     return (
       <span>
         {parts.map((part, i) =>
-          part.toLowerCase() === query.toLowerCase() ? (
+          regex.test(part) ? (
             <span
               key={i}
               className="bg-yellow-200 dark:bg-yellow-900 font-semibold"
@@ -102,17 +99,24 @@ export function ItemSearchFilter({
   };
 
   return (
-    <div className="w-full mr-3 relative" ref={searchRef}>
-      {/* Search Input */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-position-text  pointer-events-none" />
+    <div className="w-full mr-3 relative" onBlur={handleBlur} tabIndex={-1}>
+      <div
+        className="relative"
+        role="combobox"
+        aria-expanded={showSuggestions}
+        aria-owns="search-suggestions"
+        aria-haspopup="listbox"
+      >
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-position-text pointer-events-none" />
         <input
           type="text"
           value={searchValue}
           onChange={(e) => handleSearchChange(e.target.value)}
           onFocus={() => setShowSuggestions(true)}
+          aria-autocomplete="list"
+          aria-controls="search-suggestions"
           placeholder="Search by name, code, or description..."
-          className="w-full  pl-10 pr-10 h-10 text-position-text  border-position-text border-1 rounded-md bg-main-bg focus:outline-none focus:ring-1 focus:ring-position-text "
+          className="w-full pl-10 pr-10 h-10 text-position-text border-position-text border rounded-md bg-main-bg focus:outline-none focus:ring-1 focus:ring-position-text"
         />
         {searchValue && (
           <button
@@ -124,31 +128,39 @@ export function ItemSearchFilter({
         )}
       </div>
 
-      {/* Autocomplete Suggestions */}
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-2 bg-light-white border rounded-lg shadow-lg max-h-[400px] overflow-y-auto">
+        <div
+          id="search-suggestions"
+          role="listbox"
+          ref={listboxRef}
+          className="absolute z-50 w-full mt-2 bg-light-white border rounded-lg shadow-lg max-h-100 overflow-y-auto"
+        >
           <div className="py-2">
             {suggestions.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleSuggestionClick(item)}
-                className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-start gap-3 border-b border-border last:border-b-0"
+                role="option"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleSuggestionClick(item.title);
+                }}
+                className="w-full px-4 py-3 text-left transition-colors flex items-start gap-3 border-b border-border hover:bg-accent last:border-b-0"
               >
-                <Search className="h-4 w-4 mt-1 text-muted-foreground flex-shrink-0" />
+                <Search className="h-4 w-4 mt-1 text-muted-foreground shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm mb-1">
-                    {highlightMatch(item.title, searchValue)}
+                    {highlightMatch(item.title, item._queryRegex)}
                   </div>
                   <div className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
                     <span className="bg-muted px-2 py-0.5 rounded">
-                      {highlightMatch(item.code, searchValue)}
+                      {highlightMatch(item.code, item._queryRegex)}
                     </span>
                     <span>•</span>
                     <span>{item.category.categoryName}</span>
                   </div>
                   {item.description && (
                     <div className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                      {highlightMatch(item.description, searchValue)}
+                      {highlightMatch(item.description, item._queryRegex)}
                     </div>
                   )}
                 </div>
@@ -157,8 +169,6 @@ export function ItemSearchFilter({
           </div>
         </div>
       )}
-
-      {/* No results message */}
       {showSuggestions && searchValue.trim() && suggestions.length === 0 && (
         <div className="absolute z-50 w-full mt-2 bg-popover border rounded-lg shadow-lg">
           <div className="py-8 text-center text-muted-foreground text-sm">

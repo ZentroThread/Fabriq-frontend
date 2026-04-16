@@ -1,7 +1,5 @@
 import { z } from "zod";
-
-// User role enum
-export const userRoleSchema = z.enum(["owner", "cashier", "sales_assistant"]);
+import { userRoleSchema } from "../enum/enums";
 
 export const userSchema = z.object({
   id: z.number(),
@@ -86,3 +84,5 @@ export const changePasswordSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;

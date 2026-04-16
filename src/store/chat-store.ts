@@ -27,13 +27,10 @@ export const useChatStore = create<ChatStore>()(
       unreadCount: 0,
       addMessage: (message, myRole) =>
         set((state) => {
-          // Avoid duplicates
           const exists = state.messages.some((m) => {
-            // Only check ID if both have one defined
             if (m.id !== undefined && message.id !== undefined) {
               return m.id === message.id;
             }
-            // Fallback to content + timestamp checks
             return (
               m.content === message.content &&
               m.timestamp === message.timestamp &&

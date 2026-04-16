@@ -21,36 +21,33 @@ export const bookingService = {
       const response = await apiClient.request<Booking>(
         `${API_ENDPOINTS.BOOKINGS.Approve(bookingId)}`,
         {
-          method: "PUT"
+          method: "PUT",
         }
       );
       return response;
     } catch (error) {
-      throw new Error(getErrorMessage(error, "Failed to update booking status."));
+      throw new Error(
+        getErrorMessage(error, "Failed to update booking status.")
+      );
     }
   },
-  
+
   async RejectStatus(bookingId: number): Promise<Booking> {
     try {
       const response = await apiClient.request<Booking>(
         `${API_ENDPOINTS.BOOKINGS.Reject(bookingId)}`,
         {
-          method: "PUT"
+          method: "PUT",
         }
       );
       return response;
     } catch (error) {
-      throw new Error(getErrorMessage(error, "Failed to update booking status."));
+      throw new Error(
+        getErrorMessage(error, "Failed to update booking status.")
+      );
     }
-  }
-}
-
-
-
-
-
-
-
+  },
+};
 
 //  async getAll(): Promise<Feedback[]> {
 //     const response = await apiClient.request<Feedback[]>(

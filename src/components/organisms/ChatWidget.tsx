@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Bell, MessageSquare, X, Send } from "lucide-react";
-import { useChatSocket } from "../../hooks/useChatSocket";
+import { useChatSocket } from "../../hooks/messengin-chat/useChatSocket";
+import { cn } from "@/utils/style";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -19,7 +20,7 @@ interface ChatWidgetProps {
 const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputText, setInputText] = useState("");
-  // Assuming target is fixed based on role pair (Sales <-> Cashier)
+
   const targetRole =
     myRole === "SALES_ASSISTANT" ? "CASHIER" : "SALES_ASSISTANT";
 
@@ -30,10 +31,8 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
 
   useEffect(() => {
     if (textareaRef.current) {
-      // Reset height to auto to get the correct scrollHeight on shrink
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
-      // Set to scrollHeight, but cap at a max height (e.g. 120px)
       textareaRef.current.style.height = `${Math.min(scrollHeight, 120)}px`;
     }
   }, [inputText, isOpen]);
@@ -50,19 +49,22 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
     }
   }, [messages, isOpen]);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (inputText.trim()) {
       sendMessage(targetRole, inputText);
       setInputText("");
     }
-  };
+  }, [inputText, targetRole, sendMessage]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    },
+    [handleSend]
+  );
 
   return (
     <div className="relative">
@@ -88,7 +90,10 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
               <MessageSquare className="h-4 w-4" />
               Chat with {targetRole}
               <span
-                className={`h-2 w-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`}
+                className={cn(
+                  "h-2 w-2 rounded-full",
+                  isConnected ? "bg-green-500" : "bg-red-500"
+                )}
                 title={isConnected ? "Online" : "Offline"}
               />
             </CardTitle>
@@ -115,10 +120,18 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
                     return (
                       <div
                         key={index}
-                        className={`flex flex-col max-w-[80%] ${isMe ? "self-end items-end" : "self-start items-start"}`}
+                        className={cn(
+                          "flex flex-col max-w-[80%]",
+                          isMe ? "self-end items-end" : "self-start items-start"
+                        )}
                       >
                         <div
-                          className={`px-3 py-2 rounded-lg text-sm ${isMe ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted rounded-bl-none"}`}
+                          className={cn(
+                            "px-3 py-2 rounded-lg text-sm",
+                            isMe
+                              ? "bg-primary text-primary-foreground rounded-br-none"
+                              : "bg-muted rounded-bl-none"
+                          )}
                         >
                           {msg.content}
                         </div>
@@ -163,4 +176,4 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ myRole }) => {
   );
 };
 
-export default ChatWidget;
+export default React.memo(ChatWidget);
