@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AttendanceDirection } from "../enum/enums";
 
 export const DeviceAttendanceLogSchema = z.object({
   id: z.number().int().positive(),
@@ -6,5 +7,5 @@ export const DeviceAttendanceLogSchema = z.object({
   punchTime: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid date format",
   }),
-  direction: z.enum(["IN", "OUT"]),
+  direction: AttendanceDirection,
 });

@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { House, Mail, Phone, User } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useEffect } from "react";
-import { normalizePhoneForProvider } from "@/lib/phone";
+import { normalizePhoneForProvider } from "@/utils/phone";
 import useBillingStore from "@/store/customer-store";
 import billingStore from "@/store/billing-store";
 import Swal from "sweetalert2";

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AttendanceStatus, AttendanceDirection } from "../enum/enums";
 
 export const AttendanceSchema = z.object({
   empId: z.number().min(1, "Employee ID must be a positive number"),
@@ -30,7 +31,7 @@ export const AttendanceSchema = z.object({
     ),
   totalHours: z.number().min(0, "Total hours must be non-negative"),
   lateMinutes: z.number().min(0, "Late minutes must be non-negative"),
-  status: z.enum(["PRESENT", "ABSENT", "LATE", "ON_LEAVE"]),
+  status: AttendanceStatus,
 });
 
 export const MarkAttendanceSchema = z.object({
@@ -40,7 +41,7 @@ export const MarkAttendanceSchema = z.object({
     message: "Invalid datetime format",
   }),
 
-  Direction: z.enum(["IN", "OUT"]),
+  Direction: AttendanceDirection,
 });
 
 export type Attendance = z.infer<typeof AttendanceSchema>;

@@ -70,14 +70,9 @@ axiosInstance.interceptors.response.use(
     const errInfo = resp
       ? { status: resp.status, statusText: resp.statusText, data: resp.data }
       : { message: error.message };
-    try {
-      logger.error("API Error Response", errInfo);
-    } catch {
-      logger.error("API Error Response", errInfo);
-    }
 
     if (
-      error.response?.status === 401 &&
+      resp?.status === 401 &&
       originalRequest &&
       !originalRequest._retry
     ) {

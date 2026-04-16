@@ -6,9 +6,9 @@ import {
   registerSchema,
   tokenResponseSchema,
   userSchema,
-  userRoleSchema,
   addCustomerSchema,
 } from "@/schemas/user.schema";
+import { userRoleSchema } from "@/enum/enums";
 
 export type AddItemFormValues = z.infer<typeof addItemFormSchema>;
 export type User = z.infer<typeof userSchema>;
