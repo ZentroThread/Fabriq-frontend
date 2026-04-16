@@ -99,7 +99,6 @@ export function AddCustomerForm({
         try {
           billingStore.getState().setSelectedCustomer({
             ...created,
-            cust_id: created.custId ?? created.cust_id,
             custCode: created.custCode ?? created.cust_code,
           });
         } catch (e) {

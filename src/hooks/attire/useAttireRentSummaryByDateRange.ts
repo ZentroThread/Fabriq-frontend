@@ -42,7 +42,7 @@ export const useAttireRentSummaryByDateRange = (
     if (categoryName && ["saree", "nilame", "jwelary"].includes(categoryName)) {
       const billingTotal = rent.billingCode
         ? parseFloat(
-            bills.find((bill) => bill.billingCode === rent.billingCode)
+            bills.find((bill: any) => bill.billingCode === rent.billingCode)
               ?.billingTotal ?? "0"
           )
         : 0;
@@ -93,7 +93,7 @@ export const useTopSellingProductsByDateRange = (
     if (!item) return;
 
     const billing = rent.billingCode
-      ? bills.find((b) => b.billingCode === rent.billingCode)
+      ? bills.find((b: any) => b.billingCode === rent.billingCode)
       : undefined;
     const revenue = billing?.billingTotal
       ? parseFloat(billing.billingTotal)

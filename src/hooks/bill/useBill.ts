@@ -9,11 +9,17 @@ export const useGetAllBills = () => {
   const user = useAuthStore((state) => state.user);
   const hasAccess = user?.role === "owner" || user?.role === "cashier";
 
-  return useQuery<Bill[]>({
+  return useQuery({
     queryKey: ["bills"],
-    queryFn: async () => {
+    queryFn: async (): Promise<Bill[]> => {
       try {
-        return await billingService.getAllBillings();
+        const data = await billingService.getAllBillings();
+        return data.map((bill) => ({
+          ...bill,
+          billingTotal: String(bill.billingTotal),
+          custCode: bill.customer?.custCode,
+          customer: undefined,
+        })) as Bill[];
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error, "Failed to fetch bills");
         logger.error(errorMessage, error, true);
@@ -21,6 +27,6 @@ export const useGetAllBills = () => {
       }
     },
     retry: 1,
-    enabled: hasAccess,
+    enabled: !!hasAccess,
   });
 };

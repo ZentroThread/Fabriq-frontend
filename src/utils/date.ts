@@ -1,3 +1,5 @@
+import { logger } from "@/utils/logger";
+
 export const today = new Date();
 export const currentMonth = String(today.getMonth() + 1).padStart(2, "0");
 export const currentYear = String(today.getFullYear());
@@ -126,6 +128,7 @@ export const formatDateTime = (
       hour12: true,
     });
   } catch (error) {
+    logger.error("Error formatting date time", error);
     return "-";
   }
 };
@@ -147,6 +150,7 @@ export const parseDate = (
 
     return isNaN(date.getTime()) ? null : date;
   } catch (error) {
+    logger.error("Error parsing date", error);
     return null;
   }
 };

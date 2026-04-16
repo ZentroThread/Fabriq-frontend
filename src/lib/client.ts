@@ -71,11 +71,7 @@ axiosInstance.interceptors.response.use(
       ? { status: resp.status, statusText: resp.statusText, data: resp.data }
       : { message: error.message };
 
-    if (
-      resp?.status === 401 &&
-      originalRequest &&
-      !originalRequest._retry
-    ) {
+    if (resp?.status === 401 && originalRequest && !originalRequest._retry) {
       if (originalRequest._skipAuthRedirect) {
         return Promise.reject(error);
       }

@@ -2,11 +2,14 @@ import Swal from "sweetalert2";
 
 export const logger = {
   error: (message: string, error?: unknown, showToast = false) => {
+    console.error(`[ERROR] ${message}`, error || "");
     if (showToast) {
       const errorMsg =
         error instanceof Error
           ? error.message
-          : "An unexpected error occurred.";
+          : typeof error === "string"
+            ? error
+            : "An unexpected error occurred.";
       Swal.fire({
         position: "top-end",
         icon: "error",
@@ -19,7 +22,8 @@ export const logger = {
     }
   },
 
-  warn: (message: string, _data?: unknown, showToast = false) => {
+  warn: (message: string, data?: unknown, showToast = false) => {
+    console.warn(`[WARN] ${message}`, data || "");
     if (showToast) {
       Swal.fire({
         position: "top-end",
@@ -32,7 +36,8 @@ export const logger = {
     }
   },
 
-  info: (message: string, _data?: unknown, showToast = false) => {
+  info: (message: string, data?: unknown, showToast = false) => {
+    console.info(`[INFO] ${message}`, data || "");
     if (showToast) {
       Swal.fire({
         position: "top-end",

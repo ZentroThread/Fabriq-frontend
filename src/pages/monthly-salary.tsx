@@ -19,7 +19,6 @@ export default function MonthlySalary() {
     data: salaryDetails,
     isLoading,
     isError,
-    error,
   } = useGetPayroll(Number(id), Number(month), Number(year));
 
   if (isLoading) {

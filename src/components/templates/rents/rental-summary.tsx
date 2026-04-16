@@ -23,8 +23,8 @@ export default function RentalSummary() {
   const currentBilling = useBillingStore((s) => s.currentBilling);
   const payBilling = useBillingStore((s) => s.payBilling);
   const displayItems = useMemo((): BillingItem[] => {
-    if (currentBilling && Array.isArray(currentBilling.items))
-      return currentBilling.items as BillingItem[];
+    if (currentBilling && Array.isArray((currentBilling as any).items))
+      return (currentBilling as any).items as BillingItem[];
     return items as BillingItem[];
   }, [currentBilling, items]);
 

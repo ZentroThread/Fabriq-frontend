@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { billingService } from "@/services/billing.service";
+import { logger } from "@/utils/logger";
 import { DollarSign, FileText } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { formatDateTime, parseDate } from "@/utils/date";
@@ -49,8 +50,8 @@ const Bills = () => {
       setLoading(true);
       try {
         if (fetchBillings) await fetchBillings();
-      } catch (_e) {
-        /* empty */
+      } catch (error) {
+        logger.error("Failed to fetch billings", error, true);
       } finally {
         setLoading(false);
       }
@@ -126,7 +127,7 @@ const Bills = () => {
           bill.billingCode
         );
         setRents((items as RentItemType[]) || []);
-      } catch (_e) {
+      } catch {
         setRents([]);
       }
     })();

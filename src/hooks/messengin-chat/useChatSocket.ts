@@ -46,7 +46,7 @@ export const useChatSocket = (myRole: string) => {
       onDisconnect: () => {
         setIsConnected(false);
       },
-      onStompError: (frame) => {},
+      onStompError: (_frame) => {},
     });
 
     client.activate();
