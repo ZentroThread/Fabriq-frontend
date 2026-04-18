@@ -37,6 +37,7 @@ interface UpdateCustomerFormData {
 }
 interface CustomerCardProps {
   customer: {
+    custId?: number | string;
     custCode: string;
     custName: string;
     custMobileNumber: string;
@@ -55,7 +56,7 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
 
   const deleteCustomer = async () => {
     deleteMutation.mutate(
-      { custCode: customer.custCode, custId: (customer as any).custId },
+      { custCode: customer.custCode, custId: customer.custId },
       {
         onSuccess: async () => {
           await Swal.fire({
