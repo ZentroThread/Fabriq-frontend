@@ -3,37 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import type { LoginInput, User, UserRole } from "@/types/types";
 import { queryClient } from "@/main";
 import { loginService } from "@/services/login.service";
-import { extractTenantId } from "@/lib/jwt";
 import { logger } from "@/utils/logger";
-
-const extractAndPersistTenantId = (): string | null => {
-  try {
-    const cookies = document.cookie.split(";");
-    const accessTokenCookie = cookies.find((c) =>
-      c.trim().startsWith("accessToken=")
-    );
-
-    if (!accessTokenCookie) {
-      logger.warn("No accessToken cookie found");
-      return null;
-    }
-
-    const token = accessTokenCookie.split("=")[1];
-    const tenantId = extractTenantId(token);
-
-    if (tenantId) {
-      localStorage.setItem("tenantId", tenantId);
-      return tenantId;
-    } else {
-      logger.warn(" No tenant ID in JWT token");
-      return null;
-    }
-  } catch (error) {
-    logger.error(" Failed to extract tenant ID from token:", error);
-    return null;
-  }
-};
-
 interface AuthState {
   user: User | null;
   isLoading: boolean;
@@ -48,8 +18,8 @@ interface AuthState {
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   validateSession: () => Promise<boolean>;
-  initializeAuth: () => Promise<void>; // Add this
-  setAuthChecked: (checked: boolean) => void; // Add this
+  initializeAuth: () => Promise<void>;
+  setAuthChecked: (checked: boolean) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
@@ -77,15 +47,13 @@ export const useAuthStore = create<AuthState>()(
             _skipAuthRedirect: true,
             _retry: true,
           });
-
-          const tenantId =
-            extractAndPersistTenantId() || user?.tenantId || null;
+          const currentTenantId = get().tenantId || user?.tenantId || null;
 
           set({
             user,
             isLoading: false,
             isAuthChecked: true,
-            tenantId,
+            tenantId: currentTenantId,
           });
         } catch {
           set({
@@ -105,8 +73,7 @@ export const useAuthStore = create<AuthState>()(
 
           const user = await loginService.getUserProfile({});
 
-          const tenantId =
-            extractAndPersistTenantId() || user?.tenantId || null;
+          const currentTenantId = get().tenantId || user?.tenantId || null;
 
           const expiryTime = Date.now() + tokenResponse.accessTokenExpiresIn;
 
@@ -114,7 +81,7 @@ export const useAuthStore = create<AuthState>()(
             user,
             isLoading: false,
             tokenExpiryTime: expiryTime,
-            tenantId,
+            tenantId: currentTenantId,
           });
 
           return { success: true };
@@ -158,13 +125,12 @@ export const useAuthStore = create<AuthState>()(
         try {
           const freshUser = await loginService.getUserProfile({});
 
-          const tenantId =
-            extractAndPersistTenantId() || freshUser?.tenantId || null;
+          const currentTenantId = get().tenantId || freshUser?.tenantId || null;
 
           set({
             user: freshUser,
             isLoading: false,
-            tenantId,
+            tenantId: currentTenantId,
           });
           return true;
         } catch {

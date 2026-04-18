@@ -3,6 +3,7 @@ import { Wallet, CreditCard, Banknote } from "lucide-react";
 import Chart from "../../atoms/frame/frame";
 import CustomButton from "@/components/atoms/button/custom-button";
 import useBillingStore from "@/store/billing-store";
+import { usePayBilling } from "@/hooks/bill/useBill";
 
 type BillingItem = {
   attire?: {
@@ -21,7 +22,8 @@ export default function RentalSummary() {
 
   const items = useBillingStore((s) => s.items);
   const currentBilling = useBillingStore((s) => s.currentBilling);
-  const payBilling = useBillingStore((s) => s.payBilling);
+  const payBillingMutation = usePayBilling();
+
   const displayItems = useMemo((): BillingItem[] => {
     if (
       currentBilling &&
@@ -46,7 +48,7 @@ export default function RentalSummary() {
   const total = subtotal - discountAmount;
 
   async function onPay() {
-    await payBilling({ discountPercentage: discount, paymentMethod });
+    payBillingMutation.mutate({ discountPercentage: discount, paymentMethod });
   }
 
   return (

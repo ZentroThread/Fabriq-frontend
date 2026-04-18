@@ -1,7 +1,8 @@
 import { useGetAllAttireRents } from "@/hooks/attire/useAttireRents";
-import { FetchCustomers } from "@/hooks/customer/useCustomer";
+import { useGetAllCustomers } from "@/hooks/customer/useCustomer";
 import { getUpcomingRentalEndDate } from "@/utils/date";
 import { useGetAllAttire } from "@/hooks/attire/useAttire";
+import type { BackendCustomerPayload } from "@/types/item.types";
 
 type CustomerWithUpcomingRental = {
   rentalId: string;
@@ -16,7 +17,7 @@ export const useUpcomingAttireRentWithCustomerDetails = (
   dateRange?: string
 ) => {
   const { data: attireRents } = useGetAllAttireRents();
-  const { data: customers } = FetchCustomers();
+  const { data: customers } = useGetAllCustomers();
   const { data: attires } = useGetAllAttire();
 
   if (!attireRents || !customers || !attires) return [];
@@ -25,7 +26,10 @@ export const useUpcomingAttireRentWithCustomerDetails = (
   const today = new Date();
 
   const customerMap = new Map(
-    customers.map((customer) => [customer.custCode, customer])
+    customers.map((customer: BackendCustomerPayload) => [
+      customer.custCode,
+      customer,
+    ])
   );
 
   const attireMap = new Map(attires.map((attire) => [attire.id, attire]));

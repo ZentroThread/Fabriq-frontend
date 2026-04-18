@@ -5,18 +5,15 @@ import { House, Mail, Phone, User } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useEffect } from "react";
 import { normalizePhoneForProvider } from "@/utils/phone";
-import useBillingStore from "@/store/customer-store";
 import billingStore from "@/store/billing-store";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AddCustomerFormValues } from "@/types/types";
 import { addCustomerSchema } from "@/schemas/user.schema";
-import {
-  notificationService,
-  type CustomerApiResponse,
-} from "@/services/notification.service";
+import { notificationService } from "@/services/notification.service";
 import { logger } from "@/utils/logger";
+import { useAddCustomer } from "@/hooks/customer/useCustomer";
 
 interface AddCustomerFormProps {
   onClose?: () => void;
@@ -47,7 +44,7 @@ export function AddCustomerForm({
       email: "",
     },
   });
-  const fetchCustomers = useBillingStore((s) => s.fetchCustomers);
+  const addMutation = useAddCustomer();
 
   useEffect(() => {
     if (editMode && customerData) {
@@ -78,29 +75,38 @@ export function AddCustomerForm({
       custEmail: values.email ?? "",
     };
 
-    try {
-      const created = (await useBillingStore
-        .getState()
-        .addCustomer(apiPayload)) as CustomerApiResponse;
-      if (created) {
-        notificationService.sendWelcomeNotification(created).catch((e) => {
-          logger.warn("Welcome SMS failed to send", e, true);
-        });
+    addMutation.mutate(apiPayload, {
+      onSuccess: async (created) => {
+        if (!created) return;
+
+        const c = created as unknown as Record<string, unknown>;
+        const custName = String(c.custName ?? c.cust_name ?? "Customer");
+        const custCode = String(c.custCode ?? c.cust_code ?? "");
+
+        notificationService
+          .sendWelcomeNotification(
+            created as Parameters<
+              typeof notificationService.sendWelcomeNotification
+            >[0]
+          )
+          .catch((e) => {
+            logger.warn("Welcome SMS failed to send", e, true);
+          });
 
         await Swal.fire({
           icon: "success",
           title: "Customer added",
-          text: `${created.custName ?? created.cust_name} has been added successfully.`,
+          text: `${custName} has been added successfully.`,
           timer: 2000,
           showConfirmButton: false,
         });
-        await fetchCustomers();
 
         try {
-          billingStore.getState().setSelectedCustomer({
+          const storeSetter = billingStore.getState().setSelectedCustomer;
+          storeSetter({
             ...created,
-            custCode: created.custCode ?? created.cust_code,
-          });
+            custCode,
+          } as Parameters<typeof storeSetter>[0]);
         } catch (e) {
           logger.warn(
             "Customer added, but auto-select failed. Please search manually.",
@@ -111,16 +117,11 @@ export function AddCustomerForm({
 
         reset();
         onClose?.();
-      } else {
-        logger.error(
-          "Customer was not added. Please try again.",
-          undefined,
-          true
-        );
-      }
-    } catch (err: unknown) {
-      logger.error("Failed to add customer", err, true);
-    }
+      },
+      onError: (err) => {
+        logger.error("Failed to add customer", err, true);
+      },
+    });
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Chart from "@/components/atoms/frame/frame";
 import { ItemsWishlistSkeleton } from "@/components/molecules/skeletons/items-wishlist-skeleton";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/utils/style";
 import { useWishlistStore } from "@/store/wishlist-store";
+import { useGetAllWishlist } from "@/hooks/wishlist/useWishlist";
 import {
   Table,
   TableBody,
@@ -21,15 +22,11 @@ import {
 } from "@/components/ui/table";
 
 export default function ItemsWishlistPage() {
-  // Zustand store
   const {
-    list,
-    isLoading: loading,
     currentPage,
     rowsPerPage,
     searchQuery,
     selectedDate,
-    fetchWishlist,
     setCurrentPage,
     setRowsPerPage,
     setSearchQuery,
@@ -37,12 +34,9 @@ export default function ItemsWishlistPage() {
     clearDateFilter,
   } = useWishlistStore();
 
-  useEffect(() => {
-    fetchWishlist();
-  }, [fetchWishlist]);
+  const { data: list = [], isLoading: loading } = useGetAllWishlist();
 
   const filteredList = list.filter((it) => {
-    // Filter by selected date first
     if (selectedDate) {
       if (!it?.rentDate) return false;
       const rentDate = new Date(it.rentDate);
@@ -59,7 +53,6 @@ export default function ItemsWishlistPage() {
       if (rentDateOnly.getTime() !== selectedDateOnly.getTime()) return false;
     }
 
-    // Then filter by search query
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
     const custCode = (it.custCode || it.customer?.custCode || "").toLowerCase();

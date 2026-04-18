@@ -19,7 +19,6 @@ function Login() {
     error: authError,
   } = useAuthStore();
 
-  // React Hook Form with Zod validation
   const {
     register,
     handleSubmit,
@@ -32,7 +31,6 @@ function Login() {
     },
   });
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated()) {
       if (user?.role === "sales_assistant") {
@@ -47,7 +45,6 @@ function Login() {
     const result = await login(data);
 
     if (result.success) {
-      // Get fresh state after login
       const currentUser = useAuthStore.getState().user;
       if (currentUser?.role === "sales_assistant") {
         navigate("/attire");
@@ -55,7 +52,6 @@ function Login() {
         navigate("/dashboard");
       }
     }
-    // Error is automatically set in store, no need to handle here
   };
 
   return (
@@ -96,7 +92,6 @@ function Login() {
 
         {/* LOGIN FORM */}
         <div className="flex flex-col justify-center  w-100 mt-35">
-          {/* ...existing login form code... */}
           <div className="bg-light-rose-lightest p-10 rounded-2xl border-[1.5px]  h-full shadow-2xl border-[#f3c4cf]">
             <h2
               style={{ fontFamily: "Bodoni Moda" }}

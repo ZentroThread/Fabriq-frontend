@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import useBillingStore from "@/store/customer-store";
+import { useMemo, useState } from "react";
 import { ItemSearchFilter } from "@/components/atoms/item-filter/item-filter";
 import { NativeSelectDemo } from "@/components/organisms/selection/native-selection-demo";
 import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
 import type { BackendCustomerPayload } from "@/types/item.types";
 import type { AddCustomerFormValues } from "@/types/types";
+import {
+  useGetAllCustomers,
+  useUpdateCustomer,
+  useDeleteCustomer,
+} from "@/hooks/customer/useCustomer";
 import {
   Table,
   TableBody,
@@ -27,9 +31,13 @@ import Chart from "@/components/atoms/frame/frame";
 import { CustomersSkeleton } from "@/components/molecules/skeletons/customers-skeleton";
 
 function Customers() {
-  const customers = useBillingStore((s) => s.customers);
-  const isLoading = useBillingStore((s) => s.isLoading);
-  const fetchCustomers = useBillingStore((s) => s.fetchCustomers);
+  const {
+    data: customers,
+    isLoading,
+    refetch: fetchCustomers,
+  } = useGetAllCustomers();
+  const updateCustomerMutation = useUpdateCustomer();
+  const deleteCustomerMutation = useDeleteCustomer();
   const [searchQuery, setSearchQuery] = useState("");
   const [range, setRange] = useState("");
   const [pageSize, setPageSize] = useState<number>(10);
@@ -38,10 +46,6 @@ function Customers() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
     useState<BackendCustomerPayload | null>(null);
-
-  useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
 
   const mappedForSearch = (customers || []).map((c) => ({
     // eslint-disable-next-line react-hooks/purity
@@ -125,16 +129,20 @@ function Customers() {
       custWhatsappNumber: data.whatsapp ?? data.mobileNumber ?? "",
       custEmail: data.email ?? "",
     };
-    const updated = await useBillingStore
-      .getState()
-      .updateCustomer(selectedCustomer.custCode, payload);
-    if (updated) {
-      logger.info("Customer updated", undefined, true);
-      setIsEditDialogOpen(false);
-      setSelectedCustomer(null);
-    } else {
-      logger.error("Update failed", undefined, true);
-    }
+
+    updateCustomerMutation.mutate(
+      { custCode: selectedCustomer.custCode, payload },
+      {
+        onSuccess: () => {
+          logger.info("Customer updated", undefined, true);
+          setIsEditDialogOpen(false);
+          setSelectedCustomer(null);
+        },
+        onError: () => {
+          logger.error("Update failed", undefined, true);
+        },
+      }
+    );
   };
 
   if (isLoading) {
@@ -239,6 +247,7 @@ function Customers() {
                           <Trash2
                             className="w-4 h-4 cursor-pointer text-[#fa7f83]"
                             onClick={async () => {
+                              if (!c.custCode) return;
                               const res = await Swal.fire({
                                 title: "Delete customer",
                                 text: `Delete ${c.custName}? This action cannot be undone.`,
@@ -247,19 +256,22 @@ function Customers() {
                                 confirmButtonText: "Delete",
                               });
                               if (res.isConfirmed) {
-                                try {
-                                  await useBillingStore
-                                    .getState()
-                                    .deleteCustomer(c.custCode);
-                                  await fetchCustomers();
-                                  logger.info("Deleted", undefined, true);
-                                } catch (err) {
-                                  logger.error(
-                                    "Failed to delete customer",
-                                    err,
-                                    true
-                                  );
-                                }
+                                deleteCustomerMutation.mutate(
+                                  { custCode: c.custCode, custId: c.custId },
+                                  {
+                                    onSuccess: async () => {
+                                      await fetchCustomers();
+                                      logger.info("Deleted", undefined, true);
+                                    },
+                                    onError: (err) => {
+                                      logger.error(
+                                        "Failed to delete customer",
+                                        err,
+                                        true
+                                      );
+                                    },
+                                  }
+                                );
                               }
                             }}
                           />

@@ -30,7 +30,6 @@ export const ProtectedRoute = ({
     return <Navigate to={redirectTo} replace />;
   }
 
-  // Check role-based access
   if (allowedRoles && allowedRoles.length > 0 && user) {
     const hasAccess = allowedRoles.includes(user.role);
 
