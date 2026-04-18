@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { billingService } from "@/services/billing.service";
-import { logger } from "@/utils/logger";
 import { DollarSign, FileText } from "lucide-react";
 import DashboardCard from "@/components/molecules/cards/dashboard-card";
 import { formatDateTime, parseDate } from "@/utils/date";
+import { useGetAllBills } from "@/hooks/bill/useBill";
 import {
   Dialog,
   DialogContent,
@@ -23,17 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import useBillingStore from "@/store/billing-store";
 import type { BillingType, RentItemType } from "@/types/bill.type";
 
 const Bills = () => {
-  const storeBillings = useBillingStore((s) => s.billings) as
-    | BillingType[]
-    | undefined;
-  const fetchBillings = useBillingStore((s) => s.fetchBillings);
-  const [billings, setBillings] = useState<BillingType[]>([]);
+  const { data: storeBillings, isLoading: loading } = useGetAllBills();
   const [rents, setRents] = useState<RentItemType[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const [filterQuery, setFilterQuery] = useState("");
   const [filterStartDate, setFilterStartDate] = useState("");
@@ -45,22 +39,8 @@ const Bills = () => {
   const [selected, setSelected] = useState<BillingType | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        if (fetchBillings) await fetchBillings();
-      } catch (error) {
-        logger.error("Failed to fetch billings", error, true);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [fetchBillings]);
-
-  useEffect(() => {
-    setBillings(storeBillings || []);
+  const billings = useMemo(() => {
+    return (storeBillings as unknown as BillingType[]) || [];
   }, [storeBillings]);
 
   const filtered = useMemo(() => {
@@ -169,8 +149,8 @@ const Bills = () => {
       <Chart height="h-20" padding="p-2 pl-6">
         <div className="gap-2 flex pr-5 items-center">
           <ItemSearchFilter
-            items={(billings || []).map((b) => ({
-              id: b.billingCode || String(Math.random()),
+            items={(billings || []).map((b, idx) => ({
+              id: b.billingCode ?? `billing-${idx}`,
               title: b.customer?.custName || b.billingCode || "",
               code: b.billingCode || "",
               description: b.customer?.custMobileNumber || "",

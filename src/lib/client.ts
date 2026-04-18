@@ -6,6 +6,7 @@ import axios, {
 import { API_BASE_URL } from "@/constants/constdata";
 import { API_ENDPOINTS } from "@/constants/api.constants";
 import { logger } from "@/utils/logger";
+import { useAuthStore } from "@/store/user-auth-store";
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -34,9 +35,8 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  async (config) => {
+  (config) => {
     try {
-      const { useAuthStore } = await import("@/store/user-auth-store");
       const tenantId = useAuthStore.getState().getTenantId();
       if (tenantId) {
         config.headers = config.headers || {};
@@ -58,6 +58,13 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
+    const tenantId = response.headers["X-Tenant-ID"];
+    if (tenantId) {
+      const store = useAuthStore.getState();
+      if (store.getTenantId() !== tenantId) {
+        store.setTenantId(tenantId);
+      }
+    }
     return response;
   },
   async (error: AxiosError) => {
@@ -84,7 +91,6 @@ axiosInstance.interceptors.response.use(
           !originalRequest._skipAuthRedirect &&
           !window.location.pathname.includes("/login")
         ) {
-          const { useAuthStore } = await import("@/store/user-auth-store");
           useAuthStore.getState().logout();
           window.location.href = "/login";
         }
@@ -109,7 +115,6 @@ axiosInstance.interceptors.response.use(
       try {
         const refreshHeaders: Record<string, string> = {};
         try {
-          const { useAuthStore } = await import("@/store/user-auth-store");
           const tenantId = useAuthStore.getState().getTenantId();
           if (tenantId) refreshHeaders["X-Tenant-ID"] = tenantId;
         } catch (e) {
@@ -129,7 +134,6 @@ axiosInstance.interceptors.response.use(
         isRefreshing = false;
 
         if (!window.location.pathname.includes("/login")) {
-          const { useAuthStore } = await import("@/store/user-auth-store");
           useAuthStore.getState().logout();
           window.location.href = "/login";
         }

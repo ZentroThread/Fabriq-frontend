@@ -7,12 +7,15 @@ import {
 } from "@/components/ui/dialog";
 import AddCustomerForm from "@/components/organisms/forms/addcustomer-form";
 import { useState } from "react";
-import useBillingStore from "@/store/customer-store";
 import Swal from "sweetalert2";
 import { logger } from "@/utils/logger";
 import { AlertDialogDemo } from "@/components/atoms/alert/alert-dialog";
 import type { BackendCustomerPayload } from "@/types/item.types";
 import { InfoRow } from "@/components/atoms/label/info-row";
+import {
+  useDeleteCustomer,
+  useUpdateCustomer,
+} from "@/hooks/customer/useCustomer";
 
 function toTitleCase(name?: string) {
   if (!name) return "";
@@ -47,20 +50,27 @@ interface CustomerCardProps {
 
 export default function CustomerCard({ customer }: CustomerCardProps) {
   const [open, setOpen] = useState(false);
+  const deleteMutation = useDeleteCustomer();
+  const updateMutation = useUpdateCustomer();
 
   const deleteCustomer = async () => {
-    try {
-      await useBillingStore.getState().deleteCustomer(customer.custCode);
-      await Swal.fire({
-        icon: "success",
-        title: "Deleted",
-        text: `${toTitleCase(customer.custName)} has been deleted successfully.`,
-        timer: 1800,
-        showConfirmButton: false,
-      });
-    } catch (err) {
-      logger.error("Delete failed", err, true);
-    }
+    deleteMutation.mutate(
+      { custCode: customer.custCode, custId: (customer as any).custId },
+      {
+        onSuccess: async () => {
+          await Swal.fire({
+            icon: "success",
+            title: "Deleted",
+            text: `${toTitleCase(customer.custName)} has been deleted successfully.`,
+            timer: 1800,
+            showConfirmButton: false,
+          });
+        },
+        onError: (err) => {
+          logger.error("Delete failed", err, true);
+        },
+      }
+    );
   };
 
   const handleUpdate = async (data: UpdateCustomerFormData) => {
@@ -74,8 +84,14 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
       custAddress: data.address ?? "",
     };
 
-    await useBillingStore.getState().updateCustomer(customer.custCode, payload);
-    setOpen(false);
+    updateMutation.mutate(
+      { custCode: customer.custCode, payload },
+      {
+        onSuccess: () => {
+          setOpen(false);
+        },
+      }
+    );
   };
 
   return (

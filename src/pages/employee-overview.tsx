@@ -22,7 +22,6 @@ export default function EmployeeOverview() {
   const commissionEligible =
     employees?.filter((emp) => emp.commissionEligible).length || 0;
   const epflEligible = employees?.filter((emp) => emp.epfNumber).length || 0;
-  //const {searchText,setSearchText} = useEmployeeStore();
   const { setSelectedEmployee } = useEmployeeStore();
 
   const [searchText, setSearchText] = useState("");

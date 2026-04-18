@@ -28,7 +28,6 @@ import { NativeSelectDemo } from "@/components/organisms/selection/native-select
 import { useItemStore } from "@/store/item-store";
 
 function Items() {
-  // useStockUpdates();
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,7 +52,6 @@ function Items() {
     refetch,
   } = useFilteredItems("");
 
-  // Sync database to Zustand ONLY if Zustand is empty (first load)
   useEffect(() => {
     if (
       fetchedItems &&
@@ -64,16 +62,13 @@ function Items() {
     }
   }, [fetchedItems]);
 
-  // Use Zustand as source of truth
   const allItems = allItemsFromStore;
 
-  // Filter items based on search query
   const filteredItems = useMemo(() => {
     if (!allItems) return [];
 
     let result = allItems;
 
-    // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -84,7 +79,6 @@ function Items() {
       );
     }
 
-    // Apply category filter
     if (categoryFilter) {
       result = result.filter((item) => {
         if (typeof item.category === "object" && item.category !== null) {
@@ -100,8 +94,6 @@ function Items() {
   const handleItemAdded = () => {
     setIsDialogOpen(false);
   };
-
-  // Calculate stats from all items
   const totalItems = allItems?.length || 0;
   const withus =
     allItems?.filter((item) => item.status !== "Rented").length || 0;

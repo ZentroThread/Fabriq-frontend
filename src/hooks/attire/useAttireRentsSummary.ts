@@ -1,5 +1,6 @@
 import { useGetAllAttireRents } from "./useAttireRents";
-import { FetchCustomers } from "../customer/useCustomer";
+import { useGetAllCustomers } from "../customer/useCustomer";
+import type { BackendCustomerPayload } from "@/types/item.types";
 
 type AttireRentsSummary = {
   activeRentsCount: number;
@@ -11,14 +12,14 @@ type AttireRentsSummary = {
 
 type AttireRentSummaryWithCustomer = {
   customerName?: string;
-  attireName: string;
+  attireName?: string;
   returnDate: string | null;
   isOverdue: boolean;
 };
 
 export const useAttireRentsSummary = (): AttireRentsSummary => {
   const { data: attireRents } = useGetAllAttireRents();
-  const { data: customers } = FetchCustomers();
+  const { data: customers } = useGetAllCustomers();
 
   const now = new Date();
   const oneWeekAgo = new Date();
@@ -60,7 +61,7 @@ export const useAttireRentsSummary = (): AttireRentsSummary => {
     const today = new Date();
     const isOverdue = returnDate ? returnDate < today : false;
     const customer = customers?.find(
-      (customer) => customer.custCode === rent.custCode
+      (customer: BackendCustomerPayload) => customer.custCode === rent.custCode
     );
     const customerName = customer?.custName;
     const attireName = rent.attireCode;
